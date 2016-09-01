@@ -458,8 +458,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         if (newParentWrapper.isInitiallyExpanded()) {
             newParentWrapper.setExpanded(true);
             List<?> childItemList = newParentWrapper.getChildItemList();
-            mItemList.addAll(parentWrapperPosition + insertedItemCount, childItemList);
-            insertedItemCount += childItemList.size();
+            if (childItemList!=null) {
+                mItemList.addAll(parentWrapperPosition + insertedItemCount, childItemList);
+                insertedItemCount += childItemList.size();
+            }
         }
         return insertedItemCount;
     }
