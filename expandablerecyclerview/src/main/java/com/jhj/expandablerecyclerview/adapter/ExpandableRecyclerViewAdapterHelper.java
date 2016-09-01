@@ -1,6 +1,5 @@
 package com.jhj.expandablerecyclerview.adapter;
 
-
 import com.jhj.expandablerecyclerview.model.ParentListItem;
 import com.jhj.expandablerecyclerview.model.ParentWrapper;
 
