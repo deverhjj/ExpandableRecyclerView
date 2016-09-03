@@ -11,7 +11,7 @@ import android.view.View;
  *
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ChildViewHolder extends RecyclerView.ViewHolder{
+public class ChildViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = "ChildViewHolder";
 
     public ChildViewHolder(View itemView) {

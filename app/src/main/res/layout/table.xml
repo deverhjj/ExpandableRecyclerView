@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/table"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:padding="16dp">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:gravity="center"
+            android:background="@color/colorAccent"
+            android:padding="4dp"
+            android:text="Operation \\ Type"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:gravity="center"
+            android:background="@color/md_deep_teal_300"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:text="parent"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:background="@color/md_deep_teal_300"
+            android:padding="4dp"
+            android:gravity="center"
+            android:text="child"/>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:gravity="center"
+            android:text="add"
+            android:background="@color/md_deep_teal_300"/>
+
+        <EditText
+            android:id="@+id/addParent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:tag="@string/notifyParent¥Inserted"
+            android:hint="@string/parent_hint"
+            android:textColorHint="@android:color/transparent"/>
+
+        <EditText
+            android:id="@+id/addChild"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:tag="@string/notifyChild¥Inserted"
+            android:hint="@string/child_hint"
+            android:textColorHint="@android:color/transparent"/>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:gravity="center"
+            android:text="remove"
+            android:background="@color/md_deep_teal_300"/>
+
+        <EditText
+            android:id="@+id/removeParent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:tag="@string/notifyParent¥Removed"
+            android:hint="@string/parent_hint"
+            android:textColorHint="@android:color/transparent"/>
+
+        <EditText
+            android:id="@+id/removeChild"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:tag="@string/notifyChild¥Removed"
+            android:hint="@string/child_hint"
+            android:textColorHint="@android:color/transparent"/>
+
+    </TableRow>
+
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:gravity="center"
+            android:text="change"
+            android:background="@color/md_deep_teal_300"/>
+
+        <EditText
+            android:id="@+id/changeParent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:tag="@string/notifyParent¥Changed"
+            android:hint="@string/parent_hint"
+            android:textColorHint="@android:color/transparent"/>
+
+        <EditText
+            android:id="@+id/changeChild"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:tag="@string/notifyChild¥Changed"
+            android:hint="@string/child_hint"
+            android:textColorHint="@android:color/transparent"/>
+
+    </TableRow>
+
+</TableLayout>

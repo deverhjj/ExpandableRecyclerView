@@ -1,4 +1,50 @@
 <resources>
     <string name="app_name">ExpandableRecyclerView</string>
     <string name="action_settings">Settings</string>
+
+    <string name="parent_type">ParentType:%1$s , Pos:%2$s , AdapterPos:%3$s</string>
+    <string name="child_type">ChildType:%1$s , Pos:%2$s , AdapterPos:%3$s</string>
+
+    <string name="snack">AdapterPos:%1$s</string>
+
+    <string name="hint_input_error">输入格式有误! parent 格式：parentPos,[count]; child
+        格式：parentPos,childPos,[count],count 缺省默认为1</string>
+
+    <string name="title_input">Input Format\n
+        parent:parentPos,[count] \n
+        child:parentPos,childPos,[count]</string>
+
+
+    <string name="notifyParentItemInserted">notifyParentItemInserted</string>
+    <string name="notifyParentItemRangeInserted">notifyParentItemRangeInserted</string>
+    <string name="notifyChildItemInserted">notifyChildItemInserted</string>
+    <string name="notifyChildItemRangeInserted">notifyChildItemRangeInserted</string>
+
+    <string name="notifyParentItemRemoved">notifyParentItemRemoved</string>
+    <string name="notifyParentItemRangeRemoved">notifyParentItemRangeRemoved</string>
+    <string name="notifyChildItemRemoved">notifyChildItemRemoved</string>
+    <string name="notifyChildItemRangeRemoved">notifyChildItemRangeRemoved</string>
+
+    <string name="notifyParentItemChanged">notifyParentItemChanged</string>
+    <string name="notifyParentItemRangeChanged">notifyParentItemRangeChanged</string>
+    <string name="notifyChildItemChanged">notifyChildItemChanged</string>
+    <string name="notifyChildItemRangeChanged">notifyChildItemRangeChanged</string>
+
+    <string name="parent_hint">parent</string>
+    <string name="child_hint">child</string>
+
+    <string name="Item">Item</string>
+    <string name="ItemRange">ItemRange</string>
+
+    <string name="notifyParent¥Inserted">notifyParent%1$sInserted</string>
+    <string name="notifyChild¥Inserted">notifyChild%1$sInserted</string>
+
+    <string name="notifyParent¥Removed">notifyParent%1$sRemoved</string>
+    <string name="notifyChild¥Removed">notifyChild%1$sRemoved</string>
+
+    <string name="notifyParent¥Changed">notifyParent%1$sChanged</string>
+    <string name="notifyChild¥Changed">notifyChild%1$sChanged</string>
+
+    <string name="methodAndArgs">%1$s,%2$s,%3$s,%4$s</string>
+
 </resources>

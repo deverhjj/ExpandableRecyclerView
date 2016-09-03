@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:background="@color/md_deep_teal_300"
+             tools:targetApi="honeycomb">
+
+    <TextView
+        android:id="@+id/tv_parent_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:background="?android:attr/selectableItemBackground"
+        tools:text="ParentType:1 , Pos:2 , AdapterPos: 3"
+        />
+
+    <View
+        android:id="@+id/view_parent_1"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:background="@android:color/transparent"
+        android:layout_gravity="right|center_vertical"
+        android:layout_margin="16dp"/>
+
+</FrameLayout>

@@ -46,6 +46,7 @@ public class ParentViewHolder extends RecyclerView.ViewHolder implements View.On
 
     /**
      * 父列表项点击展开收缩事件监听器
+     *
      */
     public interface OnParentListItemExpandCollapseListener {
         /**
