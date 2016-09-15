@@ -1,7 +1,17 @@
 package com.jhj.expandablerecyclerview.viewholder;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import com.jhj.expandablerecyclerview.R;
+import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
+import com.jhj.expandablerecyclerview.utils.Logger;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <p>父列表项 ViewHolder，监听父列表项的点击事件并根据当前展开或收缩状态触发父列表项展开或折叠事件
@@ -9,25 +19,39 @@ import android.view.View;
  * </p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class ParentViewHolder<D> extends BaseViewHolder<D> {
     private static final String TAG = "ParentViewHolder";
 
-    /**
-     * 父列表项展开折叠监听器
-     */
-    private OnParentListItemExpandCollapseListener mParentListItemExpandCollapseListener;
+    private OnParentExpandCollapseListener mParentExpandCollapseListener;
+
+    private ViewHolderCallbackWrapper mCallbackWrapper;
+
     /**
      * 当前父列表项是否已展开
      */
-    private boolean mExpanded;
+    private boolean mExpanded=false;
 
     private boolean mExpandable=true;
 
     public ParentViewHolder(View itemView) {
-        super(itemView);
-        mExpanded=false;
+        this(itemView ,null);
     }
 
+    public ParentViewHolder(View itemView,ViewHolderCallback callback) {
+        super(itemView);
+        //设置ViewHolder回调接口
+        setCallback(callback);
+    }
+
+    @Override
+    public void setCallback(ViewHolderCallback callback) {
+        if (mCallbackWrapper == null) {
+            mCallbackWrapper = new ViewHolderCallbackWrapper(callback);
+        } else {
+            mCallbackWrapper.mOuterCallback = callback;
+        }
+        super.setCallback(mCallbackWrapper);
+    }
 
     /**
      * 返回当前父列表项是否已展开
@@ -45,79 +69,132 @@ public class ParentViewHolder extends RecyclerView.ViewHolder implements View.On
     }
 
     /**
-     * 父列表项点击展开收缩事件监听器
-     *
+     * 设置 该 ItemView 点击展开折叠状态
+     * 子类不能调用该方法
+     * @param listener
      */
-    public interface OnParentListItemExpandCollapseListener {
-        /**
-         * 父列表项展开后的回调
-         * @param parentAdapterPosition 父列表项在适配器里对应的位置
-         */
-        void onParentListItemExpanded(int parentAdapterPosition);
-
-        /**
-         * 父列表项折叠后的回调
-         * @param parentAdapterPosition 父列表项在适配器里对应的位置
-         */
-        void onParentListItemCollapsed(int parentAdapterPosition);
-    }
-
-    /**
-     * 获取已注册的监听父列表项点击展开监听器
-     * @return
-     */
-    public OnParentListItemExpandCollapseListener getParentListItemExpandCollapseListener() {
-        return mParentListItemExpandCollapseListener;
-    }
-
-    /**
-     * 注册一个监听父列表项点击展开的监听器
-     * @param parentListItemExpandCollapseListener 父列表项点击展开收缩监听器
-     */
-    public void setParentListItemExpandCollapseListener(
-            OnParentListItemExpandCollapseListener parentListItemExpandCollapseListener)
-    {
-        mParentListItemExpandCollapseListener = parentListItemExpandCollapseListener;
+    public void setParentExpandCollapseListener(OnParentExpandCollapseListener listener) {
+        if (!(listener instanceof ExpandableRecyclerViewAdapter)) throw new RuntimeException
+                ("subClass should not invoke this method,you should use ExpandableRecyclerView" +
+                        ".OnParentExpandCollapseListener to be notified");
+        mParentExpandCollapseListener = listener;
     }
 
     /**
      * 注册一个父列表项的点击事件监听器
+     *
      */
-    public void setParentListItemOnClickListener() {
+    public void setClickEvent() {
+        Event.EventBefore event = new Event.EventBefore();
+        event.registerEventTypes = new Event.EventType[]{Event.EventType.CLICK};
+        Event.EventType[] outerEventTypes=getItemViewEventTypes();
 
-        itemView.setOnClickListener(this);
+        Event.EventType[] mergedEventTypes=mergeEvent(event.registerEventTypes,outerEventTypes);
+        if (mergedEventTypes!=null) event.registerEventTypes=mergedEventTypes;
+
+        //此处判断 ItemView 是否设置 ID，防止注册不了点击事件回调
+        if (itemView.getId() == View.NO_ID) itemView.setId(R.id.itemView);
+        event.id=itemView.getId();
+        setEvent(event);
     }
 
     /**
-     * 父列表项点击回调，根据当前父列表项的展开折叠状态触发父列表项的展开折叠事件
-     * @param v 被点击的父列表项视图 {@link View}
+     * 合内部和外部注册的同一个 View 事件，ItemVew 的 Event 注册内外部同时比较常见
+     * @param innerEventTypes 内部已经注册过的 Event
+     * @param outerEventTypes 外部需要注册的同一个 View Event
+     * @return 合并后新注册的 View Event
+     */
+    private Event.EventType[] mergeEvent(@NonNull Event.EventType[] innerEventTypes,
+            Event.EventType[] outerEventTypes)
+    {
+        if (outerEventTypes == null || outerEventTypes.length == 0) return null;
+        Set<Event.EventType> mergedEventTypes = new HashSet<>(Arrays.asList(innerEventTypes));
+        Collections.addAll(mergedEventTypes, outerEventTypes);
+        return mergedEventTypes.toArray(new Event.EventType[mergedEventTypes.size()]);
+    }
+
+    /**
+     * 如果子类需要注册该 Parent ItemView 相关 View Event，应该重写该方法并返回相关 Event，而不是通过
+     * {@link ViewHolderCallback} 返回对应的 View Event
+     * @return Caller 返回的需要注册私有的 Parent ItemView 相关的 View Event
+     */
+    protected Event.EventType[] getItemViewEventTypes() {return null;}
+
+    /**
+     * 注册 View 相关的 Event
+     * @param event 注册 Event 的元数据
      */
     @Override
-    public void onClick(View v) {
-        if (mExpanded) {
-            collapseParentListItem();
-        } else {
-            expandParentListItem();
+    public void setEvent(Event.EventBefore event) {
+        if (event == null || event.id == View.NO_ID) return;
+        Event.EventBefore cachedEvent=getEventBefore(event.id);
+        //该 View 之前已经注册过事件，合并注册的 Event
+        if (cachedEvent!=null) {
+            final Event.EventType[] cachedEventTypes=cachedEvent.registerEventTypes;
+            final  Event.EventType[] newEventTypes=event.registerEventTypes;
+            Event.EventType[] mergedEventTypes=mergeEvent(cachedEventTypes,newEventTypes);
+            if (mergedEventTypes==null) return;
+            event.registerEventTypes=mergedEventTypes;
         }
+        super.setEvent(event);
     }
 
     /**
      * 展开父列表项
      */
-    private void expandParentListItem() {
+    private void expandParent() {
         setExpanded(true);
-        if (mParentListItemExpandCollapseListener != null) {
-            mParentListItemExpandCollapseListener.onParentListItemExpanded(getAdapterPosition());
+        if (mParentExpandCollapseListener != null) {
+            mParentExpandCollapseListener.onParentExpand(getAdapterPosition());
         }
     }
 
     /**
      * 折叠父列表项
      */
-    private void collapseParentListItem() {
+    private void collapseParent() {
         setExpanded(false);
-        if (mParentListItemExpandCollapseListener != null) {
-            mParentListItemExpandCollapseListener.onParentListItemCollapsed(getAdapterPosition());
+        if (mParentExpandCollapseListener != null) {
+            mParentExpandCollapseListener.onParentCollapse(getAdapterPosition());
         }
     }
+
+
+    private class ViewHolderCallbackWrapper implements ViewHolderCallback {
+        private ViewHolderCallback mOuterCallback;
+
+        public ViewHolderCallbackWrapper(ViewHolderCallback outerCallback) {
+            mOuterCallback = outerCallback;
+        }
+
+        @Override
+        public Event.EventBefore[] eventBefore() {
+            Event.EventBefore[] events=null;
+            if (mOuterCallback != null) {
+                events = mOuterCallback.eventBefore();
+            }
+            return events;
+        }
+
+        @Override
+        public boolean eventAfter(BaseViewHolder.ViewHolderEventAfter event) {
+            Logger.i(TAG, "onEvent=" + event.toString());
+            //处理内部 ItemView 事件，需要监听ParentItemView点击事件来处理展开折叠
+            handleInnerEvent(event);
+
+            event.parentPosition = RecyclerView.NO_POSITION;//FIXME wrong position
+            return mOuterCallback != null && mOuterCallback.eventAfter(event);
+        }
+    }
+
+    private void handleInnerEvent(BaseViewHolder.ViewHolderEventAfter event) {
+        if (event.v == itemView && event.triggeredEventType == Event.EventType.CLICK) {
+            if (mExpanded) {
+                collapseParent();
+            } else {
+                expandParent();
+            }
+        }
+    }
+
 }

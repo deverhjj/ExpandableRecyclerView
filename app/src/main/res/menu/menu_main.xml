@@ -5,12 +5,17 @@
     <item
         android:id="@+id/action_test"
         android:orderInCategory="100"
-        android:title="测试"
+        android:title="Test"
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_1"
-        android:orderInCategory="100"
-        android:title="1"
+        android:id="@+id/action_settings"
+        android:orderInCategory="200"
+        android:title="设置"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_refresh"
+        android:title="@string/refreshAll"
+        app:showAsAction="withText|ifRoom"/>
 </menu>

@@ -1,15 +1,15 @@
 package com.jhj.expandablerecyclerviewexample.model;
 
 
-import com.jhj.expandablerecyclerview.model.ParentListItem;
+import com.jhj.expandablerecyclerview.model.ParentItem;
 
 import java.util.List;
 
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class ParentItem implements ParentListItem {
-    private static final String TAG = "ParentItem";
+public class Parent implements ParentItem<Child> {
+    private static final String TAG = "Parent";
 
     private int dot;
 
@@ -17,11 +17,11 @@ public class ParentItem implements ParentListItem {
     private int pos;
     private int adapterPos;
 
-    private List<ChildItem> mChildItems;
+    private List<Child> mChildren;
 
-    public void setChildItems(List<ChildItem> childItems)
+    public void setChildren(List<Child> children)
     {
-        mChildItems = childItems;
+        mChildren = children;
     }
 
     public int getType() {
@@ -56,9 +56,10 @@ public class ParentItem implements ParentListItem {
         this.adapterPos = adapterPos;
     }
 
+
     @Override
-    public List<ChildItem> getChildItemList() {
-        return mChildItems;
+    public List<Child> getChildItems() {
+        return mChildren;
     }
 
     @Override

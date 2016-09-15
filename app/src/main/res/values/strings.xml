@@ -10,10 +10,8 @@
     <string name="hint_input_error">输入格式有误! parent 格式：parentPos,[count]; child
         格式：parentPos,childPos,[count],count 缺省默认为1</string>
 
-    <string name="title_input">Input Format\n
-        parent:parentPos,[count] \n
-        child:parentPos,childPos,[count]</string>
-
+    <string name="title_input">Test</string>
+    <string name="refreshAll">Refresh_All</string>
 
     <string name="notifyParentItemInserted">notifyParentItemInserted</string>
     <string name="notifyParentItemRangeInserted">notifyParentItemRangeInserted</string>
@@ -45,6 +43,6 @@
     <string name="notifyParent¥Changed">notifyParent%1$sChanged</string>
     <string name="notifyChild¥Changed">notifyChild%1$sChanged</string>
 
-    <string name="methodAndArgs">%1$s,%2$s,%3$s,%4$s</string>
+    <string name="methodAndArgs">%1$s,%2$s</string>
 
 </resources>

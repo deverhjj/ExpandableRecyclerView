@@ -4,15 +4,16 @@
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:background="@color/md_deep_teal_300"
-             tools:targetApi="honeycomb">
+             tools:targetApi="honeycomb"
+             android:id="@+id/p">
 
     <TextView
         android:id="@+id/tv_parent_1"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/activity_horizontal_margin"
-        style="@style/TextAppearance.AppCompat.Medium"
         android:background="?android:attr/selectableItemBackground"
+        android:padding="@dimen/activity_horizontal_margin"
         tools:text="ParentType:1 , Pos:2 , AdapterPos: 3"
         />
 
@@ -23,5 +24,13 @@
         android:background="@android:color/transparent"
         android:layout_gravity="right|center_vertical"
         android:layout_margin="16dp"/>
+
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@mipmap/ic_launcher"/>
 
 </FrameLayout>

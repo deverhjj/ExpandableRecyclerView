@@ -1,9 +1,10 @@
 package com.jhj.expandablerecyclerview.adapter;
 
-import com.jhj.expandablerecyclerview.model.ParentListItem;
+import com.jhj.expandablerecyclerview.model.ParentItem;
 import com.jhj.expandablerecyclerview.model.ParentWrapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,42 +20,36 @@ public final class ExpandableRecyclerViewAdapterHelper {
      * @return 初始化时要显示的所有父列表项和子列表项集合
      */
     public static List<Object> generateParentChildItemList(
-            List<? extends ParentListItem> parentListItems)
+            List<? extends ParentItem> parentListItems)
     {
-        List<Object> itemList = new ArrayList<Object>();
+        if (parentListItems == null || parentListItems.isEmpty()) return Collections.EMPTY_LIST;
+
+        List<Object> itemList = new ArrayList<>();
 
         int parentCount = parentListItems.size();
 
         for (int i = 0; i < parentCount; i++) {
 
-            ParentListItem parentListItem = parentListItems.get(i);
+            ParentItem parentItem = parentListItems.get(i);
 
-            if (parentListItem != null) {
-                ParentWrapper parentWrapper = new ParentWrapper(parentListItem);
+            ParentWrapper parentWrapper = new ParentWrapper(parentItem);
 
-                itemList.add(parentWrapper);
+            itemList.add(parentWrapper);
 
-                if (parentWrapper.isInitiallyExpanded()) {
+            if (parentWrapper.isInitiallyExpanded()) {
 
-                    parentWrapper.setExpanded(true);
+                parentWrapper.setExpanded(true);
 
-                    List<?> childItemList = parentWrapper.getChildItemList();
+                List<?> childItemList = parentWrapper.getChildItemList();
 
-                    if (childItemList != null) {
-                        int childCount = childItemList.size();
+                if (childItemList == null) continue;
 
-                        for (int j = 0; j < childCount; j++) {
-                            Object childListItem=childItemList.get(j);
-                            if (childListItem!=null) {
-                                itemList.add(childListItem);
-                            } else {
-                                throw new IllegalStateException("Null Object added");
-                            }
-                        }
-                    }
+                int childCount = childItemList.size();
+
+                for (int j = 0; j < childCount; j++) {
+                    Object childListItem = childItemList.get(j);
+                    itemList.add(childListItem);
                 }
-            } else {
-                 throw new IllegalStateException("Null ParentListItem added");
             }
         }
         return itemList;

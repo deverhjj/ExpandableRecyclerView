@@ -1,6 +1,5 @@
 package com.jhj.expandablerecyclerview.viewholder;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
@@ -11,10 +10,13 @@ import android.view.View;
  *
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ChildViewHolder extends RecyclerView.ViewHolder {
+public class ChildViewHolder<D> extends BaseViewHolder<D> {
     private static final String TAG = "ChildViewHolder";
-
     public ChildViewHolder(View itemView) {
-        super(itemView);
+        this(itemView,null);
+    }
+
+    public ChildViewHolder(View itemView,ViewHolderCallback callback) {
+        super(itemView,callback);
     }
 }

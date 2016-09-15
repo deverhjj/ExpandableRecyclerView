@@ -3,7 +3,8 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:background="@color/md_deep_teal_300">
+             android:background="@color/md_deep_teal_300"
+             android:id="@+id/p">
 
     <TextView
         android:id="@+id/tv_parent_2"

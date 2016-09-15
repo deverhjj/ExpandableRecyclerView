@@ -8,10 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
-import com.jhj.expandablerecyclerview.model.ParentListItem;
+import com.jhj.expandablerecyclerview.model.ParentItem;
+import com.jhj.expandablerecyclerview.utils.Logger;
 import com.jhj.expandablerecyclerviewexample.R;
-import com.jhj.expandablerecyclerviewexample.model.ChildItem;
-import com.jhj.expandablerecyclerviewexample.model.ParentItem;
+import com.jhj.expandablerecyclerviewexample.model.Child;
+import com.jhj.expandablerecyclerviewexample.model.Parent;
 import com.jhj.expandablerecyclerviewexample.viewholder.BaseChildViewHolder;
 import com.jhj.expandablerecyclerviewexample.viewholder.BaseParentViewHolder;
 import com.jhj.expandablerecyclerviewexample.viewholder.Child1ViewHolder;
@@ -33,11 +34,11 @@ public class MyAdapter extends ExpandableRecyclerViewAdapter<BaseParentViewHolde
     public static final int CHILD_1_TYPE=0;
     public static final int CHILD_2_TYPE=1;
 
-    private List<ParentItem> mData;
+    private List<Parent> mData;
 
     private Context mContext;
 
-    public MyAdapter(Context context,List<ParentItem> data) {
+    public MyAdapter(Context context,List<Parent> data) {
         super(data);
         mContext=context;
         mData=data;
@@ -59,36 +60,38 @@ public class MyAdapter extends ExpandableRecyclerViewAdapter<BaseParentViewHolde
 
     @Override
     public void onBindParentViewHolder(BaseParentViewHolder parentViewHolder, int parentAdapterPosition,
-            int parentPosition, ParentListItem parentListItem)
+            int parentPosition, ParentItem parentListItem)
     {
-        ParentItem parentItem= (ParentItem) parentListItem;
+        Parent parent = (Parent) parentListItem;
         int parentType = getParentType(parentPosition);
         String data = mContext.getString(R.string.parent_type, parentType, parentPosition,
                 parentAdapterPosition);
-        parentViewHolder.bind(data,parentItem.getDot());
+        parentViewHolder.bind(data, parent.getDot());
     }
 
     @Override
     public void onBindChildViewHolder(BaseChildViewHolder childViewHolder, int childAdapterPosition,
             int parentPosition, int childPosition, int parentAdapterPosition,Object childListItem)
     {
-        ChildItem childItem= (ChildItem) childListItem;
+        Child child = (Child) childListItem;
         int childType = getChildType(parentPosition, childPosition);
         String data = mContext.getString(R.string.child_type, childType, childPosition,
                 childAdapterPosition);
-        childViewHolder.bind(data,childItem.getDot());
+        childViewHolder.bind(data, child.getDot());
     }
 
     @Override
     public int getParentType(int parentPosition) {
-        ParentItem parentItem=mData.get(parentPosition);
-        return parentItem.getType();
+        Logger.i(TAG,"getParentType="+parentPosition);
+        Parent parent =mData.get(parentPosition);
+        return parent.getType();
     }
 
     @Override
     public int getChildType(int parentPosition, int childPosition) {
-        ChildItem childItem=mData.get(parentPosition).getChildItemList().get(childPosition);
-        return childItem.getType();
+        Logger.i(TAG,"getChildType="+parentPosition+","+childPosition);
+        Child child =mData.get(parentPosition).getChildItems().get(childPosition);
+        return child.getType();
     }
 
     public ItemDecoration getItemDecoration() {
@@ -103,5 +106,6 @@ public class MyAdapter extends ExpandableRecyclerViewAdapter<BaseParentViewHolde
             outRect.set(0,mContext.getResources().getDimensionPixelSize(R.dimen.itemOffset),0,0);
         }
     }
+
 
 }

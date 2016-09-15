@@ -12,31 +12,31 @@ public class ParentWrapper {
     /**
      * 客户端的父列表项集合
      */
-    private ParentListItem mParentListItem;
+    private ParentItem mParentItem;
     /**
      * 当前父列表项是否已展开
      */
     private boolean mExpanded;
 
-    public ParentWrapper(ParentListItem parentListItem) {
-        mParentListItem = parentListItem;
+    public ParentWrapper(ParentItem parentItem) {
+        mParentItem = parentItem;
     }
 
     /**
      * 获取包装前的父列表项
      * @return
      */
-    public ParentListItem getParentListItem() {
-        return mParentListItem;
+    public ParentItem getParentItem() {
+        return mParentItem;
     }
 
     /**
      * 包装原始父列表项
-     * @param parentListItem
+     * @param parentItem
      */
-    public void setParentListItem(ParentListItem parentListItem)
+    public void setParentItem(ParentItem parentItem)
     {
-        mParentListItem = parentListItem;
+        mParentItem = parentItem;
     }
 
     /**
@@ -60,7 +60,7 @@ public class ParentWrapper {
      * @return
      */
     public boolean isInitiallyExpanded() {
-        return mParentListItem.isInitiallyExpanded();
+        return mParentItem.isInitiallyExpanded();
     }
 
     /**
@@ -68,6 +68,6 @@ public class ParentWrapper {
      * @return
      */
     public List<?> getChildItemList() {
-        return mParentListItem.getChildItemList();
+        return mParentItem.getChildItems();
     }
 }

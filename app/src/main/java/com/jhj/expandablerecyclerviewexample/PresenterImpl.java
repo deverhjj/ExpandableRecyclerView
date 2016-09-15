@@ -4,8 +4,9 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 
 import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
-import com.jhj.expandablerecyclerviewexample.model.ChildItem;
-import com.jhj.expandablerecyclerviewexample.model.ParentItem;
+import com.jhj.expandablerecyclerview.utils.Logger;
+import com.jhj.expandablerecyclerviewexample.model.Child;
+import com.jhj.expandablerecyclerviewexample.model.Parent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,9 @@ public class PresenterImpl implements IPresenter {
     private Random mRandom=new Random();
 
     private ExpandableRecyclerViewAdapter mAdapter;
-    private List<ParentItem> mData;
+    private List<Parent> mData;
 
-    public PresenterImpl(ExpandableRecyclerViewAdapter adapter,List<ParentItem> data) {
+    public PresenterImpl(ExpandableRecyclerViewAdapter adapter,List<Parent> data) {
         mAdapter=adapter;
         mData = data;
     }
@@ -31,40 +32,42 @@ public class PresenterImpl implements IPresenter {
      * 因为数据结构发生改变，所有更新所有的列表项数据
      */
     public void autoNotifyAllChanged() {
-//        mAdapter.notifyAllChanged();
+        //mAdapter.notifyAllChanged();
     }
 
     @NonNull
-    private ParentItem getParentItem() {
-        ParentItem parentItem=new ParentItem();
-        parentItem.setType(mRandom.nextInt(2));
+    private Parent getParentItem() {
+        Parent parent =new Parent();
+        parent.setType(mRandom.nextInt(2));
         boolean hasChild=mRandom.nextBoolean();
         if (hasChild) {
-            List<ChildItem> childItems=new ArrayList<>();
+            List<Child> children =new ArrayList<>();
             final int childCount=mRandom.nextInt(6);
             for (int i = 0; i < childCount; i++) {
-                ChildItem childItem=new ChildItem();
-                childItem.setType(mRandom.nextInt(2));
-                childItems.add(childItem);
+                Child child =new Child();
+                child.setType(mRandom.nextInt(2));
+                children.add(child);
             }
-            parentItem.setChildItems(childItems);
+            parent.setChildren(children);
         }
-        return parentItem;
+        return parent;
     }
 
     @Override
     public void notifyParentItemInserted(int parentPosition) {
         notifyParentItemRangeInserted(parentPosition,1);
+        Logger.e(TAG,"notifyParentItemInserted");
     }
 
     @Override
     public void notifyParentItemRangeInserted(int parentPositionStart, int parentItemCount) {
         for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
-            ParentItem parentItem=getParentItem();
-            mData.add(i,parentItem);
+            Parent parent =getParentItem();
+            mData.add(i, parent);
         }
         mAdapter.notifyParentItemRangeInserted(parentPositionStart,parentItemCount);
         autoNotifyAllChanged();
+        Logger.e(TAG,"notifyParentItemInserted");
     }
 
     @Override
@@ -76,17 +79,20 @@ public class PresenterImpl implements IPresenter {
     public void notifyChildItemRangeInserted(int parentPosition, int childPositionStart,
             int childItemCount)
     {
-        ParentItem parentItem=mData.get(parentPosition);
-        List<ChildItem> childItems=parentItem.getChildItemList();
-        if (childItems==null) {
-            childItems=new ArrayList<>();
-            parentItem.setChildItems(childItems);
+        Parent parent =mData.get(parentPosition);
+        List<Child> children = parent.getChildItems();
+        if (children ==null) {
+            children =new ArrayList<>();
+            parent.setChildren(children);
         }
         for (int i = childPositionStart; i <childPositionStart+childItemCount ; i++) {
-            ChildItem childItem=new ChildItem();
-            childItem.setType(mRandom.nextInt(2));
-            childItems.add(i,childItem);
+            Child child =new Child();
+            child.setType(mRandom.nextInt(2));
+            children.add(i, child);
         }
+
+        Logger.e(TAG,"children="+ children.size());
+
         mAdapter.notifyChildItemRangeInserted(parentPosition,childPositionStart,childItemCount);
         autoNotifyAllChanged();
     }
@@ -94,14 +100,19 @@ public class PresenterImpl implements IPresenter {
     @Override
     public void notifyParentItemRemoved(int parentPosition) {
         notifyParentItemRangeRemoved(parentPosition,1);
+        Logger.e(TAG,"notifyParentItemRemoved");
     }
 
     @Override
     public void notifyParentItemRangeRemoved(int parentPositionStart, int parentItemCount) {
+
         for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
-            mData.remove(i);
+            //注意这里删除数据的 index 不是 i
+            mData.remove(parentPositionStart);
         }
+
         mAdapter.notifyParentItemRangeRemoved(parentPositionStart,parentItemCount);
+
         autoNotifyAllChanged();
     }
 
@@ -114,28 +125,32 @@ public class PresenterImpl implements IPresenter {
     public void notifyChildItemRangeRemoved(int parentPosition, int childPositionStart,
             int childItemCount)
     {
-        ParentItem parentItem=mData.get(parentPosition);
-        List<ChildItem> childItems=parentItem.getChildItemList();
+        Parent parent =mData.get(parentPosition);
+        List<Child> children = parent.getChildItems();
+        Logger.e(TAG,"children="+ children.size());
         for (int i = childPositionStart; i <childPositionStart+childItemCount ; i++) {
-            childItems.remove(i);
+            //注意这里删除数据的 index 不是 i
+            children.remove(childPositionStart);
         }
+
         mAdapter.notifyChildItemRangeRemoved(parentPosition,childPositionStart,childItemCount);
+
         autoNotifyAllChanged();
     }
 
     @Override
     public void notifyParentItemChanged(int parentPosition) {
-        ParentItem parentItem=mData.get(parentPosition);
-        parentItem.setDot(Color.argb(255,mRandom.nextInt(256),mRandom.nextInt(256),mRandom.nextInt(256)));
+        Parent parent =mData.get(parentPosition);
+        parent.setDot(Color.argb(255,mRandom.nextInt(256),mRandom.nextInt(256),mRandom.nextInt(256)));
         mAdapter.notifyParentItemChanged(parentPosition);
     }
 
     @Override
     public void notifyChildItemChanged(int parentPosition, int childPosition) {
-        ParentItem parentItem=mData.get(parentPosition);
-        List<ChildItem> childItems=parentItem.getChildItemList();
-        ChildItem childItem=childItems.get(childPosition);
-        childItem.setDot(Color.argb(255,mRandom.nextInt(256),mRandom.nextInt(256),mRandom.nextInt(256)));
+        Parent parent =mData.get(parentPosition);
+        List<Child> children = parent.getChildItems();
+        Child child = children.get(childPosition);
+        child.setDot(Color.argb(255,mRandom.nextInt(256),mRandom.nextInt(256),mRandom.nextInt(256)));
         mAdapter.notifyChildItemChanged(parentPosition,childPosition);
     }
 }

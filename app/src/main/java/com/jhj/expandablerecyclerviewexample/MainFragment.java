@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,8 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
+import com.jhj.expandablerecyclerview.utils.Logger;
 import com.jhj.expandablerecyclerviewexample.adapter.MyAdapter;
-import com.jhj.expandablerecyclerviewexample.model.ParentItem;
+import com.jhj.expandablerecyclerviewexample.model.Parent;
 import com.jhj.expandablerecyclerviewexample.utils.Util;
 
 import java.lang.reflect.InvocationTargetException;
@@ -50,15 +53,16 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        init(view);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        init(getView());
     }
 
     private void init(View rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        List<ParentItem> data=Util.getListData();
+        List<Parent> data=Util.getListData();
         final MyAdapter adapter = new MyAdapter(getActivity(), data);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addItemDecoration(adapter.getItemDecoration());
@@ -75,6 +79,14 @@ public class MainFragment extends Fragment {
             }
         });
         mIPresenter=new PresenterImpl(adapter,data);
+
+        DefaultItemAnimator animator= (DefaultItemAnimator) mRecyclerView.getItemAnimator();
+        animator.isRunning(new RecyclerView.ItemAnimator.ItemAnimatorFinishedListener() {
+            @Override
+            public void onAnimationsFinished() {
+                Logger.e(TAG,"onAnimationsFinished");
+            }
+        });
     }
 
     @Override
@@ -84,15 +96,25 @@ public class MainFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        MyAdapter adapter= (MyAdapter) mRecyclerView.getAdapter();
         int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_test) {
-            MyDialog dialog = new MyDialog();
-            dialog.setTargetFragment(this, REQUEST_RESULT);
-            dialog.show(getActivity().getSupportFragmentManager(), "dialog");
-            return true;
-        } else if (id==R.id.action_1) {
-           mIPresenter.notifyParentItemRemoved(1);
+        switch (id) {
+            case  R.id.action_test:
+                DialogFragment dialog= (DialogFragment) getActivity().getSupportFragmentManager().findFragmentByTag
+                        ("dialog");
+                if (dialog == null) {
+                    Logger.e(TAG,"create new Dialog");
+                    dialog = new MyDialog();
+                }
+                dialog.setTargetFragment(this, REQUEST_RESULT);
+                dialog.show(getActivity().getSupportFragmentManager(), "dialog");
+                break;
+            case R.id.action_refresh:
+                adapter.notifyAllChanged();
+                break;
+            case R.id.action_settings:
+                startActivity(new Intent(getActivity(),SecondActivity.class));
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -104,57 +126,35 @@ public class MainFragment extends Fragment {
         }
         if (requestCode==REQUEST_RESULT) {
 
-            MyAdapter adapter= (MyAdapter) mRecyclerView.getAdapter();
+            ArrayList<String> requests=data.getStringArrayListExtra(MyDialog.REQUEST);
+            Log.e(TAG,"requests="+requests.toString());
 
-            ArrayList<String> methods=data.getStringArrayListExtra(MyDialog.METHODS);
+            final int requestCount=requests.size();
 
-            final int methodsCount=methods.size();
-
-            for (int i = 0; i < methodsCount; i++) {
-                String info = methods.get(i);
-                String[] infos = info.split(",");
-                String method=infos[0];
-
-                List<Integer> args=new ArrayList<>(infos.length-1);
-
-                for (int j = 1; j < infos.length; j++) {
-                    String at = infos[j].trim();
-                    if (!at.equals("null")) {
-                        args.add(Integer.valueOf(at));
-                    }
-                }
+            for (int i = requestCount-1; i >=0; i--) {
+                String request = requests.get(i);
+                String[] requestSplit = request.split(",");
+                String method=requestSplit[0];
+                final int argsCount=requestSplit.length-1;
 
                 try {
-                    Method m=null;
-                    switch (args.size()) {
-                        case 1:
-                            m=IPresenter.class.getDeclaredMethod(method,int.class);
-                            break;
-                        case 2:
-                            m=IPresenter.class.getDeclaredMethod(method,int.class,int.class);
-                            break;
-                        case 3:
-                            m=IPresenter.class.getDeclaredMethod(method,int.class,int
-                                    .class,int.class);
-                            break;
+                    Object[] args=new Object[argsCount];
+                    Class<?>[] argTypes=new Class<?>[argsCount];
+                    for (int k = 0; k < argsCount; k++) {
+                        argTypes[k]=int.class;
+                        args[k]=Integer.valueOf(requestSplit[k+1]);
                     }
 
-                    if (m!=null) {
-                        Log.e(TAG,"args="+args.toString());
-                        m.setAccessible(true);
-                        m.invoke(mIPresenter,args.toArray());
-                    }
+                    Method m = IPresenter.class.getDeclaredMethod(method, argTypes);
+                    Log.e(TAG, "method=" + m.toString());
+                    m.setAccessible(true);
+                    m.invoke(mIPresenter,args);
 
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
+                } catch (NoSuchMethodException | IllegalAccessException |
+                        InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }
-
-            Log.e(TAG,methods.toString());
         }
     }
 

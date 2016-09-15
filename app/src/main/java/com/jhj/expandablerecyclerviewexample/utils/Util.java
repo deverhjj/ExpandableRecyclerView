@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.jhj.expandablerecyclerviewexample.model.ChildItem;
-import com.jhj.expandablerecyclerviewexample.model.ParentItem;
+import com.jhj.expandablerecyclerviewexample.model.Child;
+import com.jhj.expandablerecyclerviewexample.model.Parent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +20,24 @@ import java.util.Random;
 public class Util {
     private static final String TAG = "Util";
 
-    public static List<ParentItem> getListData() {
+    public static List<Parent> getListData() {
         Random random=new Random();
-        List<ParentItem> parentItems=new ArrayList<>();
+        List<Parent> parents =new ArrayList<>();
         for (int i = 0; i < 15; i++) {
-            ParentItem parentItem=new ParentItem();
-            parentItem.setType(random.nextInt(2));
+            Parent parent =new Parent();
+            parent.setType(random.nextInt(2));
             if (random.nextBoolean()) {
-                List<ChildItem> childItems=new ArrayList<>();
+                List<Child> children =new ArrayList<>();
                 for (int j = 0; j < random.nextInt(6); j++) {
-                    ChildItem childItem=new ChildItem();
-                    childItem.setType(random.nextInt(2));
-                    childItems.add(childItem);
+                    Child child =new Child();
+                    child.setType(random.nextInt(2));
+                    children.add(child);
                 }
-                parentItem.setChildItems(childItems);
+                parent.setChildren(children);
             }
-            parentItems.add(parentItem);
+            parents.add(parent);
         }
-        return parentItems;
+        return parents;
     }
 
 

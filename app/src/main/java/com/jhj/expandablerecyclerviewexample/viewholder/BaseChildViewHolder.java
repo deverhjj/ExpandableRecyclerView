@@ -4,12 +4,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jhj.expandablerecyclerview.viewholder.ChildViewHolder;
+import com.jhj.expandablerecyclerviewexample.model.Child;
 
 
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class BaseChildViewHolder extends ChildViewHolder implements View.OnClickListener{
+public class BaseChildViewHolder extends ChildViewHolder<Child> implements View.OnClickListener {
     private static final String TAG = "BaseParentViewHolder";
 
     private TextView mTextView;
@@ -22,9 +23,14 @@ public class BaseChildViewHolder extends ChildViewHolder implements View.OnClick
         mDotView=itemView.findViewById(dotViewId);
     }
 
-    public void bind(String data,int dotColor){
+    public void bind(String data,int dotColor) {
         mTextView.setText(data);
         mDotView.setBackgroundColor(dotColor);
+    }
+
+    @Override
+    protected void bind(Child data) {
+        super.bind(data);
     }
 
     @Override
