@@ -1,12 +1,15 @@
 package com.jhj.expandablerecyclerviewexample;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,12 +19,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
 import com.jhj.expandablerecyclerview.utils.Logger;
 import com.jhj.expandablerecyclerviewexample.adapter.MyAdapter;
 import com.jhj.expandablerecyclerviewexample.model.Parent;
 import com.jhj.expandablerecyclerviewexample.utils.Util;
+import com.jhj.expandablerecyclerviewexample.viewholder.BaseParentViewHolder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -59,6 +64,20 @@ public class MainFragment extends Fragment {
     }
 
     private void init(View rootView) {
+
+
+//        final ObjectAnimator downRotateAnim = (ObjectAnimator) AnimatorInflater.loadAnimator(
+//                getActivity(), R.animator.list_arror_down_indicator);
+//        final ObjectAnimator upRotateAnim=(ObjectAnimator) AnimatorInflater.loadAnimator(
+//                getActivity(), R.animator.list_arror_up_indicator);
+//        downRotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//
+//                Logger.e(TAG,"onAnimationUpdate->"+animation.getAnimatedValue());
+//            }
+//        });
+
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -69,24 +88,34 @@ public class MainFragment extends Fragment {
         adapter.setParentExpandCollapseListener(new ExpandableRecyclerViewAdapter.OnParentExpandCollapseListener() {
 
             @Override
-            public void onParentExpanded(int parentPosition, boolean byUser) {
-                mIPresenter.autoNotifyAllChanged();
+            public void onParentExpanded(int parentPosition, int parentAdapterPosition,
+                    boolean byUser)
+            {
+                Logger.e(TAG,"onParentExpanded="+parentPosition);
+
+                BaseParentViewHolder vh= (BaseParentViewHolder) mRecyclerView
+                        .findViewHolderForAdapterPosition(parentAdapterPosition);
+                final ImageView arrow = vh.getView(R.id.arrow);
+                arrow.animate().rotationBy(180).setDuration(getResources().getInteger(android.R
+                        .integer
+                        .config_mediumAnimTime)).start();
             }
 
             @Override
-            public void onParentCollapsed(int parentPosition, boolean byUser) {
-                mIPresenter.autoNotifyAllChanged();
+            public void onParentCollapsed(int parentPosition, int parentAdapterPosition,
+                    boolean byUser)
+            {
+                Logger.e(TAG,"onParentCollapsed="+parentPosition);
+
+                BaseParentViewHolder vh= (BaseParentViewHolder) mRecyclerView
+                        .findViewHolderForAdapterPosition(parentAdapterPosition);
+                final ImageView arrow = vh.getView(R.id.arrow);
+                arrow.animate().rotationBy(180).setDuration(getResources().getInteger(android.R
+                        .integer
+                        .config_mediumAnimTime)).start();
             }
         });
         mIPresenter=new PresenterImpl(adapter,data);
-
-        DefaultItemAnimator animator= (DefaultItemAnimator) mRecyclerView.getItemAnimator();
-        animator.isRunning(new RecyclerView.ItemAnimator.ItemAnimatorFinishedListener() {
-            @Override
-            public void onAnimationsFinished() {
-                Logger.e(TAG,"onAnimationsFinished");
-            }
-        });
     }
 
     @Override
@@ -113,7 +142,8 @@ public class MainFragment extends Fragment {
                 adapter.notifyAllChanged();
                 break;
             case R.id.action_settings:
-                startActivity(new Intent(getActivity(),SecondActivity.class));
+                adapter.notifyParentItemInserted(-1);
+                //startActivity(new Intent(getActivity(),SecondActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

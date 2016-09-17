@@ -140,17 +140,57 @@ public class PresenterImpl implements IPresenter {
 
     @Override
     public void notifyParentItemChanged(int parentPosition) {
-        Parent parent =mData.get(parentPosition);
-        parent.setDot(Color.argb(255,mRandom.nextInt(256),mRandom.nextInt(256),mRandom.nextInt(256)));
-        mAdapter.notifyParentItemChanged(parentPosition);
+        notifyParentItemRangeChanged(parentPosition,1);
     }
 
     @Override
     public void notifyChildItemChanged(int parentPosition, int childPosition) {
+        notifyChildItemRangeChanged(parentPosition,childPosition,1);
+    }
+
+    @Override
+    public void notifyParentItemRangeChanged(int parentPositionStart, int parentItemCount) {
+        for (int i = parentPositionStart; i < parentPositionStart+parentItemCount; i++) {
+            Parent parent =mData.get(i);
+            parent.setDot(Color.argb(255,mRandom.nextInt(256),mRandom.nextInt(256),mRandom.nextInt(256)));
+        }
+
+        mAdapter.notifyParentItemRangeChanged(parentPositionStart,parentItemCount);
+    }
+
+    @Override
+    public void notifyChildItemRangeChanged(int parentPosition, int childPositionStart,
+            int childItemCount)
+    {
         Parent parent =mData.get(parentPosition);
         List<Child> children = parent.getChildItems();
-        Child child = children.get(childPosition);
-        child.setDot(Color.argb(255,mRandom.nextInt(256),mRandom.nextInt(256),mRandom.nextInt(256)));
-        mAdapter.notifyChildItemChanged(parentPosition,childPosition);
+        for (int i = childPositionStart; i < childPositionStart + childItemCount; i++) {
+            Child child = children.get(i);
+            child.setDot(Color.argb(255, mRandom.nextInt(256), mRandom.nextInt(256),
+                    mRandom.nextInt(256)));
+        }
+        mAdapter.notifyChildItemRangeChanged(parentPosition,childPositionStart,childItemCount);
+    }
+
+    @Override
+    public void notifyChildItemMoved(int fromParentPosition, int fromChildPosition,
+            int toParentPosition, int toChildPosition)
+    {
+        Parent fromParent =mData.get(fromParentPosition);
+        Parent toParent =mData.get(toParentPosition);
+
+        //from-> 先 get 再 remove
+        Child fromChild = fromParent.getChildItems().get(fromChildPosition);
+        Logger.e(TAG, "before_fromParent.getChildItems()" + "\n" + fromParent.getChildItems()
+                +"\n"+"before_toParent.getChildItems()"+"\n"+toParent.getChildItems());
+        fromParent.getChildItems().remove(fromChildPosition);
+        //to-> add fromChild
+        toParent.getChildItems().add(toChildPosition,fromChild);
+
+        Logger.e(TAG,"notifyChildItemMoved"+"\n"+"after_fromParent.getChildItems()="+fromParent
+                .getChildItems()+"\n"+"toParent.getChildItems()="+toParent.getChildItems());
+
+        mAdapter.notifyChildItemMoved(fromParentPosition, fromChildPosition, toParentPosition,
+                toChildPosition);
     }
 }

@@ -1,12 +1,10 @@
 package com.jhj.expandablerecyclerview.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.jhj.expandablerecyclerview.model.ParentItem;
-import com.jhj.expandablerecyclerview.model.ParentWrapper;
-import com.jhj.expandablerecyclerview.utils.Logger;
+import com.jhj.expandablerecyclerview.model.ParentItemWrapper;
 import com.jhj.expandablerecyclerview.viewholder.BaseViewHolder;
 import com.jhj.expandablerecyclerview.viewholder.ChildViewHolder;
 import com.jhj.expandablerecyclerview.viewholder.OnParentExpandCollapseListener;
@@ -18,7 +16,7 @@ import java.util.List;
 /**
  * 扩展 RecyclerView.Adapter 实现可展开和折叠列表项.
  */
-public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder, CVH extends
+public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder, CVH extends 
         ChildViewHolder>
         extends RecyclerView.Adapter<BaseViewHolder> implements OnParentExpandCollapseListener
 {
@@ -56,10 +54,6 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * 当前所有监听适配器的 RecyclerView 集合
      */
     private List<RecyclerView> mAttachedRecyclerViews;
-    /**
-     * 是否展开所有的父列表项
-     */
-    private boolean mExpandAllParent;
 
     /**
      * 父列表项是否可展开
@@ -67,15 +61,15 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     private boolean mExpandable = true;
 
 
-    public ExpandableRecyclerViewAdapter(List<? extends ParentItem> parentListItems) {
+    public ExpandableRecyclerViewAdapter(List<? extends ParentItem> parentItems) {
 
-        if (parentListItems==null) throw new NullPointerException("parentListItems should not be " +
+        if (parentItems==null) throw new IllegalArgumentException("parentItems should not be " +
                 "null");
 
-        mParentItems = parentListItems;
+        mParentItems = parentItems;
 
         mItems = ExpandableRecyclerViewAdapterHelper.generateParentChildItemList(
-                parentListItems);
+                parentItems);
 
         mAttachedRecyclerViews = new ArrayList<>();
 
@@ -91,14 +85,14 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
          * @param parentPosition 该父列表项在父列表里的位置
          * @param byUser 是否属于用户点击父列表项之后产生的展开事件，用于区分用户手动还是程序触发的
          */
-        void onParentExpanded(int parentPosition, boolean byUser);
+        void onParentExpanded(int parentPosition, int parentAdapterPosition, boolean byUser);
 
         /**
          * 父列表项折叠后的回调
          * @param parentPosition 该父列表项在父列表里的位置
          * @param byUser 是否属于用户点击父列表项之后产生的折叠事件，用于区分用户手动还是程序触发的
          */
-        void onParentCollapsed(int parentPosition, boolean byUser);
+        void onParentCollapsed(int parentPosition, int parentAdapterPosition, boolean byUser);
     }
 
     /**
@@ -137,25 +131,25 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         mExpandable = expandable;
     }
 
-    /**
-     * 当前所有的父列表项是否已全部展开
-     * @return
-     */
-    public boolean isExpandAllParent() {
-        return mExpandAllParent;
-    }
-
-    /**
-     *
-     * 设置是否全部展开父列表项
-     * @param expandAllParent
-     */
-    public void setExpandAllParent(boolean expandAllParent) {
-        mExpandAllParent = expandAllParent;
-        if (expandAllParent) {
-            expandAllParent();
-        }
-    }
+//    /**
+//     * 当前所有的父列表项是否已全部展开
+//     * @return
+//     */
+//    public boolean isExpandAllParent() {
+//        return mExpandAllParent;
+//    }
+//
+//    /**
+//     *
+//     * 设置是否全部展开父列表项
+//     * @param expandAllParent
+//     */
+//    public void setExpandAllParent(boolean expandAllParent) {
+//        mExpandAllParent = expandAllParent;
+//        if (expandAllParent) {
+//            expandAllParent();
+//        }
+//    }
 
     /**
      * <p>
@@ -218,21 +212,16 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         //
-        Object listItem = getListItem(position);
-
+        Object listItem = getItem(position);
         int parentPosition = getParentPosition(position);
 
-        if (listItem instanceof ParentWrapper) {
-
+        if (listItem instanceof ParentItemWrapper) {
             PVH pvh = (PVH) holder;
-
-            ParentWrapper parentWrapper = (ParentWrapper) listItem;
-
+            ParentItemWrapper parentItemWrapper = (ParentItemWrapper) listItem;
             //初始化展开折叠状态
-            pvh.setExpanded(parentWrapper.isExpanded());
-
+            pvh.setExpanded(parentItemWrapper.isExpanded());
             onBindParentViewHolder(pvh, position, parentPosition,
-                    parentWrapper.getParentItem());
+                    parentItemWrapper.getParentItem());
         } else if (listItem == null) {
             throw new IllegalStateException("Incorrect ViewHolder found");
         } else {
@@ -245,27 +234,21 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     @Override
     public int getItemViewType(int position) {
         //获取指定列表项位置在适配器数据集合里所代表的列表项
-        Object listItem = getListItem(position);
-
+        Object listItem = getItem(position);
         //获取指定列表项位置(父或子视图项的位置)的在父列表里位置
         int parentPosition = getParentPosition(position);
-
         //如果是父列表项类型就回调查询具体的父类型
         //返回父类型和具体的父类型的组合后的列表项类型
-        if (listItem instanceof ParentWrapper) {
-
+        if (listItem instanceof ParentItemWrapper) {
             int parentType = getParentType(parentPosition);
-
             String specifiedParentType = TYPE_PARENT + "" + parentType;
-
             return Integer.valueOf(specifiedParentType);
         } else if (listItem == null) {
             throw new IllegalStateException("Null object added");
         } else {
             //回调获取具体的子列表项类型
             //返回子类型和具体子类型的组合后的列表项类型
-            int childType = getChildType(parentPosition,
-                    getChildPosition(position));
+            int childType = getChildType(parentPosition, getChildPosition(position));
             String specifiedChildType = TYPE_CHILD + "" + childType;
             return Integer.valueOf(specifiedChildType);
         }
@@ -343,22 +326,16 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @param parentAdapterPosition 该父列表项在适配器数据集里对应的位置
      */
     @Override
-    public void onParentExpand(int parentAdapterPosition) {
-        Object listItem = getListItem(parentAdapterPosition);
-        if (listItem instanceof ParentWrapper) {
-            expandParentListItem(parentAdapterPosition, (ParentWrapper) listItem, true);
-        }
+    public boolean onParentExpand(int parentAdapterPosition) {
+        return expandParentItem(parentAdapterPosition, true);
     }
     /**
      * {@link ParentViewHolder} 里父列表项折叠回调，用于监听父列表项折叠事件并触发相关的折叠操作
      * @param parentAdapterPosition 该父列表项在适配器数据集里对应的位置
      */
     @Override
-    public void onParentCollapse(int parentAdapterPosition) {
-        Object listItem = getListItem(parentAdapterPosition);
-        if (listItem instanceof ParentWrapper) {
-            collapseParentListItem(parentAdapterPosition, (ParentWrapper) listItem, true);
-        }
+    public boolean onParentCollapse(int parentAdapterPosition) {
+        return collapseParentItem(parentAdapterPosition, true);
     }
 
 
@@ -391,7 +368,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @param adapterPosition 该列表项在适配器数据集中对应的位置
      * @return 指定适配器位置数据所代表的列表项
      */
-    private Object getListItem(int adapterPosition) {
+    private Object getItem(int adapterPosition) {
         return mItems.get(adapterPosition);
     }
 
@@ -402,34 +379,19 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @return 指定列表项在父列表里的位置
      */
     private int getParentPosition(int adapterPosition) {
-        if (adapterPosition == 0) {
-            return 0;
+        if (adapterPosition == 0) return 0;
+        Object item = getItem(adapterPosition);
+        if (item instanceof ParentItemWrapper) {
+            int beforeExpandedChildItemCount = getBeforeExpandedChildCount(adapterPosition);
+            return adapterPosition - beforeExpandedChildItemCount;
         } else {
-            Object listItem = getListItem(adapterPosition);
-
-            if (listItem instanceof ParentWrapper) {
-
-                int parentAdapterPosition = adapterPosition;
-
-                int beforeExpandedChildItemCount = getBeforeExpandedChildCount(
-                        parentAdapterPosition);
-
-                return parentAdapterPosition - beforeExpandedChildItemCount;
-
-            } else {
-
-                int childAdapterPosition = adapterPosition;
-
-                for (int i = childAdapterPosition - 1; i >= 0; i--) {
-                    if (getListItem(i) instanceof ParentWrapper) {
-                        int parentAdapterPosition = i;
-                        return parentAdapterPosition - getBeforeExpandedChildCount(
-                                parentAdapterPosition);
-                    }
+            for (int i = adapterPosition - 1; i >= 0; i--) {
+                if (getItem(i) instanceof ParentItemWrapper) {
+                    return i - getBeforeExpandedChildCount(i);
                 }
             }
         }
-        return -1;
+        return RecyclerView.NO_POSITION;
     }
     
     
@@ -439,11 +401,14 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @return 指定子列表项在子列表里的位置
      */
     private int getChildPosition(int childAdapterPosition) {
-        int childAdapterPos = -1;
-        ParentWrapper parentWrapper = getParentWrapper(childAdapterPosition);
-        Object childVisibleItem = getListItem(childAdapterPosition);
-        if (parentWrapper != null) {
-            childAdapterPos = parentWrapper.getChildItemList().indexOf(childVisibleItem);
+        int childAdapterPos = RecyclerView.NO_POSITION;
+        ParentItemWrapper parentItemWrapper = getParentWrapper(childAdapterPosition);
+        if (parentItemWrapper != null) {
+            Object childItem = getItem(childAdapterPosition);
+            List<?> childItems = parentItemWrapper.getChildItems();
+            if (childItems != null) {
+                childAdapterPos = childItems.indexOf(childItem);
+            }
         }
         return childAdapterPos;
     }
@@ -453,19 +418,21 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * 添加对应 {@code parentWrapperPosition} 位置的父列表项
      *
      * @param parentWrapperPosition 要添加新父列表项所指定的位置
-     * @param newParentItem     新添加的父列表项
+     * @param newParentItemPosition     新添加的父列表项的位置
      * @return 插入要适配器数据集里的列表项的个数(父列表项和其展开的子列表项)
      */
-    private int addParentWrapper(int parentWrapperPosition, ParentItem newParentItem) {
-        ParentWrapper newParentWrapper = new ParentWrapper(newParentItem);
-        mItems.add(parentWrapperPosition, newParentWrapper);
+    private int addParentWrapper(int parentWrapperPosition, int newParentItemPosition) {
+        if (parentWrapperPosition==RecyclerView.NO_POSITION || newParentItemPosition==-1) return 0;
+        ParentItem newParentItem=mParentItems.get(newParentItemPosition);
+        ParentItemWrapper newParentItemWrapper = new ParentItemWrapper(newParentItem);
+        mItems.add(parentWrapperPosition, newParentItemWrapper);
         int insertedItemCount = 1;
-        if (newParentWrapper.isInitiallyExpanded()) {
-            newParentWrapper.setExpanded(true);
-            List<?> childItemList = newParentWrapper.getChildItemList();
-            if (childItemList!=null) {
-                mItems.addAll(parentWrapperPosition + insertedItemCount, childItemList);
-                insertedItemCount += childItemList.size();
+        if (newParentItemWrapper.isInitiallyExpanded()) {
+            newParentItemWrapper.setExpanded(true);
+            List<?> childItems = newParentItemWrapper.getChildItems();
+            if (childItems!=null) {
+                mItems.addAll(parentWrapperPosition + insertedItemCount, childItems);
+                insertedItemCount += childItems.size();
             }
         }
         return insertedItemCount;
@@ -476,42 +443,24 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @param childAdapterPosition 子列表项在适配器里对应的位置
      * @return 指定子列表项所属的父列表项
      */
-    private ParentWrapper getParentWrapper(int childAdapterPosition) {
+    private ParentItemWrapper getParentWrapper(int childAdapterPosition) {
         for (int i = childAdapterPosition - 1; i >= 0; i--) {
-            Object listItem = getListItem(i);
-            if (listItem instanceof ParentWrapper) {
-                return (ParentWrapper) listItem;
+            Object listItem = getItem(i);
+            if (listItem instanceof ParentItemWrapper) {
+                return (ParentItemWrapper) listItem;
             }
         }
         return null;
     }
 
-    /**
-     * 根据指定的在适配器里对应位置的列表项返回是否是父列表项
-     * @param adapterPosition 列表项在适配器里对应的位置
-     * @return 指定的在适配器里对应位置的列表项返回是否是父列表项
-     */
-    public boolean isParent(int adapterPosition) {
-        return !(adapterPosition >= mItems.size() || adapterPosition < 0) && mItems.get(
-                adapterPosition) instanceof ParentWrapper;
-    }
-
 //    /**
-//     * 根据 {@link ParentItem}返回其在适配器里对应的位置
-//     * @param parentListItem 要查询的 父列表项数据
-//     * @return 该数据在适配器数据集合里对应的位置
+//     * 根据指定的在适配器里对应位置的列表项返回是否是父列表项
+//     * @param adapterPosition 列表项在适配器里对应的位置
+//     * @return 指定的在适配器里对应位置的列表项返回是否是父列表项
 //     */
-//    private int getAdapterParentPosition(ParentItem parentListItem) {
-//        for (int i = 0; i < mItems.size(); i++) {
-//            Object listItem = mItems.get(i);
-//            if (listItem instanceof ParentWrapper) {
-//                ParentWrapper parentWrapper = (ParentWrapper) listItem;
-//                if (parentWrapper.getParentItem() == parentListItem) {
-//                    return i;
-//                }
-//            }
-//        }
-//        return -1;
+//    public boolean isParent(int adapterPosition) {
+//        return !(adapterPosition >= mItems.size() || adapterPosition < 0) && mItems.get(
+//                adapterPosition) instanceof ParentItemWrapper;
 //    }
 
     /**
@@ -520,18 +469,19 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @return 指定的父列表项位置在适配器里对应的位置
      */
     private int getParentAdapterPosition(int parentPosition) {
-        int parentCount = 0;
+        if (parentPosition == -1) return RecyclerView.NO_POSITION;
+        int parentIndex = -1;
         int listItemCount = mItems.size();
         for (int i = 0; i < listItemCount; i++) {
             Object listItem = mItems.get(i);
-            if (listItem instanceof ParentWrapper) {
-                parentCount++;
-                if (parentCount > parentPosition) {
+            if (listItem instanceof ParentItemWrapper) {
+                parentIndex++;
+                if (parentIndex == parentPosition) {
                     return i;
                 }
             }
         }
-        return -1;
+        return RecyclerView.NO_POSITION;
     }
 
     /**
@@ -541,8 +491,9 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @return 子列表项位置在适配器里对应的位置
      */
     private int getChildAdapterPosition(int parentPosition, int childPosition) {
+        if (parentPosition == -1 || childPosition == -1) return RecyclerView.NO_POSITION;
         int parentAdapterPosition=getParentAdapterPosition(parentPosition);
-        return parentAdapterPosition+childPosition+1;
+        return parentAdapterPosition + childPosition + 1;
     }
 
     /**
@@ -551,12 +502,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @return 父列表项之前展开的所有子列表项数量
      */
     private int getBeforeExpandedChildCount(int parentAdapterPosition) {
-        if (parentAdapterPosition == 0) {
-            return 0;
-        }
+        if (parentAdapterPosition == 0) return 0;
         int beforeExpandedChildCount = 0;
         for (int i = 0; i < parentAdapterPosition; i++) {
-            if (!(getListItem(i) instanceof ParentWrapper)) {
+            if (!(getItem(i) instanceof ParentItemWrapper)) {
                 beforeExpandedChildCount++;
             }
         }
@@ -575,115 +524,110 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     /**
      * 展开指定适配器位置所对应的父列表项
      * @param parentAdapterPosition 父列表项在适配器里所对应的位置
-     * @param parentWrapper 和父列表项相关的 {@link ParentWrapper}，用于获取该父列表项里的子列表项的信息
      * @param byUser 是否是用户通过点击展开父列表项的
+     * @return 是否展开成功,如果当前已经展开了或者该 Parent 没有 Child，亦或是内部异常发生时返回 false              
      */
-    private void expandParentListItem(int parentAdapterPosition, ParentWrapper parentWrapper,
-            boolean byUser)
+    private boolean expandParentItem(int parentAdapterPosition, boolean byUser)
     {
-        if (!parentWrapper.isExpanded()) {
-            parentWrapper.setExpanded(true);
-            List<?> childItemList = parentWrapper.getChildItemList();
-            if (childItemList != null) {
-                int insertPosStart = parentAdapterPosition + 1;
-                int childItemCount = childItemList.size();
+        if (parentAdapterPosition==RecyclerView.NO_POSITION) return false;
+        Object item = getItem(parentAdapterPosition);
+        if (!(item instanceof ParentItemWrapper)) return false;
+        ParentItemWrapper parentItemWrapper = (ParentItemWrapper) item;
+        if (parentItemWrapper.isExpanded()) return false;
+        List<?> childItems = parentItemWrapper.getChildItems();
+        if (childItems == null || childItems.isEmpty()) return false;
 
-                //按照顺序依次将子列表项插入到该父列表项下
-                mItems.addAll(insertPosStart, childItemList);
-                //通知 RecyclerView 指定位置有新的列表项插入，刷新界面
-                notifyItemRangeInserted(insertPosStart, childItemCount);
+        //保存该父列表项当前为展开状态
+        parentItemWrapper.setExpanded(true);
 
-                if (mParentExpandCollapseListener != null) {
-                    int beforeExpandedChildCount = getBeforeExpandedChildCount(
-                            parentAdapterPosition);
-                    mParentExpandCollapseListener.onParentExpanded(
-                            parentAdapterPosition - beforeExpandedChildCount, byUser);
-                }
-            }
+        final int insertPosStart = parentAdapterPosition + 1;
+        final int childCount = childItems.size();
+        //按照顺序依次将子列表项插入到该父列表项下
+        mItems.addAll(insertPosStart, childItems);
+        //通知 RecyclerView 指定位置有新的列表项插入，刷新界面
+        notifyItemRangeInserted(insertPosStart, childCount);
+
+        if (mParentExpandCollapseListener != null) {
+            int beforeExpandedChildCount = getBeforeExpandedChildCount(parentAdapterPosition);
+            mParentExpandCollapseListener.onParentExpanded(
+                    parentAdapterPosition - beforeExpandedChildCount, parentAdapterPosition,
+                    byUser);
         }
+
+        return true;
     }
 
     /**
      * 折叠指定适配器位置所对应的父列表项
      * @param parentAdapterPosition 父列表项在适配器里所对应的位置
-     * @param parentWrapper 和父列表项相关的 {@link ParentWrapper}，用于获取该父列表项里的子列表项的信息
      * @param byUser 是否是用户通过点击展开父列表项的
      */
-    private void collapseParentListItem(int parentAdapterPosition, ParentWrapper parentWrapper,
-            boolean byUser)
+    private boolean collapseParentItem(int parentAdapterPosition, boolean byUser)
     {
-        //保存该父列表项当前为折叠状态
-        if (parentWrapper.isExpanded()) {
-            parentWrapper.setExpanded(false);
-            List<?> childItemList = parentWrapper.getChildItemList();
-            if (childItemList != null) {
-                int collapsePosStart = parentAdapterPosition + 1;
-                int childItemCount = childItemList.size();
-                //按照顺序依次将该父列表项下的子列表项移除
-                mItems.removeAll(childItemList);
-                //通知 RecyclerView 指定位置有列表项已移除，刷新界面
-                notifyItemRangeRemoved(collapsePosStart, childItemCount);
+        if (parentAdapterPosition==RecyclerView.NO_POSITION) return false;
+        Object item = getItem(parentAdapterPosition);
+        if (!(item instanceof ParentItemWrapper)) return false;
+        ParentItemWrapper parentItemWrapper = (ParentItemWrapper) item;
+        if (!parentItemWrapper.isExpanded()) return false;
+        List<?> childItems = parentItemWrapper.getChildItems();
+        if (childItems == null || childItems.isEmpty()) return false;
 
-                if (mParentExpandCollapseListener != null) {
-                    int beforeExpandedChildCount = getBeforeExpandedChildCount(
-                            parentAdapterPosition);
-                    mParentExpandCollapseListener.onParentCollapsed(
-                            parentAdapterPosition - beforeExpandedChildCount, byUser);
-                }
-            }
+        //保存该父列表项当前为折叠状态
+        parentItemWrapper.setExpanded(false);
+
+        final int collapsePosStart = parentAdapterPosition + 1;
+        final int childItemCount = childItems.size();
+        //按照顺序依次将该父列表项下的子列表项移除
+        mItems.removeAll(childItems);
+        //通知 RecyclerView 指定位置有列表项已移除，刷新界面
+        notifyItemRangeRemoved(collapsePosStart, childItemCount);
+
+        if (mParentExpandCollapseListener != null) {
+            int beforeExpandedChildCount = getBeforeExpandedChildCount(parentAdapterPosition);
+            mParentExpandCollapseListener.onParentCollapsed(
+                    parentAdapterPosition - beforeExpandedChildCount, parentAdapterPosition,
+                    byUser);
         }
+
+        return true;
     }
 
     /**
      * 展开指定适配器位置所对应的父列表项。
      * @param parentAdapterPosition 父列表项在适配器里所对应的位置
-     * @param parentWrapper 和父列表项相关的 {@link ParentWrapper}，用于获取该父列表项里的子列表项的信息
      */
-    private void expandViews(int parentAdapterPosition, ParentWrapper parentWrapper) {
-
+    private boolean expandViews(int parentAdapterPosition) {
+        boolean success = true;
         for (RecyclerView recyclerView : mAttachedRecyclerViews) {
-
-            PVH pvh = (PVH) recyclerView.findViewHolderForAdapterPosition(parentAdapterPosition);
-
-            Log.e(TAG,"****************expandViews---->"+"adapterParentPosition" +
-                    "="+parentAdapterPosition+"pvh==null?--->"+(pvh==null));
-
-            if (pvh != null && !pvh.isExpanded()) {
-                pvh.setExpanded(true);
-                Log.e(TAG, "****************expandViews***********************");
+            if (!expandParentItem(parentAdapterPosition, false)) {
+                success = false;
             }
-
-            expandParentListItem(parentAdapterPosition, parentWrapper, false);
+            PVH pvh = (PVH) recyclerView.findViewHolderForAdapterPosition(parentAdapterPosition);
+            if (pvh != null && !pvh.isExpanded()) {
+                pvh.setExpanded(success);
+            }
         }
+        return success;
     }
 
     /**
      * 根据指定的父列表项在父列表里的位置展开该位置在适配器里对应的父列表项
      * @param parentPosition 该父列表项在父列表里的位置
      */
-    public void expandParent(int parentPosition) {
-        if (parentPosition >= mParentItems.size()) {
-            return;
-        }
+    public boolean expandParent(int parentPosition) {
         int parentAdapterPosition = getParentAdapterPosition(parentPosition);
-        if (parentAdapterPosition!=-1) {
-            Object listItem = mItems.get(parentAdapterPosition);
-            if (listItem instanceof ParentWrapper) {
-                ParentWrapper parentWrapper = (ParentWrapper) listItem;
-                expandViews(parentAdapterPosition, parentWrapper);
-            }
-        }
+        return parentAdapterPosition != RecyclerView.NO_POSITION && expandViews(
+                parentAdapterPosition);
     }
 
     /**
      * 展开与{@link ParentItem}相关的父列表项
      * @param parentItem 与父列表项相关的 ParentItem
      */
-    public void expandParent(ParentItem parentItem) {
-        if (parentItem != null) {
-            int parentPosition=mParentItems.indexOf(parentItem);
-            expandParent(parentPosition);
-        }
+    public boolean expandParent(ParentItem parentItem) {
+        if (parentItem == null) return false;
+        int parentPosition = mParentItems.indexOf(parentItem);
+        return expandParent(parentPosition);
     }
 
     /**
@@ -698,47 +642,39 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     /**
      * 折叠指定适配器位置所对应的父列表项。
      * @param parentAdapterPosition 父列表项在适配器里所对应的位置
-     * @param parentWrapper 和父列表项相关的 {@link ParentWrapper}，用于获取该父列表项里的子列表项的信息
      */
-    private void collapseViews(int parentAdapterPosition, ParentWrapper parentWrapper) {
+    private boolean collapseViews(int parentAdapterPosition) {
+        boolean success = true;
         for (RecyclerView recyclerView : mAttachedRecyclerViews) {
+            if (!collapseParentItem(parentAdapterPosition, false)) {
+                success = false;
+            }
             PVH pvh = (PVH) recyclerView.findViewHolderForAdapterPosition(parentAdapterPosition);
             if (pvh != null && pvh.isExpanded()) {
-                pvh.setExpanded(false);
+                pvh.setExpanded(success);
             }
-            collapseParentListItem(parentAdapterPosition, parentWrapper, false);
         }
+        return success;
     }
 
     /**
      * 根据指定的父列表项在父列表里的位置折叠该位置在适配器里对应的父列表项
      * @param parentPosition 该父列表项在父列表里的位置
      */
-    public void collapseParent(int parentPosition) {
-        if (parentPosition >= mParentItems.size()) {
-            return;
-        }
+    public boolean collapseParent(int parentPosition) {
         int parentAdapterPosition = getParentAdapterPosition(parentPosition);
-
-        if (parentAdapterPosition != -1) {
-            Object listItem = mItems.get(parentAdapterPosition);
-
-            if (listItem instanceof ParentWrapper) {
-                ParentWrapper parentWrapper = (ParentWrapper) listItem;
-                collapseViews(parentAdapterPosition, parentWrapper);
-            }
-        }
+        return parentAdapterPosition != RecyclerView.NO_POSITION && collapseViews(
+                parentAdapterPosition);
     }
 
     /**
      * 折叠与{@link ParentItem}相关的父列表项
      * @param parentItem 与父列表项相关的 ParentItem
      */
-    public void collapseParent(ParentItem parentItem) {
-        if (parentItem != null) {
-            int parentPosition=mParentItems.indexOf(parentItem);
-            collapseParent(parentPosition);
-        }
+    public boolean collapseParent(ParentItem parentItem) {
+        if (parentItem == null) return false;
+        int parentPosition = mParentItems.indexOf(parentItem);
+        return collapseParent(parentPosition);
     }
 
     /**
@@ -759,29 +695,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentPosition
      *                      要插入新的父列表项的位置
-     *
-     * @throws IndexOutOfBoundsException
-     *                      {@code parentPosition >= ParentItemList.size() || parentPosition < 0}
      * @see #notifyParentItemRangeInserted(int, int)
      */
     public final void notifyParentItemInserted(int parentPosition) {
-
-        if (parentPosition >= mParentItems.size() || parentPosition < 0) {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + parentPosition + ", size is " + mParentItems.size());
-        }
-
-        ParentItem newParentItem = mParentItems.get(parentPosition);
-
-        int parentWrapperPos;
-
-        if (parentPosition < mParentItems.size() - 1) {
-            parentWrapperPos = getParentAdapterPosition(parentPosition);
-        } else {
-            parentWrapperPos = mItems.size();
-        }
-        int insertItemCount = addParentWrapper(parentWrapperPos, newParentItem);
-        notifyItemRangeInserted(parentWrapperPos, insertItemCount);
+        notifyParentItemRangeInserted(parentPosition,1);
     }
 
     /**
@@ -794,46 +711,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @param parentPosition 要插入的子列表项所属的父列表项位置
      *
      * @param childPosition 要插入的子列表项的位置
-     * @throws IndexOutOfBoundsException
-     *                      {@code parentPosition >= ParentItemList.size() || parentPosition < 0 ||
-     *                       childPosition >= ChildItemList.size() || childPosition < 0}
      * @see #notifyChildItemRangeInserted(int, int, int)
      */
     public final void notifyChildItemInserted(int parentPosition, int childPosition) {
-        if (parentPosition >= mParentItems.size() || parentPosition < 0) {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + parentPosition + ", size is " + mParentItems.size());
-        }
-
-        int parentAdapterPosition=getParentAdapterPosition(parentPosition);
-
-        ParentWrapper parentWrapper= (ParentWrapper) mItems.get(parentAdapterPosition);
-
-        List<?> childItemList=parentWrapper.getChildItemList();
-
-        if (childPosition >= childItemList.size() || childPosition < 0) {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + childPosition + ", size is " + childItemList.size());
-        }
-
-        int childAdapterPos;
-
-        if (childPosition < childItemList.size() - 1) {
-            childAdapterPos=getChildAdapterPosition(parentPosition,childPosition);
-        } else {
-            int parentAdapterPos = getParentAdapterPosition(parentPosition);
-            childAdapterPos = parentAdapterPos + childItemList.size();
-        }
-
-        //FIXME 预先判断父列表项是否已经展开，避免在为展开情况下的上面的逻辑处理
-        //这里判断如果父列表项已展开才添加数据并通知刷新列表界面
-        //注意：这里的数据添加和 {@code expandParentListItem } 数据添加有冲突，因为 expandParentListItem
-        //获取子列表数据然后再添加到模型数据层再刷新界面的，这里如果判断没展开就不能添加数据，否则有重复数据显示
-        if (parentWrapper.isExpanded()) {
-            Object newChildListItem = childItemList.get(childPosition);
-            mItems.add(childAdapterPos, newChildListItem);
-            notifyItemInserted(childAdapterPos);
-        }
+        notifyChildItemRangeInserted(parentPosition, childPosition, 1);
     }
 
     /**
@@ -848,19 +729,19 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @see #notifyParentItemInserted(int)
      */
     public final void notifyParentItemRangeInserted(int parentPositionStart, int parentItemCount) {
-        int parentWrappersPos;
-        if (parentPositionStart < mParentItems.size() - parentItemCount) {
-            parentWrappersPos = getParentAdapterPosition(parentPositionStart);
-        } else {
-            parentWrappersPos = mItems.size();
+        final int endInsertPos = mParentItems.size() - parentItemCount;
+        int parentAdapterPos = RecyclerView.NO_POSITION;
+        if (parentPositionStart >= 0 && parentPositionStart < endInsertPos) {
+            parentAdapterPos = getParentAdapterPosition(parentPositionStart);
+        } else if (parentPositionStart == endInsertPos) {
+            parentAdapterPos = mItems.size();
         }
+        if (parentAdapterPos == RecyclerView.NO_POSITION) return;
         int insertedItemCount = 0;
-        for (int i = 0; i < parentItemCount; i++) {
-            ParentItem newParentItem = mParentItems.get(parentPositionStart + i);
-            insertedItemCount += addParentWrapper(parentWrappersPos +insertedItemCount,
-                    newParentItem);
+        for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
+            insertedItemCount += addParentWrapper(parentAdapterPos + insertedItemCount, i);
         }
-        notifyItemRangeInserted(parentWrappersPos,insertedItemCount);
+        notifyItemRangeInserted(parentAdapterPos, insertedItemCount);
     }
 
     /**
@@ -880,40 +761,27 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
             int childItemCount)
     {
         int parentAdapterPos = getParentAdapterPosition(parentPosition);
+        ParentItemWrapper parentItemWrapper = (ParentItemWrapper) getItem(parentAdapterPos);
+        //这里判断如果父列表项已展开才添加数据并通知刷新列表界面
+        //注意：这里的数据添加和 {@code expandParentItem } 数据添加有冲突，因为 expandParentItem
+        //获取子列表数据然后再添加到模型数据层再刷新界面的，这里如果判断没展开就不能添加数据，否则有重复数据显示
+        if (!parentItemWrapper.isExpanded()) return;
 
-        ParentWrapper parentWrapper = (ParentWrapper) getListItem(parentAdapterPos);
+        List<?> childItems = parentItemWrapper.getChildItems();
+        if (childItems==null || childItems.isEmpty()) return;
+        List<?> insertedChildItemList = childItems.subList(childPositionStart,
+                childItemCount + childPositionStart);
 
-        List<?> childItemList = parentWrapper.getChildItemList();
-
-        if (childItemList!=null) {
-
-            if (childPositionStart > childItemList.size() - childItemCount ||
-                    childPositionStart < 0)
-            {
-                throw new IllegalStateException(
-                        "childPositionStart must <= ChildItemList.size() - childItemCount" +
-                                " && childPositionStart >= 0");
-            }
-
-            List<?> insertedChildItemList = childItemList.subList(childPositionStart,
-                    childItemCount + childPositionStart);
-
-            int childAdapterPos;
-            if (childPositionStart < childItemList.size() - childItemCount) {
-                childAdapterPos = getChildAdapterPosition(parentPosition, childPositionStart);
-            } else {
-                childAdapterPos = parentAdapterPos + childItemList.size() - childItemCount + 1;
-            }
-
-            //FIXME 预先判断父列表项是否已经展开，避免在为展开情况下的上面的逻辑处理
-            //这里判断如果父列表项已展开才添加数据并通知刷新列表界面
-            //注意：这里的数据添加和 {@code expandParentListItem } 数据添加有冲突，因为 expandParentListItem
-            //获取子列表数据然后再添加到模型数据层再刷新界面的，这里如果判断没展开就不能添加数据，否则有重复数据显示
-            if (parentWrapper.isExpanded()) {
-                mItems.addAll(childAdapterPos,insertedChildItemList);
-                notifyItemRangeInserted(childAdapterPos,childItemCount);
-            }
+        int childAdapterPos=RecyclerView.NO_POSITION;
+        if (childPositionStart >= 0 && childPositionStart < childItems.size() - childItemCount) {
+            childAdapterPos = getChildAdapterPosition(parentPosition, childPositionStart);
+        } else if(childPositionStart == childItems.size() - childItemCount){
+            childAdapterPos = parentAdapterPos + childItems.size() - childItemCount + 1;
         }
+        if (childAdapterPos==RecyclerView.NO_POSITION) return;
+
+        mItems.addAll(childAdapterPos, insertedChildItemList);
+        notifyItemRangeInserted(childAdapterPos, childItemCount);
     }
 
     /**
@@ -929,28 +797,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      *  @see #notifyParentItemRangeRemoved(int, int)
      */
     public final void notifyParentItemRemoved(int parentPosition) {
-        if (parentPosition > mParentItems.size() || parentPosition < 0) {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + parentPosition + ", size is " + mParentItems.size());
-        }
-
-        int parentAdapterPos = getParentAdapterPosition(parentPosition);
-        if (parentAdapterPos != -1) {
-            ParentWrapper parentWrapper = (ParentWrapper) getListItem(parentAdapterPos);
-            if (parentWrapper != null) {
-                int removedItemCount=1;
-                if (parentWrapper.isExpanded()) {
-                    List<?> childItemList = parentWrapper.getChildItemList();
-                    if (childItemList != null) {
-                        int childItemCount = childItemList.size();
-                        mItems.removeAll(childItemList);
-                        removedItemCount+=childItemCount;
-                    }
-                }
-                mItems.remove(parentWrapper);
-                notifyItemRangeRemoved(parentAdapterPos, removedItemCount);
-            }
-        }
+        notifyParentItemRangeRemoved(parentPosition,1);
     }
 
     /**
@@ -968,32 +815,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @see #notifyChildItemRangeRemoved(int, int, int)
      */
     public final void notifyChildItemRemoved(int parentPosition, int childPosition) {
-        if (parentPosition >= mParentItems.size() || parentPosition < 0) {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + parentPosition + ", size is " + mParentItems.size());
-        }
-        int parentAdapterPos = getParentAdapterPosition(parentPosition);
-        if (parentAdapterPos!=-1) {
-           ParentWrapper parentWrapper= (ParentWrapper) getListItem(parentAdapterPos);
-            if (parentWrapper!=null) {
-                List<?> childItemList=parentWrapper.getChildItemList();
-                if (childItemList!=null) {
-                    int childItemCount=childItemList.size();
-                    if (childPosition > childItemCount || childPosition < 0) {
-                        throw new IllegalStateException(
-                                "childPosition must <= size()" +
-                                        " && childPosition >= 0");
-                    }
-                    int childAdapterPos=getChildAdapterPosition(parentPosition,childPosition);
-                    //FIXME 预先判断父列表项是否已经展开，避免在为展开情况下的上面的逻辑处理
-                    //注意：这里判断当前父列表项是否已经打开，只有打开更改本地数据结构并通知刷新，否则会出现数据混乱异常
-                    if (parentWrapper.isExpanded()) {
-                        mItems.remove(childAdapterPos);
-                        notifyItemRemoved(childAdapterPos);
-                    }
-                }
-            }
-        }
+        notifyChildItemRangeRemoved(parentPosition, childPosition, 1);
     }
 
     /**
@@ -1010,36 +832,26 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @see #notifyParentItemRemoved(int)
      */
     public final void notifyParentItemRangeRemoved(int parentPositionStart, int parentItemCount) {
-        if (parentPositionStart > mParentItems.size() || parentPositionStart < 0) {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + parentPositionStart + ", size is " + mParentItems.size());
-        }
-
-        int removedItemCount=0;
-
         int parentAdapterPosStart = getParentAdapterPosition(parentPositionStart);
-
-        if (parentAdapterPosStart != -1) {
-            for (int i = 0; i < parentItemCount; i++) {
-                    ParentWrapper parentWrapper = (ParentWrapper) getListItem(parentAdapterPosStart);
-                    if (parentWrapper != null) {
-                        if (parentWrapper.isExpanded()) {
-                            List<?> childItemList = parentWrapper.getChildItemList();
-                            if (childItemList != null) {
-                                int childItemCount = childItemList.size();
-                                mItems.removeAll(childItemList);
-                                removedItemCount += childItemCount;
-                            }
-                        }
-                        mItems.remove(parentWrapper);
-                        removedItemCount++;
-                    }
+        if (parentAdapterPosStart == RecyclerView.NO_POSITION) return;
+        //计算移除的 ItemView 个数
+        int removedItemCount = 0;
+        for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
+            ParentItemWrapper parentItemWrapper = (ParentItemWrapper) getItem(
+                    parentAdapterPosStart);
+            //判断当前 ParentItem 是否为展开状态
+            if (parentItemWrapper.isExpanded()) {
+                List<?> childItems = parentItemWrapper.getChildItems();
+                if (childItems != null) {
+                    int childItemCount = childItems.size();
+                    mItems.removeAll(childItems);
+                    removedItemCount += childItemCount;
+                }
             }
-
-            Logger.e(TAG,"parentAdapterPosStart="+parentAdapterPosStart+",removedItemCount="+removedItemCount);
-
-            notifyItemRangeRemoved(parentAdapterPosStart, removedItemCount);
+            mItems.remove(parentItemWrapper);
+            removedItemCount++;
         }
+        notifyItemRangeRemoved(parentAdapterPosStart, removedItemCount);
     }
 
     /**
@@ -1060,42 +872,18 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     public final void notifyChildItemRangeRemoved(int parentPosition, int childPositionStart,
             int childItemCount)
     {
-        if (parentPosition >= mParentItems.size() || parentPosition < 0) {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + parentPosition + ", size is " + mParentItems.size());
-        }
-
         int parentAdapterPos = getParentAdapterPosition(parentPosition);
+        if (parentAdapterPos == RecyclerView.NO_POSITION) return;
 
-        if (parentAdapterPos != -1) {
-            ParentWrapper parentWrapper = (ParentWrapper) getListItem(parentAdapterPos);
-            if (parentWrapper != null) {
-                List<?> childItemList = parentWrapper.getChildItemList();
-                if (childItemList != null) {
+        ParentItemWrapper parentItemWrapper = (ParentItemWrapper) getItem(parentAdapterPos);
+        //注意：这里判断当前父列表项是否已经打开，只有打开更改本地数据结构并通知刷新，否则会出现数据混乱异常
+        if (!parentItemWrapper.isExpanded()) return; 
 
-                    int childCount = childItemList.size();
+        int childAdapterPosStart = getChildAdapterPosition(parentPosition, childPositionStart);
+        if (childAdapterPosStart==RecyclerView.NO_POSITION) return;
 
-                    if (childPositionStart > childCount || childPositionStart < 0) {
-                        throw new IllegalStateException(
-                                "childPositionStart must <= size()" +
-                                        " && childPositionStart >= 0");
-                    }
-                    int childAdapterPosStart = getChildAdapterPosition(parentPosition,
-                            childPositionStart);
-
-                    Logger.e(TAG,"childAdapterPosStart="+childAdapterPosStart+",childItemCount="+childItemCount);
-
-                    //FIXME 预先判断父列表项是否已经展开，避免在为展开情况下的上面的逻辑处理
-                    //注意：这里判断当前父列表项是否已经打开，只有打开更改本地数据结构并通知刷新，否则会出现数据混乱异常
-                    if (parentWrapper.isExpanded()) {
-                        for (int i = 0; i < childItemCount; i++) {
-                            mItems.remove(childAdapterPosStart);
-                        }
-                        notifyItemRangeRemoved(childAdapterPosStart,childItemCount);
-                    }
-                }
-            }
-        }
+        mItems.removeAll(mItems.subList(childAdapterPosStart,childAdapterPosStart+childItemCount));
+        notifyItemRangeRemoved(childAdapterPosStart, childItemCount);
     }
 
     /**
@@ -1106,87 +894,94 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * 需要更新该列表项所绑定的数据
      * </p>
      * @param parentPosition 要更新的父列表项在父列表里的位置
-     * @throws IndexOutOfBoundsException
-     *                      {@code parentPosition >= size() || parentPosition < 0}
      *
      */
     public final void notifyParentItemChanged(int parentPosition) {
-        if (parentPosition >= mParentItems.size() || parentPosition < 0) {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + parentPosition + ", size is " + mParentItems.size());
+        ParentItem changedParentItem = mParentItems.get(parentPosition);
+        if (changedParentItem == null) return;
+        int parentAdapterPos = getParentAdapterPosition(parentPosition);
+        if (parentAdapterPos == RecyclerView.NO_POSITION) return;
+        ParentItemWrapper parentItemWrapper = (ParentItemWrapper) getItem(parentAdapterPos);
+        parentItemWrapper.setParentItem(changedParentItem);
+        notifyItemChanged(parentPosition);
+    }
+
+    /**
+     * 通知任何注册的件事情在位置 {@code parentPositionStart} 上有 {@code parentItemCount} 个数据发生改变
+     * <p>相当于调用 {@code notifyParentItemRangeChanged(parentPositionStart,parentItemCount,null)}</p>
+     * <p>这是列表项相关的数据的改变，不是数据结构上的变化，因此，该列表项在适配器数据集里对应位置的数据已经过期，
+     * 需要更新该列表项所绑定的数据,在该范围里的列表保留相同的 Id</p>
+     * @param parentPositionStart 父列表项数据更改的起始位置
+     * @param parentItemCount 父列表项数据更改的数量
+     */
+    public final void notifyParentItemRangeChanged(int parentPositionStart, int parentItemCount) {
+        //判断当前是否所有的 ParentItem 都是折叠状态
+        //1.如果都为折叠状态，直接调用 {@link notifyItemRangeChanged(positionStart,itemCount)}
+        //2.只要有一个是打开状态，循环遍历调用 {@link notifyParentItemChanged(parentPosition)}
+        boolean allCollapsed = true;
+        for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
+            int parentAdapterPos = getParentAdapterPosition(i);
+            if (parentAdapterPos == RecyclerView.NO_POSITION) {
+                allCollapsed = false;
+                break;
+            }
+            ParentItemWrapper parentItemWrapper = (ParentItemWrapper) getItem(parentAdapterPos);
+            if (parentItemWrapper.isExpanded()) {
+                allCollapsed = false;
+                break;
+            }
         }
-
-        ParentItem changedParentItem =mParentItems.get(parentPosition);
-        if (changedParentItem !=null) {
-            int parentAdapterPos=getParentAdapterPosition(parentPosition);
-            if (parentAdapterPos!=-1) {
-               ParentWrapper parentWrapper= (ParentWrapper) getListItem(parentAdapterPos);
-                if (parentWrapper!=null) {
-
-                    if (changedParentItem.isInitiallyExpanded() &&
-                            !parentWrapper.isExpanded())
-                    {
-                        expandViews(parentAdapterPos,parentWrapper);
-                    } else if (!changedParentItem.isInitiallyExpanded() &&
-                            parentWrapper.isExpanded())
-                    {
-                        collapseViews(parentAdapterPos,parentWrapper);
-                    }
-
-                    parentWrapper.setParentItem(changedParentItem);
-                    notifyItemChanged(parentAdapterPos);
-                }
+        if (allCollapsed) {
+            final int parentAdapterPosStart = getParentAdapterPosition(parentPositionStart);
+            notifyItemRangeChanged(parentAdapterPosStart, parentItemCount);
+        } else {
+            for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
+                notifyParentItemChanged(i);
             }
         }
     }
-
+    
     /**
      * 通知任何注册的监视器更新当前在 {@code parentPosition，childPosition} 位置的子列表项，
      * @param parentPosition 该子列表项所属的父列表项位置
      * @param childPosition 子列表项的位置
-     * @throws IndexOutOfBoundsException
-     *                      {@code parentPosition >= ParentItemList.size() || parentPosition < 0 ||
-     *                       childPosition >= ChildItemList.size() || childPositionStart < 0}
-     *
      */
     public final void notifyChildItemChanged(int parentPosition, int childPosition) {
-        if (parentPosition >= mParentItems.size() || parentPosition < 0) {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + parentPosition + ", size is " + mParentItems.size());
+        notifyChildItemRangeChanged(parentPosition,childPosition,1);
+    }
+
+    /**
+     *  通知任何注册的件事情在位置 {@code parentPosition,childPositionStart} 上有 {@code childItemCount} 个数据发生改变
+     * <p>相当于调用 {@code notifyParentItemRangeChanged(parentPositionStart,parentItemCount,null)}</p>
+     * <p>这是列表项相关的数据的改变，不是数据结构上的变化，因此，该列表项在适配器数据集里对应位置的数据已经过期，
+     * 需要更新该列表项所绑定的数据,在该范围里的列表保留相同的 Id</p>
+     * @param parentPosition 子列表数据更改从属的父列表项位置
+     * @param childPositionStart 子列表数据更改的起始子列表项位置
+     * @param childItemCount 子列表数据更改的数量
+     */
+    public final void notifyChildItemRangeChanged(int parentPosition, int childPositionStart,
+            int childItemCount)
+    {
+        int parentAdapterPos = getParentAdapterPosition(parentPosition);
+        if (parentAdapterPos == RecyclerView.NO_POSITION) return;
+
+        ParentItemWrapper parentItemWrapper = (ParentItemWrapper) getItem(parentAdapterPos);
+        //父列表项没有展开，不执行更新子列表相关事务
+        if (!parentItemWrapper.isExpanded()) return;
+        List<?> childItems = parentItemWrapper.getChildItems();
+        if (childItems==null || childItems.isEmpty()) return;
+
+        int changedItemCount=0;
+        for (int i = childPositionStart; i < childPositionStart + childItemCount; i++) {
+            Object changedChildItem = childItems.get(i);
+            if (changedChildItem == null) continue;
+            int childAdapterPos = getChildAdapterPosition(parentPosition, i);
+            if (childAdapterPos == RecyclerView.NO_POSITION) continue;
+            mItems.set(childAdapterPos, changedChildItem);
+            changedItemCount++;
         }
-        int parentAdapterPos=getParentAdapterPosition(parentPosition);
-        if (parentAdapterPos!=-1) {
-           ParentWrapper parentWrapper= (ParentWrapper) getListItem(parentAdapterPos);
-            if (parentWrapper!=null) {
-                if (parentWrapper.isInitiallyExpanded() &&
-                        !parentWrapper.isExpanded())
-                {
-                    expandViews(parentAdapterPos,parentWrapper);
-                } else if (!parentWrapper.isInitiallyExpanded() &&
-                        parentWrapper.isExpanded())
-                {
-                    collapseViews(parentAdapterPos,parentWrapper);
-                }
-
-                List<?> childItemList=parentWrapper.getChildItemList();
-                if (childItemList!=null) {
-                    int childCount=childItemList.size();
-                    if (childPosition >= childCount || childPosition < 0) {
-                        throw new IndexOutOfBoundsException(
-                                "Invalid index " + childPosition + ", size is " + childCount);
-                    }
-                    Object changedChildItem=childItemList.get(childPosition);
-                    int childAdapterPos=getChildAdapterPosition(parentPosition,childPosition);
-
-                    if (parentWrapper.isExpanded()) {
-                        //FIXME 预先判断父列表项是否已经展开，避免在为展开情况下的上面的逻辑处理
-                        mItems.set(childAdapterPos,changedChildItem);
-                        notifyItemChanged(childAdapterPos);
-                    }
-
-                }
-            }
-        }
+        final int childAdapterPosStart=getChildAdapterPosition(parentPosition, childPositionStart);
+        notifyItemRangeChanged(childAdapterPosStart,changedItemCount);
     }
 
     /**
@@ -1224,19 +1019,19 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
 
             boolean movedToBottom = fromParentPosition < toParentPosition;
 
-            ParentWrapper fromParentWrapper = (ParentWrapper) getListItem(fromParentAdapterPos);
+            ParentItemWrapper fromParentItemWrapper = (ParentItemWrapper) getItem(fromParentAdapterPos);
 
-            if (fromParentWrapper != null) {
+            if (fromParentItemWrapper != null) {
 
-                mItems.add(toParentAdapterPos, fromParentWrapper);
+                mItems.add(toParentAdapterPos, fromParentItemWrapper);
 
                 mItems.remove(movedToBottom ? fromParentAdapterPos : fromParentAdapterPos + 1);
 
                 notifyItemMoved(fromParentAdapterPos, toParentAdapterPos);
 
-                List<?> fromChildItemList = fromParentWrapper.getChildItemList();
+                List<?> fromChildItemList = fromParentItemWrapper.getChildItems();
 
-                if (fromChildItemList != null && fromParentWrapper.isExpanded()) {
+                if (fromChildItemList != null && fromParentItemWrapper.isExpanded()) {
                     for (int i = 0; i < fromChildItemList.size(); i++) {
 
                         Object childListItem = fromChildItemList.get(i);
@@ -1254,6 +1049,37 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
                     }
                 }
             }
+        }
+    }
+
+    public final void notifyChildItemMoved(int fromParentPosition, int fromChildPosition,
+            int toParentPosition, int toChildPosition)
+    {
+        int fromParentAdapterPos = getParentAdapterPosition(fromParentPosition);
+        int fromChildAdapterPos = getChildAdapterPosition(fromParentPosition, fromChildPosition);
+        int toParentAdapterPos = getParentAdapterPosition(toParentPosition);
+        int toChildAdapterPos = getChildAdapterPosition(toParentPosition, toChildPosition);
+        if (fromParentAdapterPos == RecyclerView.NO_POSITION ||
+                fromChildAdapterPos == RecyclerView.NO_POSITION ||
+                toParentAdapterPos == RecyclerView.NO_POSITION ||
+                toChildAdapterPos == RecyclerView.NO_POSITION)
+            return;
+
+        ParentItemWrapper fromParentItemWrapper = (ParentItemWrapper) getItem(fromParentAdapterPos);
+        ParentItemWrapper toParentItemWrapper = (ParentItemWrapper) getItem(toParentAdapterPos);
+        if (fromParentItemWrapper.isExpanded()) {
+            if (toParentItemWrapper.isExpanded()) {
+                Object fromChildItem=getItem(fromChildAdapterPos);
+                mItems.remove(fromChildAdapterPos);
+                mItems.add(toChildAdapterPos,fromChildItem);
+                notifyItemMoved(fromChildAdapterPos,toChildAdapterPos);
+            } else {
+                notifyChildItemRemoved(fromParentPosition, fromChildPosition);
+            }
+        } else if (toParentItemWrapper.isExpanded()) {
+            notifyChildItemInserted(toParentPosition, toChildPosition);
+        } else {
+            // from 和 to parentItem 都没有展开,do nothing
         }
     }
 }

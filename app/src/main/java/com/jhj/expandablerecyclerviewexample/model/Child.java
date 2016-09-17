@@ -9,8 +9,8 @@ public class Child {
     private int dot;
 
     private int type;
-    private int pos;
-    private int adapterPos;
+
+    private String info;
 
     public int getType() {
         return type;
@@ -28,19 +28,11 @@ public class Child {
         this.dot = dot;
     }
 
-    public int getPos() {
-        return pos;
+    public String getInfo() {
+        return info;
     }
 
-    public void setPos(int pos) {
-        this.pos = pos;
-    }
-
-    public int getAdapterPos() {
-        return adapterPos;
-    }
-
-    public void setAdapterPos(int adapterPos) {
-        this.adapterPos = adapterPos;
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@android:integer/config_mediumAnimTime"
+    android:propertyName="rotation"
+    android:valueTo="0"
+    android:valueFrom="180"
+    android:valueType="floatType"/>

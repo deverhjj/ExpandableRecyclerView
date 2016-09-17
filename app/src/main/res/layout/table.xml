@@ -162,4 +162,42 @@
 
     </TableRow>
 
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:gravity="center"
+            android:text="move"
+            android:background="@color/md_deep_teal_300"/>
+
+        <EditText
+            android:id="@+id/moveParent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:tag="@string/notifyParent¥Changed"
+            android:hint="@string/parent_hint"
+            android:textColorHint="@android:color/transparent"/>
+
+        <EditText
+            android:id="@+id/moveChild"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:tag="@string/notifyChild¥Moved"
+            android:hint="@string/special_child_hint"
+            android:textColorHint="@android:color/transparent"/>
+
+    </TableRow>
+
 </TableLayout>

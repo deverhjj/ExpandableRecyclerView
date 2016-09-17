@@ -51,7 +51,7 @@ import android.view.View;
      * @param data 要绑定的数据
      */
     @SuppressWarnings("unused")
-    protected void bind(D data) {}
+    public void bind(D data) {}
 
     //TODO 反射绑定数据?
     @SuppressWarnings("unused")
@@ -119,7 +119,7 @@ import android.view.View;
      * @param id ItemView 里 childView 的 id
      * @return ItemView 里的 childView
      */
-    public View getView(int id) {
+    public <T extends View> T getView(int id) {
         if (id == View.NO_ID) return null;
         View v = mCachedViews.get(id);
         if (v == null) {
@@ -130,7 +130,7 @@ import android.view.View;
             }
             if (v!=null) mCachedViews.put(id, v);
         }
-        return v;
+        return (T) v;
     }
 
 

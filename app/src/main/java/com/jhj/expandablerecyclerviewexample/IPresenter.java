@@ -25,4 +25,12 @@ public interface IPresenter {
     void notifyParentItemChanged(int parentPosition);
 
     void notifyChildItemChanged(int parentPosition, int childPosition);
+
+    void notifyParentItemRangeChanged(int parentPositionStart, int parentItemCount);
+
+    void notifyChildItemRangeChanged(int parentPosition, int childPositionStart,
+            int childItemCount);
+
+    void notifyChildItemMoved(int fromParentPosition, int fromChildPosition, int toParentPosition,
+            int toChildPosition);
 }

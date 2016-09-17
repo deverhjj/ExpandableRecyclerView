@@ -9,12 +9,12 @@ public interface OnParentExpandCollapseListener {
      *
      * @param parentAdapterPosition 父列表项在适配器里对应的位置
      */
-    void onParentExpand(int parentAdapterPosition);
+    boolean onParentExpand(int parentAdapterPosition);
 
     /**
      * 父列表项折叠后的回调
      *
      * @param parentAdapterPosition 父列表项在适配器里对应的位置
      */
-    void onParentCollapse(int parentAdapterPosition);
+    boolean onParentCollapse(int parentAdapterPosition);
 }

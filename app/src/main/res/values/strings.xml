@@ -30,6 +30,7 @@
 
     <string name="parent_hint">parent</string>
     <string name="child_hint">child</string>
+    <string name="special_child_hint">special_child</string>
 
     <string name="Item">Item</string>
     <string name="ItemRange">ItemRange</string>
@@ -42,6 +43,9 @@
 
     <string name="notifyParent¥Changed">notifyParent%1$sChanged</string>
     <string name="notifyChild¥Changed">notifyChild%1$sChanged</string>
+
+    <string name="notifyParent¥Moved">notifyParent%1$sMoved</string>
+    <string name="notifyChild¥Moved">notifyChild%1$sMoved</string>
 
     <string name="methodAndArgs">%1$s,%2$s</string>
 

@@ -1,10 +1,9 @@
 package com.jhj.expandablerecyclerview.adapter;
 
 import com.jhj.expandablerecyclerview.model.ParentItem;
-import com.jhj.expandablerecyclerview.model.ParentWrapper;
+import com.jhj.expandablerecyclerview.model.ParentItemWrapper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,43 +14,34 @@ public final class ExpandableRecyclerViewAdapterHelper {
     private static final String TAG = "ExpandableRecyclerViewAdapterHelper";
 
     /**
-     * 按照数据源的数据顺序构建并返回当前所有在初始化时要显示的列表项(父列表项和子列表项)集合
-     * @param parentListItems 所有的父列表项集合
-     * @return 初始化时要显示的所有父列表项和子列表项集合
+     * 按照数据源的数据顺序构建并返回本地数据模型
+     * <p><b>注意：构建本地数据模型结合时会忽略客户端为 null 的数据模型</b></p>
+     * @param parentItems 客户端所有的父列表项数据集合
+     * @return 本地数据模型集合
      */
     public static List<Object> generateParentChildItemList(
-            List<? extends ParentItem> parentListItems)
+            List<? extends ParentItem> parentItems)
     {
-        if (parentListItems == null || parentListItems.isEmpty()) return Collections.EMPTY_LIST;
-
-        List<Object> itemList = new ArrayList<>();
-
-        int parentCount = parentListItems.size();
-
+        List<Object> items = new ArrayList<>();
+        final int parentCount = parentItems.size();
         for (int i = 0; i < parentCount; i++) {
+            ParentItem parentItem = parentItems.get(i);
+            if (parentItem == null) continue;
+            ParentItemWrapper parentItemWrapper = new ParentItemWrapper(parentItem);
+            items.add(parentItemWrapper);
 
-            ParentItem parentItem = parentListItems.get(i);
-
-            ParentWrapper parentWrapper = new ParentWrapper(parentItem);
-
-            itemList.add(parentWrapper);
-
-            if (parentWrapper.isInitiallyExpanded()) {
-
-                parentWrapper.setExpanded(true);
-
-                List<?> childItemList = parentWrapper.getChildItemList();
-
-                if (childItemList == null) continue;
-
-                int childCount = childItemList.size();
-
+            if (parentItemWrapper.isInitiallyExpanded()) {
+                parentItemWrapper.setExpanded(true);
+                List<?> childItems = parentItemWrapper.getChildItems();
+                if (childItems == null) continue;
+                final int childCount = childItems.size();
                 for (int j = 0; j < childCount; j++) {
-                    Object childListItem = childItemList.get(j);
-                    itemList.add(childListItem);
+                    Object childListItem = childItems.get(j);
+                    if (childListItem == null) continue;
+                    items.add(childListItem);
                 }
             }
         }
-        return itemList;
+        return items;
     }
 }

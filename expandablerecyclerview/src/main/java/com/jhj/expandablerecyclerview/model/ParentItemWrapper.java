@@ -7,8 +7,8 @@ import java.util.List;
  * 去实现本 Lib 所要实现的业务逻辑
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentWrapper {
-    private static final String TAG = "ParentWrapper";
+public class ParentItemWrapper {
+    private static final String TAG = "ParentItemWrapper";
     /**
      * 客户端的父列表项集合
      */
@@ -18,7 +18,7 @@ public class ParentWrapper {
      */
     private boolean mExpanded;
 
-    public ParentWrapper(ParentItem parentItem) {
+    public ParentItemWrapper(ParentItem parentItem) {
         mParentItem = parentItem;
     }
 
@@ -67,7 +67,7 @@ public class ParentWrapper {
      * 回调获取属于该父列表项的所有子列表项
      * @return
      */
-    public List<?> getChildItemList() {
+    public List<?> getChildItems() {
         return mParentItem.getChildItems();
     }
 }

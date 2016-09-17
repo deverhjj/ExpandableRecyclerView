@@ -18,24 +18,18 @@ import com.jhj.expandablerecyclerviewexample.utils.Util;
 public class BaseParentViewHolder extends ParentViewHolder<Parent> {
     private static final String TAG = "BaseParentViewHolder";
 
-    private TextView mTextView;
-    private View mDotView;
-
-    public BaseParentViewHolder(final View itemView,int tvId,int dotViewId) {
+    public BaseParentViewHolder(View itemView) {
         super(itemView);
-        mTextView= (TextView) itemView.findViewById(tvId);
-        mDotView=itemView.findViewById(dotViewId);
         setCallback(mViewHolderCallback);
     }
 
-    public void bind(String data,int dotColor) {
-        mTextView.setText(data);
-        mDotView.setBackgroundColor(dotColor);
-    }
-
     @Override
-    protected void bind(Parent data) {
-        super.bind(data);
+    public void bind(Parent data) {
+        String info=data.getInfo();
+        TextView tv_info=getView(R.id.info);
+        tv_info.setText(info);
+        getView(R.id.dot).setBackgroundColor(data.getDot());
+        getView(R.id.arrow).setRotation(isExpanded() ? 180 : 0);
     }
 
     @Override

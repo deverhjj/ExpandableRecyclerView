@@ -5,22 +5,7 @@
              android:layout_height="wrap_content"
              android:background="@color/md_deep_teal_500">
 
-    <TextView
-        android:id="@+id/tv_child_2"
-        style="@style/TextAppearance.AppCompat.Small"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/selectableItemBackground"
-        android:padding="@dimen/activity_horizontal_margin"
-        tools:targetApi="honeycomb"
-        tools:text="ChildType:2 , Pos:2 , AdapterPos:3 , ParentPos:5 , ParentAdapterPos:9"/>
-
-    <View
-        android:id="@+id/view_child_2"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:layout_gravity="right|center_vertical"
-        android:layout_margin="16dp"
-        android:background="@android:color/transparent"/>
+    <include
+        layout="@layout/item_child"/>
 
 </FrameLayout>

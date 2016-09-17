@@ -64,9 +64,11 @@ public class MyAdapter extends ExpandableRecyclerViewAdapter<BaseParentViewHolde
     {
         Parent parent = (Parent) parentListItem;
         int parentType = getParentType(parentPosition);
-        String data = mContext.getString(R.string.parent_type, parentType, parentPosition,
+        String info = mContext.getString(R.string.parent_type, parentType, parentPosition,
                 parentAdapterPosition);
-        parentViewHolder.bind(data, parent.getDot());
+        parent.setInfo(info);
+
+        parentViewHolder.bind(parent);
     }
 
     @Override
@@ -75,9 +77,10 @@ public class MyAdapter extends ExpandableRecyclerViewAdapter<BaseParentViewHolde
     {
         Child child = (Child) childListItem;
         int childType = getChildType(parentPosition, childPosition);
-        String data = mContext.getString(R.string.child_type, childType, childPosition,
+        String info = mContext.getString(R.string.child_type, childType, childPosition,
                 childAdapterPosition);
-        childViewHolder.bind(data, child.getDot());
+        child.setInfo(info);
+        childViewHolder.bind(child);
     }
 
     @Override

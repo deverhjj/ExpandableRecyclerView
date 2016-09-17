@@ -14,8 +14,8 @@ public class Parent implements ParentItem<Child> {
     private int dot;
 
     private int type;
-    private int pos;
-    private int adapterPos;
+
+    private String info;
 
     private List<Child> mChildren;
 
@@ -40,30 +40,23 @@ public class Parent implements ParentItem<Child> {
         this.dot = dot;
     }
 
-    public int getPos() {
-        return pos;
+    public String getInfo() {
+        return info;
     }
 
-    public void setPos(int pos) {
-        this.pos = pos;
+    public void setInfo(String info) {
+        this.info = info;
     }
-
-    public int getAdapterPos() {
-        return adapterPos;
-    }
-
-    public void setAdapterPos(int adapterPos) {
-        this.adapterPos = adapterPos;
-    }
-
 
     @Override
     public List<Child> getChildItems() {
         return mChildren;
     }
 
+
     @Override
     public boolean isInitiallyExpanded() {
         return false;
     }
+
 }

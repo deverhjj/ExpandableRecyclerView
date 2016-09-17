@@ -27,11 +27,16 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
     private ViewHolderCallbackWrapper mCallbackWrapper;
 
     /**
-     * 当前父列表项是否已展开
+     * ParentItemView 是否可以展开折叠
+     * <p><b>note:这里的属性设置会覆盖{@link ExpandableRecyclerViewAdapter} 的全局 expandable 设置</b></p>
+     */
+    private boolean mExpandable=true;
+
+    /**
+     * 设置当前父列表项是否已展开
      */
     private boolean mExpanded=false;
 
-    private boolean mExpandable=true;
 
     public ParentViewHolder(View itemView) {
         this(itemView ,null);
@@ -51,6 +56,15 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
             mCallbackWrapper.mOuterCallback = callback;
         }
         super.setCallback(mCallbackWrapper);
+    }
+
+
+    public boolean isExpandable() {
+        return mExpandable;
+    }
+
+    public void setExpandable(boolean expandable) {
+        mExpandable = expandable;
     }
 
     /**
@@ -143,9 +157,8 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
      * 展开父列表项
      */
     private void expandParent() {
-        setExpanded(true);
         if (mParentExpandCollapseListener != null) {
-            mParentExpandCollapseListener.onParentExpand(getAdapterPosition());
+            mExpanded=mParentExpandCollapseListener.onParentExpand(getAdapterPosition());
         }
     }
 
@@ -153,9 +166,8 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
      * 折叠父列表项
      */
     private void collapseParent() {
-        setExpanded(false);
         if (mParentExpandCollapseListener != null) {
-            mParentExpandCollapseListener.onParentCollapse(getAdapterPosition());
+            mExpanded=!mParentExpandCollapseListener.onParentCollapse(getAdapterPosition());
         }
     }
 
@@ -188,6 +200,7 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
     }
 
     private void handleInnerEvent(BaseViewHolder.ViewHolderEventAfter event) {
+        if (!mExpandable) return;
         if (event.v == itemView && event.triggeredEventType == Event.EventType.CLICK) {
             if (mExpanded) {
                 collapseParent();

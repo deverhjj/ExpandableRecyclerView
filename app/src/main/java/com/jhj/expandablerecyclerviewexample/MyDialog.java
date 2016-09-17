@@ -50,10 +50,15 @@ public class MyDialog extends DialogFragment {
     private static final String REGX_BASE_CHILD="(\\d+,\\d+|\\d+,\\d+,\\d+)";
     private static final String REGX_CHILD=REGX_BASE_CHILD+"|"+REGX_BASE_CHILD+"\n"+REGX_BASE_CHILD;
 
+    private static final String REGX_BASE_SPECIAL_CHILD="\\d+,\\d+,\\d+,\\d+";
+    private static final String REGX_SPECIAL_CHILD=REGX_BASE_SPECIAL_CHILD+"|"+REGX_BASE_SPECIAL_CHILD+"\n" +
+            ""+REGX_BASE_SPECIAL_CHILD;
+
     public static final String REQUEST = "request";
 
     private static final String PARENT_TYPE = "parent";
     private static final String CHILD_TYPE = "child";
+    private static final String SPECIAL__CHILD_TYPE = "special_child";
     private static final String ITEM_OPERATE_TYPE = "Item";
     private static final String ITEM_RANGE_OPERATE_TYPE = "ItemRange";
 
@@ -132,20 +137,24 @@ public class MyDialog extends DialogFragment {
 
     private List<Helper> isGoodInput(String type, String input) {
         boolean isParentType=type.equals(MyDialog.PARENT_TYPE);
+        boolean isSpecialChild=type.endsWith(MyDialog.SPECIAL__CHILD_TYPE);
         List<Helper> helpers=new ArrayList<>(2);
         //同一操作是否存在两次
         final String[] operations=input.split("\n");
             for (String operation : operations) {
 
-                boolean isGood=operation.matches(isParentType?REGX_PARENT:REGX_CHILD);
-                if (!isGood) return null;
+                boolean isGood = operation.matches(isParentType ? REGX_PARENT
+                        : isSpecialChild ? REGX_SPECIAL_CHILD : REGX_CHILD);
+                if (!isGood) {
+                    return null;
+                }
 
                 Helper helper = new Helper();
 
                 String[] inputSplit = operation.split(",");
                 helper.operationType =
-                        inputSplit.length == (isParentType ? 1 : 2) ? ITEM_OPERATE_TYPE
-                                : ITEM_RANGE_OPERATE_TYPE;
+                        inputSplit.length == (isParentType ? 1 : isSpecialChild ? 4 : 2)
+                                ? ITEM_OPERATE_TYPE : ITEM_RANGE_OPERATE_TYPE;
                 helper.args = operation;
 
                 helpers.add(helper);
