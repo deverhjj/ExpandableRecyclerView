@@ -1,9 +1,5 @@
 package com.jhj.expandablerecyclerviewexample;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -64,20 +60,6 @@ public class MainFragment extends Fragment {
     }
 
     private void init(View rootView) {
-
-
-//        final ObjectAnimator downRotateAnim = (ObjectAnimator) AnimatorInflater.loadAnimator(
-//                getActivity(), R.animator.list_arror_down_indicator);
-//        final ObjectAnimator upRotateAnim=(ObjectAnimator) AnimatorInflater.loadAnimator(
-//                getActivity(), R.animator.list_arror_up_indicator);
-//        downRotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//
-//                Logger.e(TAG,"onAnimationUpdate->"+animation.getAnimatedValue());
-//            }
-//        });
-
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -96,9 +78,13 @@ public class MainFragment extends Fragment {
                 BaseParentViewHolder vh= (BaseParentViewHolder) mRecyclerView
                         .findViewHolderForAdapterPosition(parentAdapterPosition);
                 final ImageView arrow = vh.getView(R.id.arrow);
-                arrow.animate().rotationBy(180).setDuration(getResources().getInteger(android.R
-                        .integer
-                        .config_mediumAnimTime)).start();
+                final float currRotate=arrow.getRotation();
+                Logger.e(TAG, "currRotate=" + currRotate);
+                //重置为从0开始旋转
+                if (currRotate == 360) {
+                    arrow.setRotation(0);
+                }
+                arrow.animate().rotation(180).setDuration(300).start();
             }
 
             @Override
@@ -110,9 +96,14 @@ public class MainFragment extends Fragment {
                 BaseParentViewHolder vh= (BaseParentViewHolder) mRecyclerView
                         .findViewHolderForAdapterPosition(parentAdapterPosition);
                 final ImageView arrow = vh.getView(R.id.arrow);
-                arrow.animate().rotationBy(180).setDuration(getResources().getInteger(android.R
-                        .integer
-                        .config_mediumAnimTime)).start();
+                final float currRotate=arrow.getRotation();
+                Logger.e(TAG,"currRotate="+currRotate);
+                float rotate = 360;
+                //未展开完全并且当前旋转角度小于180，逆转回去
+                if (currRotate < 180) {
+                    rotate = 0;
+                }
+                arrow.animate().rotation(rotate).setDuration(300).start();
             }
         });
         mIPresenter=new PresenterImpl(adapter,data);
