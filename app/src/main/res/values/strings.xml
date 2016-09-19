@@ -30,6 +30,7 @@
 
     <string name="parent_hint">parent</string>
     <string name="child_hint">child</string>
+    <string name="special_parent_hint">special_parent</string>
     <string name="special_child_hint">special_child</string>
 
     <string name="Item">Item</string>

@@ -70,4 +70,9 @@ public class ParentItemWrapper {
     public List<?> getChildItems() {
         return mParentItem.getChildItems();
     }
+
+    public int getChildItemCount() {
+        List<?> childItems = getChildItems();
+        return childItems != null ? childItems.size() : 0;
+    }
 }

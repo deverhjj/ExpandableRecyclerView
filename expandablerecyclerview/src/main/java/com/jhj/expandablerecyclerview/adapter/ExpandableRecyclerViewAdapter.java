@@ -992,69 +992,70 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param fromParentPosition 该父列表项项之前的位置
      * @param toParentPosition 移动后的位置
-     * @throws IndexOutOfBoundsException
-     *                      {@code fromParentPosition > size() || fromParentPosition < 0 ||
-     *                       toParentPosition > size() || toParentPosition < 0}
      */
-    //注意:有些情况会崩溃，由于 RecyclerView 内部未知机制 导致该功能异常，例如：一开始将列表项移动到末尾处时，
-    //* RecyclerView 会报内部异常，规避该异常的方法是 getViewHolderForAdapterPosition !=null 可以解决该异常
     public final void notifyParentItemMoved(int fromParentPosition, int toParentPosition)
     {
-        if (fromParentPosition > mParentItems.size() || fromParentPosition < 0 ||
-                toParentPosition > mParentItems.size() || toParentPosition < 0)
-        {
-            throw new IndexOutOfBoundsException(
-                    "Invalid index " + fromParentPosition + "," + toParentPosition + ", size is " +
-                            mParentItems.size());
-        }
+        if (fromParentPosition == toParentPosition) return;
 
         int fromParentAdapterPos = getParentAdapterPosition(fromParentPosition);
+        int toParentAdapterPos = getParentAdapterPosition(toParentPosition);
+        if (fromParentAdapterPos == RecyclerView.NO_POSITION ||
+                toParentAdapterPos == RecyclerView.NO_POSITION) return;
 
-        int parentAdapterPos = getParentAdapterPosition(toParentPosition);
-        int toParentAdapterPos = parentAdapterPos == -1 ? mItems.size() : parentAdapterPos;
+        ParentItemWrapper fromParentItemWrapper= (ParentItemWrapper) getItem(fromParentAdapterPos);
+        ParentItemWrapper toParentItemWrapper= (ParentItemWrapper) getItem(toParentAdapterPos);
+        final boolean isFromExpanded=fromParentItemWrapper.isExpanded();
+        final boolean isToExpanded=toParentItemWrapper.isExpanded();
+        //Parent 或 Child 往下 Move 需要特殊处理
+        boolean moveToBottom = fromParentPosition < toParentAdapterPos;
 
-        //TODO
+        mItems.remove(fromParentAdapterPos);
+        int moveToParentAdapterPos;
+        //这里需要判断 toParentItem 展开状态来计算出 fromParentItem 的 moveTo 位置
+        if (moveToBottom && isToExpanded && toParentItemWrapper.getChildItemCount() > 0) {
+            moveToParentAdapterPos=toParentAdapterPos + toParentItemWrapper.getChildItemCount();
+        } else {
+            moveToParentAdapterPos=toParentAdapterPos;
+        }
+        mItems.add(moveToParentAdapterPos, fromParentItemWrapper);
+        notifyItemMoved(fromParentAdapterPos,moveToParentAdapterPos);
 
-        if (fromParentAdapterPos != -1) {
+        //根据 fromParentItem 的展开状态判断是否需要移动其 ChildItem(s)
+        if (isFromExpanded) {
+            List<?> childItems = fromParentItemWrapper.getChildItems();
+            if (childItems==null || childItems.isEmpty()) return;
 
-            boolean movedToBottom = fromParentPosition < toParentPosition;
-
-            ParentItemWrapper fromParentItemWrapper = (ParentItemWrapper) getItem(fromParentAdapterPos);
-
-            if (fromParentItemWrapper != null) {
-
-                mItems.add(toParentAdapterPos, fromParentItemWrapper);
-
-                mItems.remove(movedToBottom ? fromParentAdapterPos : fromParentAdapterPos + 1);
-
-                notifyItemMoved(fromParentAdapterPos, toParentAdapterPos);
-
-                List<?> fromChildItemList = fromParentItemWrapper.getChildItems();
-
-                if (fromChildItemList != null && fromParentItemWrapper.isExpanded()) {
-                    for (int i = 0; i < fromChildItemList.size(); i++) {
-
-                        Object childListItem = fromChildItemList.get(i);
-
-                        mItems.add(
-                                movedToBottom ? toParentAdapterPos : toParentAdapterPos + i + 1,
-                                childListItem);
-
-                        mItems.remove(movedToBottom ? fromParentAdapterPos
-                                : fromParentAdapterPos + i + 2);
-
-                        notifyItemMoved(
-                                movedToBottom ? fromParentAdapterPos : fromParentAdapterPos + i + 1,
-                                movedToBottom ? toParentAdapterPos : toParentAdapterPos + i + 1);
-                    }
-                }
+            final int childCount=childItems.size();
+            for (int i = 0; i < childCount; i++) {
+                Object fromChildItem=childItems.get(i);
+                if (fromChildItem==null) continue;
+                int fromChildAdapterPos =
+                        moveToBottom ? fromParentAdapterPos  : fromParentAdapterPos + i + 1;
+                int toChildAdapterPos = moveToBottom ? moveToParentAdapterPos
+                        : moveToParentAdapterPos + i + 1;
+                mItems.remove(fromChildAdapterPos);
+                mItems.add(toChildAdapterPos, fromChildItem);
+                notifyItemMoved(fromChildAdapterPos, toChildAdapterPos);
             }
         }
     }
 
+    /**
+     * 通知任何注册的监视器在 {@code fromParentPosition,fromChildPosition} 位置的子列表项已经移动到 {@code
+     * toParentPosition,toChildPosition}位置，
+     * <p>
+     * 这是数据结构上的变化，尽管位置变化了，但是之前存在的所有列表项在数据集里的数据都会被认为最新，
+     * 因此这些列表项不会被重新绑定数据
+     * </p>
+     * @param fromParentPosition 子列表项移动所在的父列表项的起始位置
+     * @param fromChildPosition 子列表项移动的起始位置
+     * @param toParentPosition 子列表项移动所在的父列表项的目标位置
+     * @param toChildPosition 子列表项移动的目标位置
+     */
     public final void notifyChildItemMoved(int fromParentPosition, int fromChildPosition,
             int toParentPosition, int toChildPosition)
     {
+        if (fromParentPosition == toParentPosition && fromChildPosition == toChildPosition) return;
         int fromParentAdapterPos = getParentAdapterPosition(fromParentPosition);
         int fromChildAdapterPos = getChildAdapterPosition(fromParentPosition, fromChildPosition);
         int toParentAdapterPos = getParentAdapterPosition(toParentPosition);

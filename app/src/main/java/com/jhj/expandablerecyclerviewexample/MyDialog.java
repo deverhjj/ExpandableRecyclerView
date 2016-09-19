@@ -59,6 +59,7 @@ public class MyDialog extends DialogFragment {
     private static final String PARENT_TYPE = "parent";
     private static final String CHILD_TYPE = "child";
     private static final String SPECIAL__CHILD_TYPE = "special_child";
+    private static final String SPECIAL__PARENT_TYPE = "special_parent";
     private static final String ITEM_OPERATE_TYPE = "Item";
     private static final String ITEM_RANGE_OPERATE_TYPE = "ItemRange";
 
@@ -137,13 +138,15 @@ public class MyDialog extends DialogFragment {
 
     private List<Helper> isGoodInput(String type, String input) {
         boolean isParentType=type.equals(MyDialog.PARENT_TYPE);
-        boolean isSpecialChild=type.endsWith(MyDialog.SPECIAL__CHILD_TYPE);
+        boolean isSpecialChild=type.equals(MyDialog.SPECIAL__CHILD_TYPE);
+        boolean isSpecialParent=type.equals(MyDialog.SPECIAL__PARENT_TYPE);
+
         List<Helper> helpers=new ArrayList<>(2);
         //同一操作是否存在两次
         final String[] operations=input.split("\n");
             for (String operation : operations) {
 
-                boolean isGood = operation.matches(isParentType ? REGX_PARENT
+                boolean isGood = operation.matches(isParentType||isSpecialParent ? REGX_PARENT
                         : isSpecialChild ? REGX_SPECIAL_CHILD : REGX_CHILD);
                 if (!isGood) {
                     return null;
@@ -152,9 +155,9 @@ public class MyDialog extends DialogFragment {
                 Helper helper = new Helper();
 
                 String[] inputSplit = operation.split(",");
-                helper.operationType =
-                        inputSplit.length == (isParentType ? 1 : isSpecialChild ? 4 : 2)
-                                ? ITEM_OPERATE_TYPE : ITEM_RANGE_OPERATE_TYPE;
+                helper.operationType = inputSplit.length ==
+                        (isParentType ? 1 : isSpecialParent ? 2 : isSpecialChild ? 4 : 2)
+                        ? ITEM_OPERATE_TYPE : ITEM_RANGE_OPERATE_TYPE;
                 helper.args = operation;
 
                 helpers.add(helper);

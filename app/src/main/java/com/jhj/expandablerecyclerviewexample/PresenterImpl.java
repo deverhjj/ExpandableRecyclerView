@@ -80,11 +80,7 @@ public class PresenterImpl implements IPresenter {
             int childItemCount)
     {
         Parent parent =mData.get(parentPosition);
-        List<Child> children = parent.getChildItems();
-        if (children ==null) {
-            children =new ArrayList<>();
-            parent.setChildren(children);
-        }
+        List<Child> children = checkChildItems(parent);
         for (int i = childPositionStart; i <childPositionStart+childItemCount ; i++) {
             Child child =new Child();
             child.setType(mRandom.nextInt(2));
@@ -173,6 +169,17 @@ public class PresenterImpl implements IPresenter {
     }
 
     @Override
+    public void notifyParentItemMoved(int fromParentPosition, int toParentPosition) {
+        Parent fromParent =mData.get(fromParentPosition);
+        Logger.e(TAG, "before" + mData);
+        mData.remove(fromParentPosition);
+        mData.add(toParentPosition, fromParent);
+        Logger.e(TAG, "after" + mData);
+
+        mAdapter.notifyParentItemMoved(fromParentPosition,toParentPosition);
+    }
+
+    @Override
     public void notifyChildItemMoved(int fromParentPosition, int fromChildPosition,
             int toParentPosition, int toChildPosition)
     {
@@ -180,17 +187,26 @@ public class PresenterImpl implements IPresenter {
         Parent toParent =mData.get(toParentPosition);
 
         //from-> 先 get 再 remove
-        Child fromChild = fromParent.getChildItems().get(fromChildPosition);
+        Child fromChild = checkChildItems(fromParent).get(fromChildPosition);
         Logger.e(TAG, "before_fromParent.getChildItems()" + "\n" + fromParent.getChildItems()
                 +"\n"+"before_toParent.getChildItems()"+"\n"+toParent.getChildItems());
         fromParent.getChildItems().remove(fromChildPosition);
         //to-> add fromChild
-        toParent.getChildItems().add(toChildPosition,fromChild);
+        checkChildItems(toParent).add(toChildPosition, fromChild);
 
         Logger.e(TAG,"notifyChildItemMoved"+"\n"+"after_fromParent.getChildItems()="+fromParent
                 .getChildItems()+"\n"+"toParent.getChildItems()="+toParent.getChildItems());
 
         mAdapter.notifyChildItemMoved(fromParentPosition, fromChildPosition, toParentPosition,
                 toChildPosition);
+    }
+
+    private List<Child> checkChildItems(Parent parent) {
+        List<Child> childItems = parent.getChildItems();
+        if (childItems == null) {
+            childItems = new ArrayList<>();
+            parent.setChildren(childItems);
+        }
+        return childItems;
     }
 }
