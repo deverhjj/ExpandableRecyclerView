@@ -792,8 +792,6 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * 因此这些列表项不会被重新绑定数据
      * </p>
      * @param parentPosition 要移除的父列表项在父列表里的位置
-     *  @throws IndexOutOfBoundsException
-     *                      {@code parentPosition > size() || parentPosition < 0}
      *  @see #notifyParentItemRangeRemoved(int, int)
      */
     public final void notifyParentItemRemoved(int parentPosition) {
@@ -809,9 +807,6 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentPosition 要移除的子列表项所属的父列表项的位置
      * @param childPosition 要移除的子列表项的位置
-     * @throws IndexOutOfBoundsException
-     *                      {@code parentPosition >= ParentItemList.size() || parentPosition < 0 ||
-     *                       childPosition > ChildItemList.size() || childPosition < 0}
      * @see #notifyChildItemRangeRemoved(int, int, int)
      */
     public final void notifyChildItemRemoved(int parentPosition, int childPosition) {
@@ -827,8 +822,6 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentPositionStart 移除多个父列表项开始的位置
      * @param parentItemCount 移除父列表项的个数
-     * @throws IndexOutOfBoundsException
-     *                      {@code parentPosition > size() || parentPosition < 0}
      * @see #notifyParentItemRemoved(int)
      */
     public final void notifyParentItemRangeRemoved(int parentPositionStart, int parentItemCount) {
@@ -863,10 +856,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentPosition 要移除的多个子列表项所属的父列表项的位置
      * @param childPositionStart 移除多个子列表项所开始的位置
-     * @param childItemCount 移除的子列表项的个数
-     * @throws IndexOutOfBoundsException
-     *                      {@code parentPosition >= ParentItemList.size() || parentPosition < 0 ||
-     *                       childPositionStart > ChildItemList.size() || childPositionStart < 0}
+     * @param childItemCount 移除的子列表项的个数}
      * @see #notifyChildItemRemoved(int, int)
      */
     public final void notifyChildItemRangeRemoved(int parentPosition, int childPositionStart,
