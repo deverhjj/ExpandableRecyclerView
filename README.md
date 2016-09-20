@@ -7,4 +7,4 @@
 2. support extra `notifyParentItemMoved`、`notifyChildItemMoved`、`notifyParentItemRangeChanged`、`notifyParentItemRangedRemoved`、`notifyChildItemRangeInserted`、`notifyChildItemRangeRemoved`、`notifyChildItemRangeChanged` api
 3. encapsulate `ViewHolder`
 
-[][https://github.com/HuaJianJiang/ExpandableRecyclerView/device-2016-09-20-161148.png]
+![][https://github.com/HuaJianJiang/ExpandableRecyclerView/raw/master/device-2016-09-20-161148.png]
