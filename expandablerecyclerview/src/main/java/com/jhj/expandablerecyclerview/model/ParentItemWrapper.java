@@ -13,10 +13,11 @@ public class ParentItemWrapper {
      * 客户端的父列表项集合
      */
     private ParentItem mParentItem;
+
     /**
      * 当前父列表项是否已展开
      */
-    private boolean mExpanded;
+    private boolean mExpanded = false;
 
     public ParentItemWrapper(ParentItem parentItem) {
         mParentItem = parentItem;
@@ -53,6 +54,10 @@ public class ParentItemWrapper {
      */
     public void setExpanded(boolean expanded) {
         mExpanded = expanded;
+    }
+
+    public boolean isExpandable(){
+        return mParentItem.isExpandable();
     }
 
     /**

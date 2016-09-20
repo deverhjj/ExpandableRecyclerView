@@ -11,6 +11,10 @@ import java.util.List;
 public class Parent implements ParentItem<Child> {
     private static final String TAG = "Parent";
 
+    private boolean isExpandable=false;
+
+    private boolean isInitiallyExpanded=true;
+
     private int dot;
 
     private int type;
@@ -53,10 +57,22 @@ public class Parent implements ParentItem<Child> {
         return mChildren;
     }
 
+    public void setExpandable(boolean expandable) {
+        isExpandable = expandable;
+    }
+
+    public void setInitiallyExpanded(boolean initiallyExpanded) {
+        isInitiallyExpanded = initiallyExpanded;
+    }
+
+    @Override
+    public boolean isExpandable() {
+        return isExpandable;
+    }
 
     @Override
     public boolean isInitiallyExpanded() {
-        return false;
+        return isInitiallyExpanded;
     }
 
 }

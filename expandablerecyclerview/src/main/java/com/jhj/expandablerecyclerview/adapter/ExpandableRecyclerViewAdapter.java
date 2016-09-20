@@ -1,5 +1,6 @@
 package com.jhj.expandablerecyclerview.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -7,28 +8,32 @@ import com.jhj.expandablerecyclerview.model.ParentItem;
 import com.jhj.expandablerecyclerview.model.ParentItemWrapper;
 import com.jhj.expandablerecyclerview.viewholder.BaseViewHolder;
 import com.jhj.expandablerecyclerview.viewholder.ChildViewHolder;
-import com.jhj.expandablerecyclerview.viewholder.OnParentExpandCollapseListener;
+import com.jhj.expandablerecyclerview.viewholder.OnParentItemExpandCollapseListener;
 import com.jhj.expandablerecyclerview.viewholder.ParentViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 扩展 RecyclerView.Adapter 实现可展开和折叠列表项.
  */
-public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder, CVH extends 
+public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder, CVH extends
         ChildViewHolder>
-        extends RecyclerView.Adapter<BaseViewHolder> implements OnParentExpandCollapseListener
+        extends RecyclerView.Adapter<BaseViewHolder> implements OnParentItemExpandCollapseListener
 {
     private static final String TAG = "ExpandableRVAdapter";
+
+    private static final String TYPE_FORMAT = "%1$d%2$d";
+
     /**
      * 父列表项标识
      */
-    private static final int TYPE_PARENT = 0x0001;
+    private static final int TYPE_PARENT = 1;
     /**
      * 子列表项标识
      */
-    private static final int TYPE_CHILD = 0x0002;
+    private static final int TYPE_CHILD = 2;
     /**
      * 默认的没有指定父列表项类型的标识
      */
@@ -37,15 +42,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * 默认的没有指定子列表项类型的标识
      */
     private static final int TYPE_CHILD_NO_TYPE = 0;
-
-    /**
-     * 父列表项点击展开或者折叠监听器
-     */
-    private OnParentExpandCollapseListener mParentExpandCollapseListener;
     /**
      * 父列表项集合
      */
-    private List<? extends ParentItem> mParentItems;
+    private List<? extends ParentItem> mParentItems = null;
     /**
      * 当前显示的列表项(父列表项和所有展开的子列表项)集合
      */
@@ -53,15 +53,15 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     /**
      * 当前所有监听适配器的 RecyclerView 集合
      */
-    private List<RecyclerView> mAttachedRecyclerViews;
+    private List<RecyclerView> mAttachedRecyclerViews = new ArrayList<>(1);
 
     /**
-     * 父列表项是否可展开
+     * 所有监听父列表项展开折叠状态监听器集合
      */
-    private boolean mExpandable = true;
+    private List<OnParentExpandCollapseListener> mExpandCollapseListeners = new ArrayList<>(1);
 
 
-    public ExpandableRecyclerViewAdapter(List<? extends ParentItem> parentItems) {
+    public ExpandableRecyclerViewAdapter(@NonNull List<? extends ParentItem> parentItems) {
 
         if (parentItems==null) throw new IllegalArgumentException("parentItems should not be " +
                 "null");
@@ -70,8 +70,6 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
 
         mItems = ExpandableRecyclerViewAdapterHelper.generateParentChildItemList(
                 parentItems);
-
-        mAttachedRecyclerViews = new ArrayList<>();
 
     }
 
@@ -95,61 +93,38 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         void onParentCollapsed(int parentPosition, int parentAdapterPosition, boolean byUser);
     }
 
-    /**
-     * 获取当前监听父列表项展开或折叠状态改变的监听器
-     * @return 父列表项展开或折叠状态改变的监听器
-     */
-    public OnParentExpandCollapseListener getParentExpandCollapseListener() {
-        return mParentExpandCollapseListener;
-    }
 
     /**
-     * 注册一个监听父列表项展开或折叠状态改变的监听器
-     * @param parentExpandCollapseListener 监听父列表项展开或折叠状态改变的监听器
+     * 注册一个监听父列表项展开或折叠状态改变监听器.
+     * <p>use {@link #addParentExpandCollapseListener(OnParentExpandCollapseListener)}</p>
+     * @param listener 监听父列表项展开或折叠状态改变的监听器
+     *
      */
+    @Deprecated
     public void setParentExpandCollapseListener(
-            OnParentExpandCollapseListener parentExpandCollapseListener)
+            OnParentExpandCollapseListener listener)
     {
-        mParentExpandCollapseListener = parentExpandCollapseListener;
+        addParentExpandCollapseListener(listener);
     }
 
     /**
-     * 当前父列表项是否可以展开或折叠
-     * @return
+     * 注册监听父列表项展开折叠状态监听器
+     * @param listener 监听器
      */
-    public boolean isExpandable() {
-        return mExpandable;
+    public void addParentExpandCollapseListener(OnParentExpandCollapseListener listener) {
+        if (listener==null || mExpandCollapseListeners.contains(listener)) return;
+        mExpandCollapseListeners.add(listener);
     }
 
     /**
-     * 设置父列表项是否可展开和折叠
-     * 如果为 true，表明所有父列表项都不可展开和折叠，但初始化时会根据 {@link ParentItem} 里设置的
-     * 初始化状态来设置列表项的展开与否
-     * @param expandable
+     * 取消注册监听父列表项折叠状态的改变
+     * @param listener 需要取消注册的监听器
      */
-    public void setExpandable(boolean expandable) {
-        mExpandable = expandable;
+    public void unRegisterParentExpandCollapseListener(OnParentExpandCollapseListener listener){
+        if (listener==null) return;
+        mExpandCollapseListeners.remove(listener);
     }
 
-//    /**
-//     * 当前所有的父列表项是否已全部展开
-//     * @return
-//     */
-//    public boolean isExpandAllParent() {
-//        return mExpandAllParent;
-//    }
-//
-//    /**
-//     *
-//     * 设置是否全部展开父列表项
-//     * @param expandAllParent
-//     */
-//    public void setExpandAllParent(boolean expandAllParent) {
-//        mExpandAllParent = expandAllParent;
-//        if (expandAllParent) {
-//            expandAllParent();
-//        }
-//    }
 
     /**
      * <p>
@@ -168,23 +143,24 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
 
         //父或子类型和具体的不同父或子类型的类型组合
         //例如 11，第一个1代表父列表项，第二个1代表外部传进来的具体的父列表项类型
-        String packedViewType = viewType + "";
+        String packedViewType = String.valueOf(viewType);
+
+        char[] chars = packedViewType.toCharArray();
+        String[] splitPackedViewType = {String.valueOf(chars[0]), String.valueOf(chars[1])};
 
         //获得列表项类型，父列表项或子列表项类型，用于预先判断该列表项是父列表项还是子列表项
-        viewType = Integer.valueOf(String.valueOf(packedViewType.charAt(0)));
+        viewType = Integer.valueOf(splitPackedViewType[0]);
 
         //外部返回的指定的具体的列表项类型(具体的父或子列表项类型)
-        int specifiedViewType = Integer.valueOf(String.valueOf(packedViewType.substring(1)));
+        int specifiedViewType = Integer.valueOf(splitPackedViewType[1]);
 
         if (viewType == TYPE_PARENT) {
             //回调并返回父列表项视图 ParentViewHolder
             PVH pvh = onCreateParentViewHolder(parent, specifiedViewType);
-            if (mExpandable) {
-                //注册父列表项视图点击事件监听器,用于监听列表项视图的点击并根据列表项的展开状态触发列表项的展开或折叠回调
-                pvh.setClickEvent();
-                //注册 ParentItemView 点击回调监听器
-                pvh.setParentExpandCollapseListener(this);
-            }
+            //注册父列表项视图点击事件监听器,用于监听列表项视图的点击并根据列表项的展开状态触发列表项的展开或折叠回调
+            pvh.setClickEvent();
+            //注册 ParentItemView 点击回调监听器
+            pvh.setParentItemExpandCollapseListener(this);
             return pvh;
         } else if (viewType == TYPE_CHILD) {
             ////回调并返回子列表项视图 ChildViewHolder
@@ -241,16 +217,18 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         //返回父类型和具体的父类型的组合后的列表项类型
         if (listItem instanceof ParentItemWrapper) {
             int parentType = getParentType(parentPosition);
-            String specifiedParentType = TYPE_PARENT + "" + parentType;
-            return Integer.valueOf(specifiedParentType);
+            String packedParentType = String.format(Locale.getDefault(), TYPE_FORMAT, TYPE_PARENT,
+                    parentType);
+            return Integer.valueOf(packedParentType);
         } else if (listItem == null) {
             throw new IllegalStateException("Null object added");
         } else {
             //回调获取具体的子列表项类型
             //返回子类型和具体子类型的组合后的列表项类型
             int childType = getChildType(parentPosition, getChildPosition(position));
-            String specifiedChildType = TYPE_CHILD + "" + childType;
-            return Integer.valueOf(specifiedChildType);
+            String packedChildType = String.format(Locale.getDefault(), TYPE_FORMAT, TYPE_CHILD,
+                    childType);
+            return Integer.valueOf(packedChildType);
         }
     }
 
@@ -326,7 +304,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @param parentAdapterPosition 该父列表项在适配器数据集里对应的位置
      */
     @Override
-    public boolean onParentExpand(int parentAdapterPosition) {
+    public boolean onParentItemExpand(int parentAdapterPosition) {
         return expandParentItem(parentAdapterPosition, true);
     }
     /**
@@ -334,7 +312,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @param parentAdapterPosition 该父列表项在适配器数据集里对应的位置
      */
     @Override
-    public boolean onParentCollapse(int parentAdapterPosition) {
+    public boolean onParentItemCollapse(int parentAdapterPosition) {
         return collapseParentItem(parentAdapterPosition, true);
     }
 
@@ -533,7 +511,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         Object item = getItem(parentAdapterPosition);
         if (!(item instanceof ParentItemWrapper)) return false;
         ParentItemWrapper parentItemWrapper = (ParentItemWrapper) item;
-        if (parentItemWrapper.isExpanded()) return false;
+        if (!parentItemWrapper.isExpandable() || parentItemWrapper.isExpanded()) return false;
         List<?> childItems = parentItemWrapper.getChildItems();
         if (childItems == null || childItems.isEmpty()) return false;
 
@@ -547,11 +525,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         //通知 RecyclerView 指定位置有新的列表项插入，刷新界面
         notifyItemRangeInserted(insertPosStart, childCount);
 
-        if (mParentExpandCollapseListener != null) {
+        for (OnParentExpandCollapseListener listener : mExpandCollapseListeners) {
             int beforeExpandedChildCount = getBeforeExpandedChildCount(parentAdapterPosition);
-            mParentExpandCollapseListener.onParentExpanded(
-                    parentAdapterPosition - beforeExpandedChildCount, parentAdapterPosition,
-                    byUser);
+            listener.onParentExpanded(parentAdapterPosition - beforeExpandedChildCount,
+                    parentAdapterPosition, byUser);
         }
 
         return true;
@@ -568,7 +545,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         Object item = getItem(parentAdapterPosition);
         if (!(item instanceof ParentItemWrapper)) return false;
         ParentItemWrapper parentItemWrapper = (ParentItemWrapper) item;
-        if (!parentItemWrapper.isExpanded()) return false;
+        if (!parentItemWrapper.isExpandable() || !parentItemWrapper.isExpanded()) return false;
         List<?> childItems = parentItemWrapper.getChildItems();
         if (childItems == null || childItems.isEmpty()) return false;
 
@@ -582,11 +559,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         //通知 RecyclerView 指定位置有列表项已移除，刷新界面
         notifyItemRangeRemoved(collapsePosStart, childItemCount);
 
-        if (mParentExpandCollapseListener != null) {
+        for (OnParentExpandCollapseListener listener : mExpandCollapseListeners) {
             int beforeExpandedChildCount = getBeforeExpandedChildCount(parentAdapterPosition);
-            mParentExpandCollapseListener.onParentCollapsed(
-                    parentAdapterPosition - beforeExpandedChildCount, parentAdapterPosition,
-                    byUser);
+            listener.onParentCollapsed(parentAdapterPosition - beforeExpandedChildCount,
+                    parentAdapterPosition, byUser);
         }
 
         return true;

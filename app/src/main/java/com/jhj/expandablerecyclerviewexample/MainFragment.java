@@ -35,6 +35,7 @@ import java.util.List;
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
     public static final int REQUEST_RESULT = 1;
+
     private RecyclerView mRecyclerView;
 
     private PresenterImpl mIPresenter;
@@ -131,6 +132,8 @@ public class MainFragment extends Fragment {
                 break;
             case R.id.action_refresh:
                 adapter.notifyAllChanged();
+//                Parent parent=adapter.getData().get(1);
+//                parent.setExpandable(!parent.isExpandable());
                 break;
             case R.id.action_settings:
                 adapter.notifyParentItemInserted(-1);

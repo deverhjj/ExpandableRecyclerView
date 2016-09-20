@@ -22,15 +22,9 @@ import java.util.Set;
 public class ParentViewHolder<D> extends BaseViewHolder<D> {
     private static final String TAG = "ParentViewHolder";
 
-    private OnParentExpandCollapseListener mParentExpandCollapseListener;
+    private OnParentItemExpandCollapseListener mExpandCollapseListener;
 
     private ViewHolderCallbackWrapper mCallbackWrapper;
-
-    /**
-     * ParentItemView 是否可以展开折叠
-     * <p><b>note:这里的属性设置会覆盖{@link ExpandableRecyclerViewAdapter} 的全局 expandable 设置</b></p>
-     */
-    private boolean mExpandable=true;
 
     /**
      * 设置当前父列表项是否已展开
@@ -59,14 +53,6 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
     }
 
 
-    public boolean isExpandable() {
-        return mExpandable;
-    }
-
-    public void setExpandable(boolean expandable) {
-        mExpandable = expandable;
-    }
-
     /**
      * 返回当前父列表项是否已展开
      * @return 父列表项是否已经展开
@@ -87,11 +73,11 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
      * 子类不能调用该方法
      * @param listener
      */
-    public void setParentExpandCollapseListener(OnParentExpandCollapseListener listener) {
+    public void setParentItemExpandCollapseListener(OnParentItemExpandCollapseListener listener) {
         if (!(listener instanceof ExpandableRecyclerViewAdapter)) throw new RuntimeException
                 ("subClass should not invoke this method,you should use ExpandableRecyclerView" +
                         ".OnParentExpandCollapseListener to be notified");
-        mParentExpandCollapseListener = listener;
+        mExpandCollapseListener = listener;
     }
 
     /**
@@ -157,8 +143,8 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
      * 展开父列表项
      */
     private void expandParent() {
-        if (mParentExpandCollapseListener != null) {
-            mExpanded=mParentExpandCollapseListener.onParentExpand(getAdapterPosition());
+        if (mExpandCollapseListener != null) {
+            mExpanded=mExpandCollapseListener.onParentItemExpand(getAdapterPosition());
         }
     }
 
@@ -166,8 +152,8 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
      * 折叠父列表项
      */
     private void collapseParent() {
-        if (mParentExpandCollapseListener != null) {
-            mExpanded=!mParentExpandCollapseListener.onParentCollapse(getAdapterPosition());
+        if (mExpandCollapseListener != null) {
+            mExpanded=!mExpandCollapseListener.onParentItemCollapse(getAdapterPosition());
         }
     }
 
@@ -200,7 +186,6 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
     }
 
     private void handleInnerEvent(BaseViewHolder.ViewHolderEventAfter event) {
-        if (!mExpandable) return;
         if (event.v == itemView && event.triggeredEventType == Event.EventType.CLICK) {
             if (mExpanded) {
                 collapseParent();

@@ -44,6 +44,10 @@ public class MyAdapter extends ExpandableRecyclerViewAdapter<BaseParentViewHolde
         mData=data;
     }
 
+    public List<Parent> getData() {
+        return mData;
+    }
+
     @Override
     public BaseParentViewHolder onCreateParentViewHolder(ViewGroup parent, int parentType) {
         View itemView=LayoutInflater.from(mContext).inflate(parentType==PARENT_1_TYPE?R.layout

@@ -31,9 +31,11 @@ public final class ExpandableRecyclerViewAdapterHelper {
             items.add(parentItemWrapper);
 
             if (parentItemWrapper.isInitiallyExpanded()) {
-                parentItemWrapper.setExpanded(true);
                 List<?> childItems = parentItemWrapper.getChildItems();
-                if (childItems == null) continue;
+                final boolean hasChildren = childItems != null && !childItems.isEmpty();
+                //父列表项返回的 ChildItems 为 null 或者 childCount 为0 设置为折叠状态
+                parentItemWrapper.setExpanded(hasChildren);
+                if (!hasChildren) continue;
                 final int childCount = childItems.size();
                 for (int j = 0; j < childCount; j++) {
                     Object childListItem = childItems.get(j);
