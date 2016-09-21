@@ -11,9 +11,9 @@ import java.util.List;
 public class Parent implements ParentItem<Child> {
     private static final String TAG = "Parent";
 
-    private boolean isExpandable=false;
+    private boolean isExpandable = true;
 
-    private boolean isInitiallyExpanded=true;
+    private boolean isInitiallyExpanded = true;
 
     private int dot;
 

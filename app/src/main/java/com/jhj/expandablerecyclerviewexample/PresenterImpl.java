@@ -89,7 +89,7 @@ public class PresenterImpl implements IPresenter {
 
         Logger.e(TAG,"children="+ children.size());
 
-        mAdapter.notifyChildItemRangeInserted(parentPosition,childPositionStart,childItemCount);
+        mAdapter.notifyChildItemRangeInserted(parentPosition,childPositionStart,childItemCount,true);
         autoNotifyAllChanged();
     }
 
