@@ -78,6 +78,7 @@ public class MainFragment extends Fragment {
 
                 BaseParentViewHolder vh= (BaseParentViewHolder) mRecyclerView
                         .findViewHolderForAdapterPosition(parentAdapterPosition);
+                if (vh==null) return;
                 final ImageView arrow = vh.getView(R.id.arrow);
                 final float currRotate=arrow.getRotation();
                 Logger.e(TAG, "currRotate=" + currRotate);
@@ -96,6 +97,7 @@ public class MainFragment extends Fragment {
 
                 BaseParentViewHolder vh= (BaseParentViewHolder) mRecyclerView
                         .findViewHolderForAdapterPosition(parentAdapterPosition);
+                if (vh==null) return;
                 final ImageView arrow = vh.getView(R.id.arrow);
                 final float currRotate=arrow.getRotation();
                 Logger.e(TAG,"currRotate="+currRotate);
@@ -132,8 +134,22 @@ public class MainFragment extends Fragment {
                 break;
             case R.id.action_refresh:
                 adapter.notifyAllChanged();
-//                Parent parent=adapter.getData().get(1);
-//                parent.setExpandable(!parent.isExpandable());
+                break;
+            case R.id.action_toggle_expandable_1:
+                Parent parent = adapter.getData().get(1);
+                parent.setExpandable(!parent.isExpandable());
+                break;
+            case R.id.action_expand_all:
+                adapter.expandAllParent();
+                break;
+            case R.id.action_collapse_all:
+                adapter.collapseAllParent();
+                break;
+            case R.id.action_expand_1:
+                adapter.expandParent(1);
+                break;
+            case R.id.action_collapse_1:
+                adapter.collapseParent(1);
                 break;
             case R.id.action_settings:
                 adapter.notifyParentItemInserted(-1);

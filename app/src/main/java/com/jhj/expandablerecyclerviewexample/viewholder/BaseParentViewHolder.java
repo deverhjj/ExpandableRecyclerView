@@ -30,6 +30,10 @@ public class BaseParentViewHolder extends ParentViewHolder<Parent> {
         tv_info.setText(info);
         getView(R.id.dot).setBackgroundColor(data.getDot());
         getView(R.id.arrow).setRotation(isExpanded() ? 180 : 0);
+
+        if (getAdapterPosition()==0) {
+            Logger.e(TAG,"***********bind**0************");
+        }
     }
 
     @Override
@@ -50,7 +54,7 @@ public class BaseParentViewHolder extends ParentViewHolder<Parent> {
 
         @Override
         public boolean eventAfter(ViewHolderEventAfter event) {
-            Logger.e(TAG,"onEvent="+event.toString());
+           // Logger.e(TAG,"onEvent="+event.toString());
             if (event.triggeredEventType==Event.EventType.LONGCLICK) {
                 Util.showToast(itemView.getContext(),event.id==R.id.image?"image long " +
                         "click":"long click");

@@ -4,13 +4,11 @@
       tools:context="com.jhj.expandablerecyclerviewexample.MainActivity">
     <item
         android:id="@+id/action_test"
-        android:orderInCategory="100"
         android:title="Test"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="200"
         android:title="设置"
         app:showAsAction="never"/>
 
@@ -18,4 +16,33 @@
         android:id="@+id/action_refresh"
         android:title="@string/refreshAll"
         app:showAsAction="withText|ifRoom"/>
+
+    <item
+        android:id="@+id/action_toggle_expandable_1"
+        android:orderInCategory="200"
+        android:title="切换 1 的是否可展开属性"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_expand_all"
+        android:orderInCategory="200"
+        android:title="全部展开"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_collapse_all"
+        android:title="全部折叠"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_expand_1"
+        android:orderInCategory="200"
+        android:title="展开 1"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_collapse_1"
+        android:title="折叠 1"
+        app:showAsAction="never"/>
+
 </menu>

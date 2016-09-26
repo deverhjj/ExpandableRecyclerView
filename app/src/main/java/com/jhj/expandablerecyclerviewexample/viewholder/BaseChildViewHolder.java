@@ -3,6 +3,7 @@ package com.jhj.expandablerecyclerviewexample.viewholder;
 import android.view.View;
 import android.widget.TextView;
 
+import com.jhj.expandablerecyclerview.utils.Logger;
 import com.jhj.expandablerecyclerview.viewholder.ChildViewHolder;
 import com.jhj.expandablerecyclerview.viewholder.Event;
 import com.jhj.expandablerecyclerview.viewholder.ViewHolderCallback;
@@ -14,7 +15,7 @@ import com.jhj.expandablerecyclerviewexample.model.Child;
  * Created by jhj_Plus on 2016/9/2.
  */
 public class BaseChildViewHolder extends ChildViewHolder<Child> implements ViewHolderCallback{
-    private static final String TAG = "BaseParentViewHolder";
+    private static final String TAG = "BaseChildViewHolder";
     public BaseChildViewHolder(View itemView) {
         super(itemView);
         setCallback(this);
@@ -26,6 +27,9 @@ public class BaseChildViewHolder extends ChildViewHolder<Child> implements ViewH
         TextView tv_info=getView(R.id.info);
         tv_info.setText(info);
         getView(R.id.dot).setBackgroundColor(data.getDot());
+        if (getAdapterPosition()==0) {
+            Logger.e(TAG,"***********bind**0************");
+        }
     }
 
     @Override
