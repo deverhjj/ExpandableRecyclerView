@@ -256,14 +256,14 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
             ParentItemWrapper parentItemWrapper = (ParentItemWrapper) listItem;
             //初始化展开折叠状态
             pvh.setExpanded(parentItemWrapper.isExpanded());
-            onBindParentViewHolder(pvh, position, parentPosition,
+            onBindParentViewHolder(pvh, parentPosition, position,
                     parentItemWrapper.getParentItem());
         } else if (listItem == null) {
             throw new IllegalStateException("Incorrect ViewHolder found");
         } else {
             CVH cvh = (CVH) holder;
-            onBindChildViewHolder(cvh, position, parentPosition,
-                    getChildPosition(position), getParentAdapterPosition(parentPosition),listItem);
+            onBindChildViewHolder(cvh, parentPosition, getChildPosition(position),
+                    getParentAdapterPosition(parentPosition), position, listItem);
         }
     }
 
@@ -341,23 +341,25 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * 来自 {@link #onBindViewHolder(RecyclerView.ViewHolder, int)}的用于绑定视图数据 到{@link PVH}
      * 的回调
      * @param parentViewHolder 用于绑定数据的父列表项的 parentViewHolder
-     * @param parentAdapterPosition 该父列表项在适配器数据集里所对应的位置
      * @param parentPosition 该父列表项所在父列表里的位置
+     * @param parentAdapterPosition 该父列表项在适配器数据集里所对应的位置
      * @param parentItem 和该父列表项绑定的数据源 {@link ParentItem}
      */
-    public abstract void onBindParentViewHolder(PVH parentViewHolder, int parentAdapterPosition,
-            int parentPosition, ParentItem parentItem);
+    public abstract void onBindParentViewHolder(PVH parentViewHolder, int parentPosition,
+            int parentAdapterPosition, ParentItem parentItem);
 
     /**
      * 来自 {@link #onBindViewHolder(RecyclerView.ViewHolder, int)}的用于绑定数据到{@link CVH}的回调
      * @param childViewHolder 用于显示或更新绑定到 CVH 里的数据
-     * @param childAdapterPosition 该子列表项在适配器数据集里对应的位置
      * @param parentPosition 该子列表项所从属的父列表项在父列表里的位置
      * @param childPosition 该子列表项在子列表里的位置
+     * @param parentAdapterPosition 该父列表项在适配器数据集里所对应的位置
+     * @param childAdapterPosition 该子列表项在适配器数据集里对应的位置
      * @param childListItem 用于绑定到 CVH 里的数据源
      */
-    public abstract void onBindChildViewHolder(CVH childViewHolder, int childAdapterPosition,
-            int parentPosition, int childPosition,int parentAdapterPosition, Object childListItem);
+    public abstract void onBindChildViewHolder(CVH childViewHolder, int parentPosition,
+            int childPosition, int parentAdapterPosition, int childAdapterPosition,
+            Object childListItem);
 
     /**
      * {@link ParentViewHolder}里父列表项展开回调，用于监听父列表项展开事件并触发相关的展开操作
