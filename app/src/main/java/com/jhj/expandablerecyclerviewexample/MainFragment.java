@@ -41,7 +41,7 @@ public class MainFragment extends Fragment {
 
     private PresenterImpl mIPresenter;
 
-    private List<Parent> mData;
+    private List<Parent> mData=Util.getListData();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +49,6 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setRetainInstance(true);
-        mData=Util.getListData();
     }
 
     @Nullable
@@ -226,6 +225,47 @@ public class MainFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onStart() {
+        Logger.e(TAG,"***********onStart*********");
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Logger.e(TAG,"***********onResume*********");
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        Logger.e(TAG,"***********onPause*********");
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Logger.e(TAG,"***********onStop*********");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Logger.e(TAG,"***********onDestroyView*********");
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        Logger.e(TAG,"***********onDestroy*********");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        Logger.e(TAG,"***********onDetach*********");
+        super.onDetach();
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

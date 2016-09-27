@@ -63,8 +63,8 @@ public class MyAdapter extends ExpandableRecyclerViewAdapter<BaseParentViewHolde
     }
 
     @Override
-    public void onBindParentViewHolder(BaseParentViewHolder parentViewHolder, int parentAdapterPosition,
-            int parentPosition, ParentItem parentListItem)
+    public void onBindParentViewHolder(BaseParentViewHolder parentViewHolder, int parentPosition,
+            int parentAdapterPosition, ParentItem parentListItem)
     {
         Parent parent = (Parent) parentListItem;
         int parentType = getParentType(parentPosition);
@@ -76,8 +76,9 @@ public class MyAdapter extends ExpandableRecyclerViewAdapter<BaseParentViewHolde
     }
 
     @Override
-    public void onBindChildViewHolder(BaseChildViewHolder childViewHolder, int childAdapterPosition,
-            int parentPosition, int childPosition, int parentAdapterPosition,Object childListItem)
+    public void onBindChildViewHolder(BaseChildViewHolder childViewHolder, int parentPosition,
+            int childPosition, int parentAdapterPosition, int childAdapterPosition,
+            Object childListItem)
     {
         Child child = (Child) childListItem;
         int childType = getChildType(parentPosition, childPosition);

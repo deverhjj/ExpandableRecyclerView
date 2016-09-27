@@ -20,11 +20,12 @@ import java.util.Random;
  */
 public class Util {
     private static final String TAG = "Util";
-    private static Random sRandom=new Random();
-    public static List<Parent> getListData() {
 
-        List<Parent> parents =new ArrayList<>();
-        for (int i = 0; i < 15; i++) {
+    private static Random sRandom=new Random();
+
+    public static List<Parent> getListData() {
+        List<Parent> parents = new ArrayList<>();
+        for (int i = 0; i < sRandom.nextInt(16) + 5; i++) {
             Parent parent = getParent();
             parents.add(parent);
         }

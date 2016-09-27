@@ -10,7 +10,7 @@ import java.util.List;
  * {@link ExpandableRecyclerViewAdapter} 业务助手
  * Created by jhj_Plus on 2015/12/23.
  */
-public final class ExpandableRecyclerViewAdapterHelper {
+final class ExpandableRecyclerViewAdapterHelper {
     private static final String TAG = "ExpandableRecyclerViewAdapterHelper";
 
     /**
@@ -19,8 +19,7 @@ public final class ExpandableRecyclerViewAdapterHelper {
      * @param parentItems 客户端所有的父列表项数据集合
      * @return 本地数据模型集合
      */
-    public static List<Object> generateParentChildItemList(
-            List<? extends ParentItem> parentItems)
+    static List<Object> generateItems(List<? extends ParentItem> parentItems)
     {
         List<Object> items = new ArrayList<>();
         final int parentCount = parentItems.size();

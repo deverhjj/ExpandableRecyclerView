@@ -1,10 +1,5 @@
 package com.jhj.expandablerecyclerview.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.jhj.expandablerecyclerview.utils.Logger;
-
 import java.util.List;
 
 /**
@@ -12,7 +7,7 @@ import java.util.List;
  * 去实现本 Lib 所要实现的业务逻辑
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentItemWrapper implements Parcelable {
+public class ParentItemWrapper {
     private static final String TAG = "ParentItemWrapper";
     /**
      * 客户端的父列表项模型类
@@ -23,12 +18,6 @@ public class ParentItemWrapper implements Parcelable {
      * 当前父列表项是否已展开
      */
     private boolean mExpanded = false;
-
-
-    private ParentItemWrapper(Parcel in) {
-        Logger.e(TAG, "create ParentItemWrapper from Parcel");
-        mExpanded = in.readByte() != 0;
-    }
 
     public ParentItemWrapper(ParentItem parentItem) {
         mParentItem = parentItem;
@@ -92,30 +81,4 @@ public class ParentItemWrapper implements Parcelable {
         return childItems != null ? childItems.size() : 0;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        Logger.e(TAG,"writeToParcel");
-        dest.writeByte((byte) (mExpanded ? 1 : 0));
-    }
-
-    public static final Parcelable.Creator<ParentItemWrapper> CREATOR =
-            new Creator<ParentItemWrapper>() {
-        @Override
-        public ParentItemWrapper createFromParcel(Parcel source) {
-            Logger.e(TAG, "createFromParcel");
-            return new ParentItemWrapper(source);
-        }
-
-        @Override
-        public ParentItemWrapper[] newArray(int size) {
-            Logger.e(TAG, "newArray");
-            return new ParentItemWrapper[size];
-        }
-    };
 }
