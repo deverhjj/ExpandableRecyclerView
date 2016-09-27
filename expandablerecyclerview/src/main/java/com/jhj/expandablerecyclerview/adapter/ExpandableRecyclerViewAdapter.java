@@ -373,7 +373,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      */
     @Override
     public boolean onParentItemCollapse(int parentAdapterPosition) {
-        return collapseParentItem(parentAdapterPosition, true);
+        return collapseParentItem(parentAdapterPosition, true, false);
     }
 
 
@@ -565,18 +565,16 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @param byUser 是否是用户通过点击展开父列表项的
      * @return 是否展开成功,如果当前已经展开了或者该 Parent 没有 Child，亦或是内部异常发生时返回 false              
      */
-    private boolean expandParentItem(int parentAdapterPosition, boolean byUser, boolean forceExpandParent)
+    private boolean expandParentItem(int parentAdapterPosition, boolean byUser, boolean force)
     {
         if (parentAdapterPosition==RecyclerView.NO_POSITION) return false;
         Object item = getItem(parentAdapterPosition);
         if (!(item instanceof ParentItemWrapper)) return false;
         ParentItemWrapper parentItemWrapper = (ParentItemWrapper) item;
         //如果非强制展开 Parent 并且当前 parent 无法展开或者当前 Parent 已展开情况下调用无效
-        if (!forceExpandParent &&
-                (!parentItemWrapper.isExpandable() || parentItemWrapper.isExpanded()))
-            return false;
+        if (!force && (!parentItemWrapper.isExpandable() || parentItemWrapper.isExpanded())) return false;
         //如果强制展开 Parent 并且当前 parent 已展开时调用也无效，例如:程序调用展开同一 parent 方法多次
-        if (forceExpandParent && parentItemWrapper.isExpanded()) return false;
+        if (force && parentItemWrapper.isExpanded()) return false;
 
         List<?> childItems = parentItemWrapper.getChildItems();
         if (childItems == null || childItems.isEmpty()) return false;
@@ -605,13 +603,14 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @param parentAdapterPosition 父列表项在适配器里所对应的位置
      * @param byUser 是否是用户通过点击展开父列表项的
      */
-    private boolean collapseParentItem(int parentAdapterPosition, boolean byUser)
+    private boolean collapseParentItem(int parentAdapterPosition, boolean byUser, boolean force)
     {
         if (parentAdapterPosition==RecyclerView.NO_POSITION) return false;
         Object item = getItem(parentAdapterPosition);
         if (!(item instanceof ParentItemWrapper)) return false;
         ParentItemWrapper parentItemWrapper = (ParentItemWrapper) item;
-        if (!parentItemWrapper.isExpandable() || !parentItemWrapper.isExpanded()) return false;
+        if (!force && (!parentItemWrapper.isExpandable() || !parentItemWrapper.isExpanded())) return false;
+        if (force && !parentItemWrapper.isExpanded()) return false;
         List<?> childItems = parentItemWrapper.getChildItems();
         if (childItems == null || childItems.isEmpty()) return false;
 
@@ -650,10 +649,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentAdapterPosition 父列表项在适配器里所对应的位置
      */
-    private boolean expandViews(int parentAdapterPosition, boolean forceExpandParent) {
+    private boolean expandViews(int parentAdapterPosition, boolean force) {
         boolean success = true;
         for (RecyclerView recyclerView : mAttachedRecyclerViews) {
-            if (!expandParentItem(parentAdapterPosition, false, forceExpandParent)) {
+            if (!expandParentItem(parentAdapterPosition, false, force)) {
                 Logger.e(TAG,"expandViews failed---->"+getParentPosition(parentAdapterPosition));
                 success = false;
             }
@@ -705,10 +704,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentAdapterPosition 父列表项在适配器里所对应的位置
      */
-    private boolean collapseViews(int parentAdapterPosition) {
+    private boolean collapseViews(int parentAdapterPosition, boolean force) {
         boolean success = true;
         for (RecyclerView recyclerView : mAttachedRecyclerViews) {
-            if (!collapseParentItem(parentAdapterPosition, false)) {
+            if (!collapseParentItem(parentAdapterPosition, false, force)) {
                 Logger.e(TAG,"collapseViews failed---->"+getParentPosition(parentAdapterPosition));
                 success = false;
             }
@@ -737,7 +736,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     public boolean collapseParent(int parentPosition) {
         int parentAdapterPosition = getParentAdapterPosition(parentPosition);
         return parentAdapterPosition != RecyclerView.NO_POSITION && collapseViews(
-                parentAdapterPosition);
+                parentAdapterPosition, true);
     }
 
     /**
