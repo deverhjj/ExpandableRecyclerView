@@ -30,10 +30,8 @@ public class BaseParentViewHolder extends ParentViewHolder<Parent> {
         tv_info.setText(info);
         getView(R.id.dot).setBackgroundColor(data.getDot());
         getView(R.id.arrow).setRotation(isExpanded() ? 180 : 0);
-
-        if (getAdapterPosition()==0) {
-            Logger.e(TAG,"***********bind**0************");
-        }
+        if (getAdapterPosition()==1)
+        Logger.e(TAG,"***********bind**************>>"+getAdapterPosition());
     }
 
     @Override

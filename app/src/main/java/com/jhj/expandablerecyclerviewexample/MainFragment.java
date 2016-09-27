@@ -20,7 +20,9 @@ import android.widget.ImageView;
 import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
 import com.jhj.expandablerecyclerview.utils.Logger;
 import com.jhj.expandablerecyclerviewexample.adapter.MyAdapter;
+import com.jhj.expandablerecyclerviewexample.model.Child;
 import com.jhj.expandablerecyclerviewexample.model.Parent;
+import com.jhj.expandablerecyclerviewexample.model.Test;
 import com.jhj.expandablerecyclerviewexample.utils.Util;
 import com.jhj.expandablerecyclerviewexample.viewholder.BaseParentViewHolder;
 
@@ -33,17 +35,21 @@ import java.util.List;
  * Created by jhj_Plus on 2016/9/2.
  */
 public class MainFragment extends Fragment {
-    private static final String TAG = "MainFragment";
     public static final int REQUEST_RESULT = 1;
-
+    private static final String TAG = "MainFragment";
     private RecyclerView mRecyclerView;
 
     private PresenterImpl mIPresenter;
 
+    private List<Parent> mData;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Logger.e(TAG,"***********onCreate*********");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
+        mData=Util.getListData();
     }
 
     @Nullable
@@ -51,21 +57,33 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState)
     {
+        Logger.e(TAG,"***********onCreateView*********");
         return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_main, container, false);
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Logger.e(TAG,"***********onViewCreated*********");
+        super.onViewCreated(view, savedInstanceState);
         init(getView());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        Logger.e(TAG,"***********onActivityCreated*********");
+        super.onActivityCreated(savedInstanceState);
+
+        // 保存 ExpandableRecyclerView 状态
+        MyAdapter adapter= (MyAdapter) mRecyclerView.getAdapter();
+        adapter.onRestoreInstanceState(savedInstanceState);
+
     }
 
     private void init(View rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        List<Parent> data=Util.getListData();
-        final MyAdapter adapter = new MyAdapter(getActivity(), data);
+        MyAdapter adapter=new MyAdapter(getActivity(), mData);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addItemDecoration(adapter.getItemDecoration());
         adapter.setParentExpandCollapseListener(new ExpandableRecyclerViewAdapter.OnParentExpandCollapseListener() {
@@ -109,7 +127,7 @@ public class MainFragment extends Fragment {
                 arrow.animate().rotation(rotate).setDuration(300).start();
             }
         });
-        mIPresenter=new PresenterImpl(adapter,data);
+        mIPresenter=new PresenterImpl(adapter,mData);
     }
 
     @Override
@@ -152,8 +170,18 @@ public class MainFragment extends Fragment {
                 adapter.collapseParent(1);
                 break;
             case R.id.action_settings:
-                adapter.notifyParentItemInserted(-1);
-                //startActivity(new Intent(getActivity(),SecondActivity.class));
+                Intent intent=new Intent(getActivity(),SecondActivity.class);
+                Test test=new Test();
+                Parent p=test.getParent();
+                List<Child> children=p.getChildItems();
+                test.setString("pppppppppppp");
+                p.setInitiallyExpanded(false);
+                if (children != null && !children.isEmpty()) {
+                    children.get(0).setDot(1);
+                    Logger.e(TAG, "change child 0 dot");
+                }
+                intent.putExtra("test", test);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -199,5 +227,12 @@ public class MainFragment extends Fragment {
     }
 
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Logger.e(TAG,"***********onSaveInstanceState*********");
+        super.onSaveInstanceState(outState);
+        MyAdapter adapter= (MyAdapter) mRecyclerView.getAdapter();
+        adapter.onSaveInstanceState(outState);
+    }
 
 }

@@ -29,7 +29,7 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
     /**
      * 设置当前父列表项是否已展开
      */
-    private boolean mExpanded=false;
+    private boolean mExpanded = false;
 
 
     public ParentViewHolder(View itemView) {

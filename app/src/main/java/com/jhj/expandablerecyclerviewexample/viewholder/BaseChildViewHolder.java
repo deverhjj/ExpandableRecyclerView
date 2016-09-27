@@ -27,9 +27,7 @@ public class BaseChildViewHolder extends ChildViewHolder<Child> implements ViewH
         TextView tv_info=getView(R.id.info);
         tv_info.setText(info);
         getView(R.id.dot).setBackgroundColor(data.getDot());
-        if (getAdapterPosition()==0) {
-            Logger.e(TAG,"***********bind**0************");
-        }
+        Logger.e(TAG,"***********bind**************>>"+getAdapterPosition());
     }
 
     @Override

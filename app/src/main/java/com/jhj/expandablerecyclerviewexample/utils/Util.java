@@ -2,6 +2,7 @@ package com.jhj.expandablerecyclerviewexample.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,25 +20,31 @@ import java.util.Random;
  */
 public class Util {
     private static final String TAG = "Util";
-
+    private static Random sRandom=new Random();
     public static List<Parent> getListData() {
-        Random random=new Random();
+
         List<Parent> parents =new ArrayList<>();
         for (int i = 0; i < 15; i++) {
-            Parent parent =new Parent();
-            parent.setType(random.nextInt(2));
-            if (random.nextBoolean()) {
-                List<Child> children =new ArrayList<>();
-                for (int j = 0; j < random.nextInt(6); j++) {
-                    Child child =new Child();
-                    child.setType(random.nextInt(2));
-                    children.add(child);
-                }
-                parent.setChildren(children);
-            }
+            Parent parent = getParent();
             parents.add(parent);
         }
         return parents;
+    }
+
+    @NonNull
+    public static Parent getParent() {
+        Parent parent =new Parent();
+        parent.setType(sRandom.nextInt(2));
+        if (sRandom.nextBoolean()) {
+            List<Child> children =new ArrayList<>();
+            for (int j = 0; j < sRandom.nextInt(6); j++) {
+                Child child =new Child();
+                child.setType(sRandom.nextInt(2));
+                children.add(child);
+            }
+            parent.setChildren(children);
+        }
+        return parent;
     }
 
 

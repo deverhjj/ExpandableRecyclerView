@@ -1,6 +1,9 @@
 package com.jhj.expandablerecyclerviewexample.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.jhj.expandablerecyclerview.model.ParentItem;
 
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.List;
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class Parent implements ParentItem<Child> {
+public class Parent implements ParentItem<Child>, Parcelable {
     private static final String TAG = "Parent";
 
     private boolean isExpandable = true;
@@ -22,6 +25,30 @@ public class Parent implements ParentItem<Child> {
     private String info;
 
     private List<Child> mChildren;
+
+    public Parent() {
+    }
+
+    private Parent(Parcel in) {
+        isExpandable = in.readByte() != 0;
+        isInitiallyExpanded = in.readByte() != 0;
+        dot = in.readInt();
+        type = in.readInt();
+        info = in.readString();
+        mChildren = in.createTypedArrayList(Child.CREATOR);
+    }
+
+    public static final Creator<Parent> CREATOR = new Creator<Parent>() {
+        @Override
+        public Parent createFromParcel(Parcel in) {
+            return new Parent(in);
+        }
+
+        @Override
+        public Parent[] newArray(int size) {
+            return new Parent[size];
+        }
+    };
 
     public void setChildren(List<Child> children)
     {
@@ -75,4 +102,18 @@ public class Parent implements ParentItem<Child> {
         return isInitiallyExpanded;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (isExpandable ? 1 : 0));
+        dest.writeByte((byte) (isInitiallyExpanded ? 1 : 0));
+        dest.writeInt(dot);
+        dest.writeInt(type);
+        dest.writeString(info);
+        dest.writeTypedList(mChildren);
+    }
 }

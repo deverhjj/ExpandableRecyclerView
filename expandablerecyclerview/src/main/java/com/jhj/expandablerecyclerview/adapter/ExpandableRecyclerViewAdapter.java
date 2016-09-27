@@ -1,6 +1,7 @@
 package com.jhj.expandablerecyclerview.adapter;
 
-import android.support.annotation.NonNull;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -47,7 +48,11 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
 {
     private static final String TAG = "ExpandableRVAdapter";
 
+    private static final String SAVED_EXPANSION_STATE="savedExpansionState";
+
     private static final String TYPE_FORMAT = "%1$d%2$d";
+
+    private boolean mSaveExpansionState = false;
 
     /**
      * 父列表项标识
@@ -84,16 +89,31 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     private List<OnParentExpandCollapseListener> mExpandCollapseListeners = new ArrayList<>(1);
 
 
-    public ExpandableRecyclerViewAdapter(@NonNull List<? extends ParentItem> parentItems) {
+    public ExpandableRecyclerViewAdapter(List<? extends ParentItem> parentItems) {
+        init(parentItems);
+    }
 
-        if (parentItems==null) throw new IllegalArgumentException("parentItems should not be " +
-                "null");
+    private void init(List<? extends ParentItem> parentItems) {
+        //如果需要保存状态，忽略新的或者旧的数据参数
+        if (mSaveExpansionState) return;
+
+        if (parentItems == null) {
+            throw new IllegalArgumentException("parentItems should not be " + "null");
+        }
 
         mParentItems = parentItems;
-
         mItems = ExpandableRecyclerViewAdapterHelper.generateParentChildItemList(
                 parentItems);
+    }
 
+
+    /**
+     * 设置新的数据
+     * @param newParentItems 新数据
+     */
+    public void invalidateParentItems(List<? extends ParentItem> newParentItems) {
+        init(newParentItems);
+        notifyDataSetChanged();
     }
 
     /**
@@ -142,8 +162,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      *
      */
     @Deprecated
-    public void setParentExpandCollapseListener(
-            OnParentExpandCollapseListener listener)
+    public void setParentExpandCollapseListener(OnParentExpandCollapseListener listener)
     {
         addParentExpandCollapseListener(listener);
     }
@@ -384,11 +403,11 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
     /**
      * 获取指定适配器位置数据所代表的列表项
      *
-     * @param adapterPosition 该列表项在适配器数据集中对应的位置
+     * @param position 该列表项在适配器数据集中对应的位置
      * @return 指定适配器位置数据所代表的列表项
      */
-    private Object getItem(int adapterPosition) {
-        return mItems.get(adapterPosition);
+    private Object getItem(int position) {
+        return mItems.get(position);
     }
 
     /**
@@ -642,6 +661,8 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
             if (pvh != null && !pvh.isExpanded()) {
                 pvh.setExpanded(success);
             } else if (pvh==null) {
+                Logger.e(TAG,"expandViews pvh is null---->"+getParentPosition
+                        (parentAdapterPosition));
                 notifyItemChanged(parentAdapterPosition);
             }
         }
@@ -700,7 +721,8 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
             if (pvh != null && pvh.isExpanded()) {
                 pvh.setExpanded(!success);
             } else if (pvh == null) {
-                Logger.e(TAG,"pvh is null---->"+getParentPosition(parentAdapterPosition));
+                Logger.e(TAG,"collapseViews pvh is null---->"+getParentPosition
+                        (parentAdapterPosition));
                 // TODO 为了修复上面提出的 bug，这里的判断没有 attach 到 RecyclerView 上的 ItemView 通知刷新
                 notifyItemChanged(parentAdapterPosition);
             }
@@ -1140,6 +1162,66 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         } else {
             // from 和 to parentItem 都没有展开,do nothing
         }
+    }
+
+    //———————————————————————————保存 Parent 的展开状态———————————————————————————————————————\\
+
+    /**
+     * 保存 Parent 的展开状态
+     * @param outState 存储需要保存的数据的 Bundle
+     */
+    public void onSaveInstanceState(Bundle outState) {
+        if (outState==null) return;
+        Logger.e(TAG, "onSaveInstanceState");
+        mSaveExpansionState = true;
+        outState.putParcelableArrayList(SAVED_EXPANSION_STATE, saveExpansionState());
+    }
+
+    private ArrayList<? extends Parcelable> saveExpansionState() {
+        ArrayList<ParentItemWrapper> savedState = new ArrayList<>();
+        final int itemCount = mItems.size();
+        for (int i = 0; i < itemCount; i++) {
+            Object item = getItem(i);
+            if (item instanceof ParentItemWrapper) {
+                ParentItemWrapper parentItemWrapper = (ParentItemWrapper) item;
+                savedState.add(parentItemWrapper);
+            }
+        }
+        return savedState;
+    }
+
+    /**
+     * 恢复 Parent 的展开状态
+     * @param savedInstanceState 之前保存过的数据的 Bundle
+     */
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState == null) return;
+        Logger.e(TAG, "onRestoreInstanceState");
+        mSaveExpansionState = false;
+        List<Object> savedItems = new ArrayList<>();
+        ArrayList<ParentItemWrapper> savedState = savedInstanceState.getParcelableArrayList(
+                SAVED_EXPANSION_STATE);
+        if (savedState==null) return;
+
+        for (ParentItemWrapper parentItemWrapper : savedState) {
+            savedItems.add(parentItemWrapper);
+            if (parentItemWrapper.isExpanded()) {
+                List<?> childItems = parentItemWrapper.getChildItems();
+                final boolean hasChildren = childItems != null && !childItems.isEmpty();
+                if (!hasChildren) continue;
+                final int childCount = childItems.size();
+                for (int j = 0; j < childCount; j++) {
+                    Object childListItem = childItems.get(j);
+                    if (childListItem == null) continue;
+                    savedItems.add(childListItem);
+                }
+            }
+            Logger.e(TAG,
+                    "parentItemWrapper.isExpanded====>" + savedState.indexOf(parentItemWrapper) +
+                            (parentItemWrapper.isExpanded()));
+        }
+        mItems = savedItems;
+        notifyDataSetChanged();
     }
 }
 
