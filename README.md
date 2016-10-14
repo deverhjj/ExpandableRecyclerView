@@ -10,7 +10,7 @@
 3. encapsulate `ViewHolder`
 4. now support set specified ParentItem which can be expandable dynamically
 
-![Demo](/screenshots/screenshot_1.png)
+![Demo](/screenshots/screenshot_3.png)
 ![Demo](/screenshots/screenshot_2.png)
 
 License
