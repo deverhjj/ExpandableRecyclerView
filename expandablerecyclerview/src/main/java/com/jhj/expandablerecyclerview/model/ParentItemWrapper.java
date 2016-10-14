@@ -38,6 +38,7 @@ public class ParentItemWrapper {
     public void setParentItem(ParentItem parentItem)
     {
         mParentItem = parentItem;
+
     }
 
     /**
@@ -56,7 +57,7 @@ public class ParentItemWrapper {
         mExpanded = expanded;
     }
 
-    public boolean isExpandable(){
+    public boolean isExpandable() {
         return mParentItem.isExpandable();
     }
 

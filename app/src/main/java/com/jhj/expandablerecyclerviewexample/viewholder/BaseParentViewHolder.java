@@ -25,13 +25,14 @@ public class BaseParentViewHolder extends ParentViewHolder<Parent> {
 
     @Override
     public void bind(Parent data) {
-        String info=data.getInfo();
-        TextView tv_info=getView(R.id.info);
+        String info = data.getInfo();
+        TextView tv_info = getView(R.id.info);
         tv_info.setText(info);
         getView(R.id.dot).setBackgroundColor(data.getDot());
         getView(R.id.arrow).setRotation(isExpanded() ? 180 : 0);
-        if (getAdapterPosition()==1)
-        Logger.e(TAG,"***********bind**************>>"+getAdapterPosition());
+//        if (getAdapterPosition() == 1) {
+            Logger.e(TAG, "***********bind**************>>" + getAdapterPosition());
+       // }
     }
 
     @Override
