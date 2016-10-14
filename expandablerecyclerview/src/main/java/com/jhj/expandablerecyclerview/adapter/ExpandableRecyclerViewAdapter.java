@@ -14,7 +14,6 @@ import com.jhj.expandablerecyclerview.viewholder.ParentViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 扩展 {@link RecyclerView.Adapter} 实现可展开折叠的 {@link RecyclerView}
@@ -49,24 +48,6 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
 
     private static final String SAVED_EXPANSION_STATE="savedExpansionState";
 
-    private static final String TYPE_FORMAT = "%1$d%2$d";
-
-    /**
-     * 父列表项标识
-     */
-    private static final int TYPE_PARENT = 1;
-    /**
-     * 子列表项标识
-     */
-    private static final int TYPE_CHILD = 2;
-    /**
-     * 默认的没有指定父列表项类型的标识
-     */
-    private static final int TYPE_PARENT_NO_TYPE = 0;
-    /**
-     * 默认的没有指定子列表项类型的标识
-     */
-    private static final int TYPE_CHILD_NO_TYPE = 0;
     /**
      * 父列表项集合
      */
@@ -192,31 +173,22 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      */
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        //父或子类型和具体的不同父或子类型的类型组合
-        //例如 11，第一个1代表父列表项，第二个1代表外部传进来的具体的父列表项类型
-        String packedViewType = String.valueOf(viewType);
-
-        char[] chars = packedViewType.toCharArray();
-        String[] splitPackedViewType = {String.valueOf(chars[0]), String.valueOf(chars[1])};
-
-        //获得列表项类型，父列表项或子列表项类型，用于预先判断该列表项是父列表项还是子列表项
-        viewType = Integer.valueOf(splitPackedViewType[0]);
-
+        //本地 ItemView 的类型(parent 或者 child)
+        final int localViewType=Packager.getLocalViewType(viewType);
         //外部返回的指定的具体的列表项类型(具体的父或子列表项类型)
-        int specifiedViewType = Integer.valueOf(splitPackedViewType[1]);
+        final int clientViewType = Packager.getClientViewType(viewType);
 
-        if (viewType == TYPE_PARENT) {
+        if (localViewType == Packager.ITEM_VIEW_TYPE_PARENT) {
             //回调并返回父列表项视图 ParentViewHolder
-            PVH pvh = onCreateParentViewHolder(parent, specifiedViewType);
+            PVH pvh = onCreateParentViewHolder(parent, clientViewType);
             //注册父列表项视图点击事件监听器,用于监听列表项视图的点击并根据列表项的展开状态触发列表项的展开或折叠回调
             pvh.setClickEvent();
             //注册 ParentItemView 点击回调监听器
             pvh.setParentItemExpandCollapseListener(this);
             return pvh;
-        } else if (viewType == TYPE_CHILD) {
+        } else if (localViewType == Packager.ITEM_VIEW_TYPE_CHILD) {
             ////回调并返回子列表项视图 ChildViewHolder
-            return onCreateChildViewHolder(parent, specifiedViewType);
+            return onCreateChildViewHolder(parent, clientViewType);
         } else {
             throw new IllegalStateException("Incorrect ViewType found");
         }
@@ -238,6 +210,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * @param position 该列表项在适配器数据集中代表的位置
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         //
         Object listItem = getItem(position);
@@ -269,38 +242,36 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         //返回父类型和具体的父类型的组合后的列表项类型
         if (listItem instanceof ParentItemWrapper) {
             int parentType = getParentType(parentPosition);
-            String packedParentType = String.format(Locale.getDefault(), TYPE_FORMAT, TYPE_PARENT,
-                    parentType);
-            return Integer.valueOf(packedParentType);
+            return Packager.makeItemViewTypeSpec(parentType, Packager.ITEM_VIEW_TYPE_PARENT);
         } else if (listItem == null) {
             throw new IllegalStateException("Null object added");
         } else {
             //回调获取具体的子列表项类型
             //返回子类型和具体子类型的组合后的列表项类型
             int childType = getChildType(parentPosition, getChildPosition(position));
-            String packedChildType = String.format(Locale.getDefault(), TYPE_FORMAT, TYPE_CHILD,
-                    childType);
-            return Integer.valueOf(packedChildType);
+            return Packager.makeItemViewTypeSpec(childType, Packager.ITEM_VIEW_TYPE_CHILD);
         }
     }
 
     /**
-     * 获取指定父列表位置的父列表类型
+     * 返回指定父列表位置的父列表类型
+     * 返回的 int 标识不能为负数
      * @param parentPosition 要查询的父列表类型的位置
      * @return 指定父列表位置的父列表类型
      */
     public int getParentType(int parentPosition) {
-        return TYPE_PARENT_NO_TYPE;
+        return Packager.ITEM_VIEW_TYPE_DEFAULT;
     }
 
     /**
-     * 获取指定的父列表项位置下从属该父列表的子列表项的位置对应的子列表项类型
+     * 返回指定的父列表项位置下从属该父列表的子列表项的位置对应的子列表项类型
+     * 返回的 int 标识不能为负数
      * @param parentPosition 该子列表项的从属父列表项位置
      * @param childPosition 子列表项的位置
      * @return 子列表项的类型
      */
     public int getChildType(int parentPosition, int childPosition) {
-        return TYPE_CHILD_NO_TYPE;
+        return Packager.ITEM_VIEW_TYPE_DEFAULT;
     }
 
     /**
@@ -643,6 +614,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentAdapterPosition 父列表项在适配器里所对应的位置
      */
+    @SuppressWarnings("unchecked")
     private boolean expandViews(int parentAdapterPosition, boolean force) {
         boolean success = true;
         for (RecyclerView recyclerView : mAttachedRecyclerViews) {
@@ -698,6 +670,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentAdapterPosition 父列表项在适配器里所对应的位置
      */
+    @SuppressWarnings("unchecked")
     private boolean collapseViews(int parentAdapterPosition, boolean force) {
         boolean success = true;
         for (RecyclerView recyclerView : mAttachedRecyclerViews) {
@@ -1161,6 +1134,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
 
     /**
      * 保存 Parent 的展开状态
+     * <p>在屏幕旋转或者退出应用时保存当前所有 Parent 的展开状态</p>
      * @param outState 存储需要保存的数据的 Bundle
      */
     public void onSaveInstanceState(Bundle outState) {
@@ -1196,6 +1170,7 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
 
     /**
      * 恢复 Parent 的展开状态
+     * <p>如果恢复时 parent 数据与之前保存数据的不对应，那么默认按照原先保存的状态去恢复</p>
      * @param savedInstanceState 之前保存过的数据的 Bundle
      */
     public void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -1235,5 +1210,36 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
         mItems = savedItems;
         notifyDataSetChanged();
     }
+
+    /**
+     * 本地 ItemViewType(parent、child)和客户端返回的多种类型的 parent 或/和 child ItemViewType 打包器
+     * <p># 方便在{@link #getItemViewType(int)} 方法中返回本地 parent 和 child 与客户端可能返回的多种类型的 parent 或/和
+     * child 类型的打包后的 ItemViewType，在{@link #onCreateViewHolder(ViewGroup, int)} 方法中将传递过来的先前打包过的
+     * ItemViewType 解包为具体的本地类型和客户端返回的类型(parent、child)来进行判断和回调</p>
+     */
+    private static class Packager {
+        private static final int TYPE_SHIFT = 30;
+        private static final int TYPE_MASK = 0x3 << TYPE_SHIFT;
+
+        private static final int ITEM_VIEW_TYPE_DEFAULT = 0 << TYPE_SHIFT;
+        private static final int ITEM_VIEW_TYPE_PARENT = 1 << TYPE_SHIFT;
+        private static final int ITEM_VIEW_TYPE_CHILD = 2 << TYPE_SHIFT;
+
+        //------------打包(客户端的 ItemView 类型和本地类型)----------------
+        private static int makeItemViewTypeSpec(int clientViewType, int localViewType) {
+            return (clientViewType & ~TYPE_MASK) | (localViewType & TYPE_MASK);
+        }
+
+        //解包(本地ItemViewType)
+        private static int getLocalViewType(int itemViewTypeSpec) {
+            return (itemViewTypeSpec & TYPE_MASK);
+        }
+
+        //解包(客户端ItemViewType)
+        private static int getClientViewType(int itemViewTypeSpec) {
+            return (itemViewTypeSpec & ~TYPE_MASK);
+        }
+    }
+
 }
 
