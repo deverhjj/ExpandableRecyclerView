@@ -811,10 +811,26 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentPosition 要插入的子列表项所属的父列表项位置
      * @param childPosition 要插入的子列表项的位置
+     * @see #notifyChildItemRangeInserted(int, int, int, boolean)
+     */
+    public final void notifyChildItemInserted(int parentPosition, int childPosition)
+    {
+        notifyChildItemInserted(parentPosition, childPosition, true);
+    }
+
+    /**
+     * 通知任何注册的监视器当前在 {@code parentPosition,childPosition} 位置有新的子列表项插入，
+     * 之前在该位置存在的子列表项将被移动到 {@code childPosition+1} 位置。
+     * <p>
+     * 这是数据结构上的变化，尽管位置变化了，但是之前存在的所有列表项在数据集里的数据都会被认为最新，
+     * 因此这些列表项不会被重新绑定数据
+     * </p>
+     * @param parentPosition 要插入的子列表项所属的父列表项位置
+     * @param childPosition 要插入的子列表项的位置
      * @param forceExpandParent 是否强制展开已插入的子列表项所属的父列表项，如果当前父列表项没有展开
      * @see #notifyChildItemRangeInserted(int, int, int, boolean)
      */
-    public final void notifyChildItemInserted(int parentPosition, int childPosition,
+    public void notifyChildItemInserted(int parentPosition, int childPosition,
             boolean forceExpandParent)
     {
         notifyChildItemRangeInserted(parentPosition, childPosition, 1, forceExpandParent);
@@ -845,6 +861,25 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
             insertedItemCount += addParentWrapper(parentAdapterPos + insertedItemCount, i);
         }
         notifyItemRangeInserted(parentAdapterPos, insertedItemCount);
+    }
+
+    /**
+     * 通知任何注册的监视器当前在 {@code parentPosition,childPositionStart} 位置有 {@code childItemCount} 个子列表项插入，
+     * 之前在该位置存在的子列表项将被移动到 {@code childPositionStart + childItemCount} 位置。
+     * <p>
+     * 这是数据结构上的变化，尽管位置变化了，但是之前存在的所有列表项在数据集里的数据都会被认为最新，
+     * 因此这些列表项不会被重新绑定数据
+     * </p>
+     *
+     * @param parentPosition 要插入多个新子列表项所属的父列表项位置
+     * @param childPositionStart 要插入多个新子列表项的位置
+     * @param childItemCount 要插入的子列表项的个数
+     * @see #notifyChildItemInserted(int, int, boolean)
+     */
+    public final void notifyChildItemRangeInserted(int parentPosition, int childPositionStart,
+            int childItemCount)
+    {
+        notifyChildItemRangeInserted(parentPosition, childPositionStart, childItemCount, true);
     }
 
     /**
@@ -968,9 +1003,10 @@ public abstract class ExpandableRecyclerViewAdapter<PVH extends ParentViewHolder
      * </p>
      * @param parentPosition 要移除的多个子列表项所属的父列表项的位置
      * @param childPositionStart 移除多个子列表项所开始的位置
-     * @param childItemCount 移除的子列表项的个数}
+     * @param childItemCount 移除的子列表项的个数
      * @see #notifyChildItemRemoved(int, int)
      */
+    //TODO 是否可以在删除 child/children 时自动 collapse parent
     public final void notifyChildItemRangeRemoved(int parentPosition, int childPositionStart,
             int childItemCount)
     {
