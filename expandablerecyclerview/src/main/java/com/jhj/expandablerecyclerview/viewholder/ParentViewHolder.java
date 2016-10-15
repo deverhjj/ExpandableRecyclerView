@@ -144,7 +144,8 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
      */
     private void expandParent() {
         if (mExpandCollapseListener != null) {
-            mExpanded=mExpandCollapseListener.onParentItemExpand(getAdapterPosition());
+            mExpanded = mExpandCollapseListener.onParentItemExpand(getAdapterPosition());
+            Logger.e(TAG, "*******expandParent*******>" + mExpanded);
         }
     }
 
@@ -153,7 +154,8 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
      */
     private void collapseParent() {
         if (mExpandCollapseListener != null) {
-            mExpanded=!mExpandCollapseListener.onParentItemCollapse(getAdapterPosition());
+            mExpanded = !mExpandCollapseListener.onParentItemCollapse(getAdapterPosition());
+            Logger.e(TAG, "*******collapseParent*******>" + mExpanded);
         }
     }
 
@@ -176,7 +178,7 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
 
         @Override
         public boolean eventAfter(BaseViewHolder.ViewHolderEventAfter event) {
-            Logger.i(TAG, "onEvent=" + event.toString());
+          //  Logger.i(TAG, "onEvent=" + event.toString());
             //处理内部 ItemView 事件，需要监听ParentItemView点击事件来处理展开折叠
             handleInnerEvent(event);
 

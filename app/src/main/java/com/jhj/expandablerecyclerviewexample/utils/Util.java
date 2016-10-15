@@ -23,9 +23,10 @@ public class Util {
 
     private static Random sRandom=new Random();
 
+   // sRandom.nextInt(16) + 5
     public static List<Parent> getListData() {
         List<Parent> parents = new ArrayList<>();
-        for (int i = 0; i < sRandom.nextInt(16) + 5; i++) {
+        for (int i = 0; i < 15; i++) {
             Parent parent = getParent();
             parents.add(parent);
         }

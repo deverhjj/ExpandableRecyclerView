@@ -129,7 +129,7 @@ public class PresenterImpl implements IPresenter {
             children.remove(childPositionStart);
         }
 
-        mAdapter.notifyChildItemRangeRemoved(parentPosition,childPositionStart,childItemCount);
+        mAdapter.notifyChildItemRangeRemoved(parentPosition,childPositionStart,childItemCount,false);
 
         autoNotifyAllChanged();
     }
