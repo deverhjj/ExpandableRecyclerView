@@ -16,7 +16,7 @@ public class Parent implements ParentItem<Child>, Parcelable {
 
     private boolean isExpandable = true;
 
-    private boolean isInitiallyExpanded = true;
+    private boolean isInitiallyExpanded = false;
 
     private int dot;
 

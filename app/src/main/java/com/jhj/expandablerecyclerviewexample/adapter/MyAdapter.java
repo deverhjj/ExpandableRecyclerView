@@ -22,6 +22,9 @@ import com.jhj.expandablerecyclerviewexample.viewholder.Parent2ViewHolder;
 
 import java.util.List;
 
+import static com.jhj.expandablerecyclerview.adapter.ExpandableAdapter.ExpandCollapseMode
+        .MODE_SINGLE_COLLAPSE;
+
 /**
  * Created by jhj_Plus on 2016/9/2.
  */

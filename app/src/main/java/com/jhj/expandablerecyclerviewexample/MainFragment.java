@@ -83,6 +83,7 @@ public class MainFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         MyAdapter adapter=new MyAdapter(getActivity(), mData);
+        adapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_SINGLE_COLLAPSE);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addItemDecoration(adapter.getItemDecoration());
         adapter.setParentExpandCollapseListener(new ExpandableAdapter.OnParentExpandCollapseListener() {
