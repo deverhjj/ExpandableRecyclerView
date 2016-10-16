@@ -9,6 +9,7 @@
 2. support extra `notifyParentItemMoved`、`notifyChildItemMoved`、`notifyParentItemRangeChanged`、`notifyParentItemRangedRemoved`、`notifyChildItemRangeInserted`、`notifyChildItemRangeRemoved`、`notifyChildItemRangeChanged` api
 3. encapsulate `ViewHolder`
 4. now support set specified ParentItem which can be expandable dynamically
+5. now support set ExpandableAdapter's `setExpandCollapseMode`! eg: MODE_SINGLE_EXPAND,in this mode,when expand another parentItem will auto collapse last expanded parentItem.
 
 ![Demo](/screenshots/screenshot_3.png)
 ![Demo](/screenshots/screenshot_2.png)
