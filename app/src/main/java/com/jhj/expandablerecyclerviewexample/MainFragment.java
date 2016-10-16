@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
+import com.jhj.expandablerecyclerview.adapter.ExpandableAdapter;
 import com.jhj.expandablerecyclerview.utils.Logger;
 import com.jhj.expandablerecyclerviewexample.adapter.MyAdapter;
 import com.jhj.expandablerecyclerviewexample.model.Child;
@@ -85,7 +85,7 @@ public class MainFragment extends Fragment {
         MyAdapter adapter=new MyAdapter(getActivity(), mData);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addItemDecoration(adapter.getItemDecoration());
-        adapter.setParentExpandCollapseListener(new ExpandableRecyclerViewAdapter.OnParentExpandCollapseListener() {
+        adapter.setParentExpandCollapseListener(new ExpandableAdapter.OnParentExpandCollapseListener() {
 
             @Override
             public void onParentExpanded(int parentPosition, int parentAdapterPosition,

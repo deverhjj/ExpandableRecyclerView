@@ -3,7 +3,7 @@ package com.jhj.expandablerecyclerviewexample;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 
-import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
+import com.jhj.expandablerecyclerview.adapter.ExpandableAdapter;
 import com.jhj.expandablerecyclerview.utils.Logger;
 import com.jhj.expandablerecyclerviewexample.model.Child;
 import com.jhj.expandablerecyclerviewexample.model.Parent;
@@ -20,10 +20,10 @@ public class PresenterImpl implements IPresenter {
 
     private Random mRandom=new Random();
 
-    private ExpandableRecyclerViewAdapter mAdapter;
+    private ExpandableAdapter mAdapter;
     private List<Parent> mData;
 
-    public PresenterImpl(ExpandableRecyclerViewAdapter adapter,List<Parent> data) {
+    public PresenterImpl(ExpandableAdapter adapter,List<Parent> data) {
         mAdapter=adapter;
         mData = data;
     }

@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.jhj.expandablerecyclerview.R;
-import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
+import com.jhj.expandablerecyclerview.adapter.ExpandableAdapter;
 import com.jhj.expandablerecyclerview.utils.Logger;
 
 import java.util.Arrays;
@@ -74,7 +74,7 @@ public class ParentViewHolder<D> extends BaseViewHolder<D> {
      * @param listener
      */
     public void setParentItemExpandCollapseListener(OnParentItemExpandCollapseListener listener) {
-        if (!(listener instanceof ExpandableRecyclerViewAdapter)) throw new RuntimeException
+        if (!(listener instanceof ExpandableAdapter)) throw new RuntimeException
                 ("subClass should not invoke this method,you should use ExpandableRecyclerView" +
                         ".OnParentExpandCollapseListener to be notified");
         mExpandCollapseListener = listener;

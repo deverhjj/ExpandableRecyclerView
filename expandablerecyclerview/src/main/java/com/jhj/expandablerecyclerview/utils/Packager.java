@@ -2,12 +2,14 @@ package com.jhj.expandablerecyclerview.utils;
 
 import android.view.ViewGroup;
 
+import com.jhj.expandablerecyclerview.adapter.ExpandableAdapter;
+
 /**
  * 本地 ItemViewType(parent、child)和客户端返回的多种类型的 parent 或/和 child ItemViewType 打包器
- * <p>#方便在{@link com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter#getItemViewType(int)} 方法中返回本地 parent 和 child 与客户端可能返回的多种类型的 parent 或/和
+ * <p>#方便在{@link ExpandableAdapter#getItemViewType(int)} 方法中返回本地 parent 和 child 与客户端可能返回的多种类型的 parent 或/和
  * child 类型的打包后的
  * ItemViewType
- * ，在{@link com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter#onCreateViewHolder(ViewGroup, int)} 方法中将传递过来的先前打包过的
+ * ，在{@link ExpandableAdapter#onCreateViewHolder(ViewGroup, int)} 方法中将传递过来的先前打包过的
  * ItemViewType 解包为具体的本地类型和客户端返回的类型(parent、child)来进行判断和回调</p>
  */
 public class Packager {

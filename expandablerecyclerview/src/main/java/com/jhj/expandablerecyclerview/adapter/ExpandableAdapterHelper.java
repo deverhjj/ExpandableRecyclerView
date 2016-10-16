@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link ExpandableRecyclerViewAdapter} 业务助手
+ * {@link ExpandableAdapter} 业务助手
  * Created by jhj_Plus on 2015/12/23.
  */
-final class ExpandableRecyclerViewAdapterHelper {
-    private static final String TAG = "ExpandableRecyclerViewAdapterHelper";
+final class ExpandableAdapterHelper {
+    private static final String TAG = "ExpandableAdapterHelper";
 
     /**
      * 按照数据源的数据顺序构建并返回本地数据模型

@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jhj.expandablerecyclerview.adapter.ExpandableRecyclerViewAdapter;
+import com.jhj.expandablerecyclerview.adapter.ExpandableAdapter;
 import com.jhj.expandablerecyclerview.model.ParentItem;
 import com.jhj.expandablerecyclerview.utils.Logger;
 import com.jhj.expandablerecyclerviewexample.R;
@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class MyAdapter extends ExpandableRecyclerViewAdapter<BaseParentViewHolder,BaseChildViewHolder>
+public class MyAdapter extends ExpandableAdapter<BaseParentViewHolder,BaseChildViewHolder>
 {
     private static final String TAG = "MyAdapter";
 
