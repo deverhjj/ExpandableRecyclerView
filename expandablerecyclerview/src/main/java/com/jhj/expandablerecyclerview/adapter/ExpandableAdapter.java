@@ -4,14 +4,14 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.jhj.expandablerecyclerview.model.ParentItem;
-import com.jhj.expandablerecyclerview.model.ParentItemWrapper;
-import com.jhj.expandablerecyclerview.utils.Logger;
-import com.jhj.expandablerecyclerview.utils.Packager;
 import com.jhj.expandablerecyclerview.viewholder.BaseViewHolder;
 import com.jhj.expandablerecyclerview.viewholder.ChildViewHolder;
 import com.jhj.expandablerecyclerview.viewholder.OnParentItemExpandCollapseListener;
 import com.jhj.expandablerecyclerview.viewholder.ParentViewHolder;
+import com.jhj.expandablerecyclerview.model.ParentItem;
+import com.jhj.expandablerecyclerview.model.ParentItemWrapper;
+import com.jhj.expandablerecyclerview.utils.Logger;
+import com.jhj.expandablerecyclerview.utils.Packager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +41,7 @@ import java.util.List;
  * </p>
  *
  */
-public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extends
-        ChildViewHolder>
+public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extends ChildViewHolder>
         extends RecyclerView.Adapter<BaseViewHolder> implements OnParentItemExpandCollapseListener
 {
     private static final String TAG = "ExpandableRVAdapter";
@@ -89,7 +88,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * 设置新的数据
      * @param newParentItems 新数据
      */
-    public void invalidateParentItems(List<? extends ParentItem> newParentItems) {
+    public void invalidate(List<? extends ParentItem> newParentItems) {
         init(newParentItems);
         notifyDataSetChanged();
     }

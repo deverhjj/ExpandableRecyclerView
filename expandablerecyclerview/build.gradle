@@ -16,6 +16,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
@@ -23,3 +24,30 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:23.4.0'
 }
+
+ext {
+    bintrayRepo = 'AndroidOpenRepo'
+    bintrayName = 'ExpandableRecyclerView'
+
+    publishedGroupId = 'com.jhj.lib'
+    libraryName = 'ExpandableRecyclerView'
+    artifact = 'expandablerecyclerview'
+
+    libraryDescription = 'Custom RecyclerView.Adapter that implement features like ExpandableListView'
+
+    siteUrl = 'https://github.com/HuaJianJiang/ExpandableRecyclerView'
+    gitUrl = 'https://github.com/HuaJianJiang/ExpandableRecyclerView.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'jhj'
+    developerName = 'huajianjiang'
+    developerEmail = 'jhj.andever@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'

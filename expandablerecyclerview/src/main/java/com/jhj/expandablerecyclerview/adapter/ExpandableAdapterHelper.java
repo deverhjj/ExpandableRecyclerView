@@ -10,7 +10,7 @@ import java.util.List;
  * {@link ExpandableAdapter} 业务助手
  * Created by jhj_Plus on 2015/12/23.
  */
-final class ExpandableAdapterHelper {
+class ExpandableAdapterHelper {
     private static final String TAG = "ExpandableAdapterHelper";
 
     /**
