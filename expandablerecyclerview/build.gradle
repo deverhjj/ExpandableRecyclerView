@@ -1,5 +1,29 @@
 apply plugin: 'com.android.library'
 
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'expandablerecyclerview'
+
+    publishedGroupId = 'com.github.huajianjiang'
+    libraryName = 'expandablerecyclerview'
+    artifact = 'expandablerecyclerview'
+
+    libraryDescription = 'Custom RecyclerView.Adapter that implement features like ExpandableListView'
+
+    siteUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView'
+    gitUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView.git'
+
+    libraryVersion = '1.0.0-RC1'
+
+    developerId = 'huajianjiang'
+    developerName = 'HuaJian Jiang'
+    developerEmail = 'jhj.andever@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.3'
@@ -8,7 +32,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0-RC1"
     }
     buildTypes {
         release {
@@ -17,6 +41,9 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -25,29 +52,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.4.0'
 }
 
-ext {
-    bintrayRepo = 'AndroidOpenRepo'
-    bintrayName = 'ExpandableRecyclerView'
-
-    publishedGroupId = 'com.jhj.lib'
-    libraryName = 'ExpandableRecyclerView'
-    artifact = 'expandablerecyclerview'
-
-    libraryDescription = 'Custom RecyclerView.Adapter that implement features like ExpandableListView'
-
-    siteUrl = 'https://github.com/HuaJianJiang/ExpandableRecyclerView'
-    gitUrl = 'https://github.com/HuaJianJiang/ExpandableRecyclerView.git'
-
-    libraryVersion = '1.0.0'
-
-    developerId = 'jhj'
-    developerName = 'huajianjiang'
-    developerEmail = 'jhj.andever@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
-
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/bintrayv1.gradle'
+//apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
