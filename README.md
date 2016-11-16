@@ -11,8 +11,17 @@
 4. now support set specified ParentItem which can be expandable dynamically
 5. now support set ExpandableAdapter's `setExpandCollapseMode`! eg: MODE_SINGLE_EXPAND,in this mode,when expand another parentItem will auto collapse last expanded parentItem.
 
+## Screenshots
+
 ![Demo](/screenshots/screenshot_3.png)
 ![Demo](/screenshots/screenshot_2.png)
+
+## Usage
+Add a dependency to your `build.gradle`:
+
+    dependencies {
+         compile 'com.github.huajianjiang:expandablerecyclerview:1.0.0-RC1'
+    }
 
 License
 =======
