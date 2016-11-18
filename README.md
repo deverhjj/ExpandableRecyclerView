@@ -36,7 +36,7 @@ dependencies {
 
 ## Thanks
 
-[Android 编程权威指南 Sample](https://www.bignerdranch.com/blog/expand-a-recyclerview-in-four-steps/?utm_source=Android+Weekly&utm_campaign=8f0cc3ff1f-Android_Weekly_165&utm_medium=email&utm_term=0_4eb677ad19-8f0cc3ff1f-337834121)
+* [bignerdranch/expandable-recycler-view](https://github.com/bignerdranch/expandable-recycler-view)
 
 License
 =======
