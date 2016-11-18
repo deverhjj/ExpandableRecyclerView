@@ -19,11 +19,17 @@ Custom RecyclerView.Adapter that implement features like ExpandableListView
 ## Usage
 * Add a dependency to your `build.gradle`:
 
-      dependencies {
-          compile 'com.github.huajianjiang:expandablerecyclerview:1.0.0-RC1'
-      }
+```grooey
+
+dependencies {
+    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.0-RC1'
+}
+
+```
 
 * Or to your `pom.xml` if you are using Maven instead of Gradle:
+
+```XML
 
       <dependency>
         <groupId>com.github.huajianjiang</groupId>
@@ -31,6 +37,8 @@ Custom RecyclerView.Adapter that implement features like ExpandableListView
         <version>1.0.0-RC1</version>
         <type>pom</type>
       </dependency>
+      
+```
 
 License
 =======
