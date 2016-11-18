@@ -3,11 +3,11 @@ Custom RecyclerView.Adapter that implement features like ExpandableListView
 
 ## Features
 
-1. support `getParentType` and `getChildType`,support create different Parent or/and Child ItemView
-2. support extra `notifyParentItemMoved`、`notifyChildItemMoved`、`notifyParentItemRangeChanged`、`notifyParentItemRangedRemoved`、`notifyChildItemRangeInserted`、`notifyChildItemRangeRemoved`、`notifyChildItemRangeChanged` api
-3. encapsulate `ViewHolder`
-4. now support set specified ParentItem which can be expandable dynamically
-5. now support set ExpandableAdapter's `setExpandCollapseMode`! eg: MODE_SINGLE_EXPAND,in this mode,when expand another parentItem will auto collapse last expanded parentItem.
+* support `getParentType` and `getChildType`,support create different Parent or/and Child ItemView
+* support extra `notifyParentItemMoved`、`notifyChildItemMoved`、`notifyParentItemRangeChanged`、`notifyParentItemRangedRemoved`、`notifyChildItemRangeInserted`、`notifyChildItemRangeRemoved`、`notifyChildItemRangeChanged` api
+* encapsulate `ViewHolder`
+* now support set specified ParentItem which can be expandable dynamically
+* now support set ExpandableAdapter's `setExpandCollapseMode`! eg: MODE_SINGLE_EXPAND,in this mode,when expand another parentItem will auto collapse last expanded parentItem.
 
 ## Screenshots
 
