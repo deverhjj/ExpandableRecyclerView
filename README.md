@@ -31,12 +31,12 @@ dependencies {
 
 ```XML
 
-      <dependency>
-        <groupId>com.github.huajianjiang</groupId>
-        <artifactId>expandablerecyclerview</artifactId>
-        <version>1.0.0-RC1</version>
-        <type>pom</type>
-      </dependency>
+<dependency>
+  <groupId>com.github.huajianjiang</groupId>
+  <artifactId>expandablerecyclerview</artifactId>
+  <version>1.0.0-RC1</version>
+  <type>pom</type>
+  </dependency>
       
 ```
 
