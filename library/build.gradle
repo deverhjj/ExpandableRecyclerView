@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView'
     gitUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView.git'
 
-    libraryVersion = '1.0.0-RC1'
+    libraryVersion = '1.0.1'
 
     developerId = 'huajianjiang'
     developerName = 'HuaJian Jiang'
@@ -32,7 +32,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0.0-RC1"
+        versionName "1.0.1"
     }
     buildTypes {
         release {

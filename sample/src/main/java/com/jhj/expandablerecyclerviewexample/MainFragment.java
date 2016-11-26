@@ -187,10 +187,10 @@ public class MainFragment extends Fragment {
                 adapter.notifyParentItemChanged(1);
                 break;
             case R.id.action_expand_all:
-                adapter.expandAllParent();
+                adapter.expandAllParents();
                 break;
             case R.id.action_collapse_all:
-                adapter.collapseAllParent();
+                adapter.collapseAllParents();
                 break;
             case R.id.action_expand_1:
                 adapter.expandParent(1);
