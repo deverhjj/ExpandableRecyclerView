@@ -4,19 +4,20 @@ package com.jhj.expandablerecyclerviewexample.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.jhj.expandablerecyclerview.model.ParentItem;
+import com.jhj.expandablerecyclerview.widget.Parent;
 
 import java.util.List;
 
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class Parent implements ParentItem<Child>, Parcelable {
-    private static final String TAG = "Parent";
+public class MyParent implements Parent<MyChild>, Parcelable {
+    private static final String TAG = "MyParent";
+
 
     private boolean isExpandable = true;
 
-    private boolean isInitiallyExpanded = false;
+    private boolean isInitiallyExpanded = true;
 
     private int dot;
 
@@ -24,35 +25,35 @@ public class Parent implements ParentItem<Child>, Parcelable {
 
     private String info;
 
-    private List<Child> mChildren;
+    private List<MyChild> mMyChildren;
 
-    public Parent() {
+    public MyParent() {
     }
 
-    private Parent(Parcel in) {
+    private MyParent(Parcel in) {
         isExpandable = in.readByte() != 0;
         isInitiallyExpanded = in.readByte() != 0;
         dot = in.readInt();
         type = in.readInt();
         info = in.readString();
-        mChildren = in.createTypedArrayList(Child.CREATOR);
+        mMyChildren = in.createTypedArrayList(MyChild.CREATOR);
     }
 
-    public static final Creator<Parent> CREATOR = new Creator<Parent>() {
+    public static final Creator<MyParent> CREATOR = new Creator<MyParent>() {
         @Override
-        public Parent createFromParcel(Parcel in) {
-            return new Parent(in);
+        public MyParent createFromParcel(Parcel in) {
+            return new MyParent(in);
         }
 
         @Override
-        public Parent[] newArray(int size) {
-            return new Parent[size];
+        public MyParent[] newArray(int size) {
+            return new MyParent[size];
         }
     };
 
-    public void setChildren(List<Child> children)
+    public void setMyChildren(List<MyChild> myChildren)
     {
-        mChildren = children;
+        mMyChildren = myChildren;
     }
 
     public int getType() {
@@ -79,9 +80,13 @@ public class Parent implements ParentItem<Child>, Parcelable {
         this.info = info;
     }
 
+    public boolean hasChildren() {
+        return mMyChildren != null && !mMyChildren.isEmpty();
+    }
+
     @Override
-    public List<Child> getChildItems() {
-        return mChildren;
+    public List<MyChild> getChildren() {
+        return mMyChildren;
     }
 
     public void setExpandable(boolean expandable) {
@@ -114,6 +119,11 @@ public class Parent implements ParentItem<Child>, Parcelable {
         dest.writeInt(dot);
         dest.writeInt(type);
         dest.writeString(info);
-        dest.writeTypedList(mChildren);
+        dest.writeTypedList(mMyChildren);
+    }
+
+    @Override
+    public String toString() {
+      return hashCode()+"";
     }
 }

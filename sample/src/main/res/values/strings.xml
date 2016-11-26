@@ -2,12 +2,12 @@
     <string name="app_name">ExpandableRecyclerView</string>
     <string name="action_settings">Settings</string>
 
-    <string name="parent_type">ParentType:%1$s , Pos:%2$s , AdapterPos:%3$s</string>
-    <string name="child_type">ChildType:%1$s , Pos:%2$s , AdapterPos:%3$s</string>
+    <string name="parent_type">ParentType:%1$d , Pos:%2$d , AdapterPos:%3$d</string>
+    <string name="child_type">ChildType:%1$d , Pos:%2$d , AdapterPos:%3$d</string>
 
     <string name="snack">AdapterPos:%1$s</string>
 
-    <string name="hint_input_error">输入格式有误! parent 格式：parentPos,[count]; child
+    <string name="hint_input_error">输入格式有误! myParent 格式：parentPos,[count]; myChild
         格式：parentPos,childPos,[count],count 缺省默认为1</string>
 
     <string name="title_input">Test</string>
@@ -30,8 +30,8 @@
 
     <string name="parent_hint">parent</string>
     <string name="child_hint">child</string>
-    <string name="special_parent_hint">special_parent</string>
-    <string name="special_child_hint">special_child</string>
+    <string name="move_parent_hint">move_parent</string>
+    <string name="move_child_hint">move_child</string>
 
     <string name="Item">Item</string>
     <string name="ItemRange">ItemRange</string>

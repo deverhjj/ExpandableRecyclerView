@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/item_parent"
+              xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@drawable/bg_parent"
-              android:gravity="center"
+              android:gravity="center_horizontal"
               android:orientation="vertical"
+              android:paddingBottom="8dp"
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
-              android:paddingTop="@dimen/activity_horizontal_margin">
+              android:paddingTop="@dimen/activity_vertical_margin">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
 
         <TextView
             android:id="@+id/info"
@@ -28,6 +31,7 @@
             android:layout_height="15dp"
             android:layout_gravity="right|center_vertical"
             android:background="@android:color/transparent"/>
+
     </FrameLayout>
 
 
@@ -35,8 +39,7 @@
         android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:src="@drawable/ic_keyboard_arrow_down"/>
-
+        android:src="@drawable/ic_keyboard_arrow_down"
+        android:visibility="visible"/>
 
 </LinearLayout>

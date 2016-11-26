@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
-             android:background="@color/md_deep_teal_500">
+              android:background="@color/md_deep_teal_500"
+              android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher"/>
 
     <include
         layout="@layout/item_child"/>
 
-</FrameLayout>
+</LinearLayout>

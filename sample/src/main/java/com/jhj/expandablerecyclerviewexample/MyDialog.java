@@ -15,160 +15,100 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
-import com.jhj.expandablerecyclerview.utils.Logger;
-import com.jhj.expandablerecyclerviewexample.utils.Util;
+import com.jhj.expandablerecyclerview.util.Logger;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
 public class MyDialog extends DialogFragment {
     private static final String TAG = "MyDialog";
-
-    /**
-     * 匹配处理parent操作的参数输入格式（add，remove，change）
-     * format：arg1 or arg1,arg2 or X\nX(X 为 arg1或arg2或两个的任意组合)
-     * arg1：操作 position，arg2：操作 count
-     * eg: 1表示在1的位置的一次parent操作，1,2 表示在position为1上2次parent操作，1,2\n3,4 表示有两次parent操作，position
-     * 分别在1和3并且分别操作2,4次
-     * note:参数之前用,隔开并且中间两边都没有其他多余字符，否则视为失败输入
-     */
-    private static final String REGX_BASE_PARENT="(\\d+,\\d+|\\d+)";
-    private static final String REGX_PARENT=REGX_BASE_PARENT+"|"+REGX_BASE_PARENT+"\n"+REGX_BASE_PARENT;
-    /**
-     * 匹配处理child操作的参数输入格式（add，remove，change）
-     * format：arg1,arg2 or arg1,arg2,arg3 or X\nX(X 为 arg1,arg2或arg1,arg2,arg3或两个的任意组合)
-     * arg1：操作 parentPosition，arg2：childPosition。arg3：操作 count
-     * eg: 1,2表示在 parentPosition=1，childPosition=2的位置的一次child操作，1,2,3
-     * 表示在parentPosition=1，childPosition=2的位置的3次child操作，1,
-     * 2\n3,4,5表示有两次child操作，分别在parentPosition=1，childPosition=2，parentPosition=3，childPosition=4上执行
-     * 1次和5次操作
-     * note:参数之前用,隔开并且中间两边都没有其他多余字符，否则视为失败输入
-     */
-    private static final String REGX_BASE_CHILD="(\\d+,\\d+|\\d+,\\d+,\\d+)";
-    private static final String REGX_CHILD=REGX_BASE_CHILD+"|"+REGX_BASE_CHILD+"\n"+REGX_BASE_CHILD;
-
-    private static final String REGX_BASE_SPECIAL_CHILD="\\d+,\\d+,\\d+,\\d+";
-    private static final String REGX_SPECIAL_CHILD=REGX_BASE_SPECIAL_CHILD+"|"+REGX_BASE_SPECIAL_CHILD+"\n" +
-            ""+REGX_BASE_SPECIAL_CHILD;
-
     public static final String REQUEST = "request";
 
     private static final String PARENT_TYPE = "parent";
     private static final String CHILD_TYPE = "child";
-    private static final String SPECIAL__CHILD_TYPE = "special_child";
-    private static final String SPECIAL__PARENT_TYPE = "special_parent";
+    private static final String MOVE_PARENT_TYPE = "move_parent";
+    private static final String MOVE_CHILD_TYPE = "move_child";
     private static final String ITEM_OPERATE_TYPE = "Item";
     private static final String ITEM_RANGE_OPERATE_TYPE = "ItemRange";
-
-    private View mRootView;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        mRootView=getActivity().getLayoutInflater().inflate(R.layout.table,null);
+        final View content = getActivity().getLayoutInflater().inflate(R.layout.table, null);
 
         AlertDialog dialog=new AlertDialog.Builder(getActivity()).setTitle(getString(R.string.title_input))
-                .setView(mRootView).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                .setView(content).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        ArrayList<String> requestList=new ArrayList<>(6);
-                        checkInput(requestList);
-                        if (requestList.isEmpty()) {
-                            return;
-                        }
+                        ArrayList<String> result = checkInput(content);
+                        if (result.isEmpty()) return;
                         Fragment targetFragment = getTargetFragment();
                         Intent data = new Intent();
-                        data.putStringArrayListExtra(REQUEST, requestList);
+                        data.putStringArrayListExtra(REQUEST, result);
                         targetFragment.onActivityResult(MainFragment.REQUEST_RESULT,
                                 Activity.RESULT_OK, data);
-
                     }
                 }).setNegativeButton("取消",null).create();
 
-         setCancelable(false);
+        setCancelable(false);
+
         return dialog;
     }
 
 
-    private void checkInput(List<String> requestList) {
-        TableLayout tableLayout= (TableLayout) mRootView.findViewById(R.id.table);
+    private ArrayList<String> checkInput(View contentView) {
+        ArrayList<String> result = new ArrayList<>();
+        TableLayout tableLayout = (TableLayout) contentView.findViewById(R.id.table);
         final int childCount=tableLayout.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            View tableChild=tableLayout.getChildAt(i);
+            View tableChild = tableLayout.getChildAt(i);
             if (tableChild instanceof TableRow) {
-                boolean isGoodInput=true;
-                TableRow tableRow= (TableRow) tableChild;
-                final int count=tableRow.getChildCount();
+                TableRow tableRow = (TableRow) tableChild;
+                final int count = tableRow.getChildCount();
                 for (int j = 0; j < count; j++) {
-                    View childView=tableRow.getChildAt(j);
-                    if (childView instanceof EditText) {
-                        EditText editText= (EditText) childView;
-                        String type=editText.getHint().toString();
-                        String input=editText.getText().toString().trim();
-                        String method= (String) editText.getTag();
-                        if (TextUtils.isEmpty(input)) continue;
-                        List<Helper> operations=isGoodInput(type, input);
-                        if (!(isGoodInput = (operations != null && !operations.isEmpty()))) {
-                            requestList.clear();
-                            Util.showToast(getActivity(),"input error");
-                            break;
-                        }
-                        //同一操作是否存在两次
-                        final int operationCount=operations.size();
-                            for (int k = 0; k < operationCount; k++) {
-                                Helper operation = operations.get(k);
-                                requestList.add(String.format(getString(R.string.methodAndArgs),
-                                        String.format(method, operation.operationType),
-                                        operation.args));
+                    View childView = tableRow.getChildAt(j);
+                    if (!(childView instanceof EditText)) continue;
+                    EditText editText = (EditText) childView;
+                    String type = editText.getHint().toString();
+                    String method = (String) editText.getTag();
+                    String input = editText.getText().toString().trim();
+                    if (TextUtils.isEmpty(input)) continue;
+                    String[] methods = input.split("\n");
+                    for (String m : methods) {
+                        String methodType = "";
+                        String[] args = m.split(",");
+                        if (type.equals(PARENT_TYPE)) {
+                            if (args.length == 1) {
+                                methodType = ITEM_OPERATE_TYPE;
+                            } else if (args.length == 2) {
+                                methodType = ITEM_RANGE_OPERATE_TYPE;
                             }
+                        } else if (type.equals(CHILD_TYPE)) {
+                            if (args.length == 2) {
+                                methodType = ITEM_OPERATE_TYPE;
+                            } else if (args.length == 3) {
+                                methodType = ITEM_RANGE_OPERATE_TYPE;
+                            }
+                        } else if (type.equals(MOVE_PARENT_TYPE)) {
+                            if (args.length == 2) {
+                                methodType = ITEM_OPERATE_TYPE;
+                            }
+                        } else if (type.equals(MOVE_CHILD_TYPE)) {
+                            if (args.length == 4) {
+                                methodType = ITEM_OPERATE_TYPE;
+                            }
+                        }
+                        String methodName = String.format(method, methodType);
+                        String ma = String.format(getString(R.string.methodAndArgs), methodName, m);
+                        result.add(ma);
                     }
                 }
-                if (!isGoodInput) break;
             }
         }
-
-        Logger.e(TAG, "requestList="+requestList.toString());
+        Logger.e(TAG, "requestList=" + result.toString());
+        return result;
     }
-
-
-    private List<Helper> isGoodInput(String type, String input) {
-        boolean isParentType=type.equals(MyDialog.PARENT_TYPE);
-        boolean isSpecialChild=type.equals(MyDialog.SPECIAL__CHILD_TYPE);
-        boolean isSpecialParent=type.equals(MyDialog.SPECIAL__PARENT_TYPE);
-
-        List<Helper> helpers=new ArrayList<>(2);
-        //同一操作是否存在两次
-        final String[] operations=input.split("\n");
-            for (String operation : operations) {
-
-                boolean isGood = operation.matches(isParentType||isSpecialParent ? REGX_PARENT
-                        : isSpecialChild ? REGX_SPECIAL_CHILD : REGX_CHILD);
-                if (!isGood) {
-                    return null;
-                }
-
-                Helper helper = new Helper();
-
-                String[] inputSplit = operation.split(",");
-                helper.operationType = inputSplit.length ==
-                        (isParentType ? 1 : isSpecialParent ? 2 : isSpecialChild ? 4 : 2)
-                        ? ITEM_OPERATE_TYPE : ITEM_RANGE_OPERATE_TYPE;
-                helper.args = operation;
-
-                helpers.add(helper);
-            }
-        return helpers;
-    }
-
-
-    class Helper {
-        String operationType;
-        String args;
-    }
-
 }

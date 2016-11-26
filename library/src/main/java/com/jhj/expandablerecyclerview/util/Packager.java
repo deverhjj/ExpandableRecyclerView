@@ -1,8 +1,8 @@
-package com.jhj.expandablerecyclerview.utils;
+package com.jhj.expandablerecyclerview.util;
 
 import android.view.ViewGroup;
 
-import com.jhj.expandablerecyclerview.adapter.ExpandableAdapter;
+import com.jhj.expandablerecyclerview.widget.ExpandableAdapter;
 
 /**
  * 本地 ItemViewType(parent、child)和客户端返回的多种类型的 parent 或/和 child ItemViewType 打包器

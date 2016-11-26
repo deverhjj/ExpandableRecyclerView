@@ -7,102 +7,95 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jhj.expandablerecyclerview.adapter.ExpandableAdapter;
-import com.jhj.expandablerecyclerview.model.ParentItem;
-import com.jhj.expandablerecyclerview.utils.Logger;
+import com.jhj.expandablerecyclerview.util.Logger;
+import com.jhj.expandablerecyclerview.widget.ExpandableAdapter;
+import com.jhj.expandablerecyclerview.widget.Parent;
 import com.jhj.expandablerecyclerviewexample.R;
-import com.jhj.expandablerecyclerviewexample.model.Child;
-import com.jhj.expandablerecyclerviewexample.model.Parent;
-import com.jhj.expandablerecyclerviewexample.viewholder.BaseChildViewHolder;
-import com.jhj.expandablerecyclerviewexample.viewholder.BaseParentViewHolder;
-import com.jhj.expandablerecyclerviewexample.viewholder.Child1ViewHolder;
-import com.jhj.expandablerecyclerviewexample.viewholder.Child2ViewHolder;
-import com.jhj.expandablerecyclerviewexample.viewholder.Parent1ViewHolder;
-import com.jhj.expandablerecyclerviewexample.viewholder.Parent2ViewHolder;
+import com.jhj.expandablerecyclerviewexample.model.MyChild;
+import com.jhj.expandablerecyclerviewexample.model.MyParent;
+import com.jhj.expandablerecyclerviewexample.viewholder.MyChildViewHolder;
+import com.jhj.expandablerecyclerviewexample.viewholder.MyParentViewHolder;
 
 import java.util.List;
-
-import static com.jhj.expandablerecyclerview.adapter.ExpandableAdapter.ExpandCollapseMode
-        .MODE_SINGLE_COLLAPSE;
 
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class MyAdapter extends ExpandableAdapter<BaseParentViewHolder,BaseChildViewHolder>
+public class MyAdapter extends ExpandableAdapter<MyParentViewHolder,MyChildViewHolder>
 {
     private static final String TAG = "MyAdapter";
 
-    public static final int PARENT_1_TYPE=0;
-    public static final int PARENT_2_TYPE=1;
-    public static final int CHILD_1_TYPE=0;
-    public static final int CHILD_2_TYPE=1;
+    public static final int PARENT_1_TYPE = 0;
+    public static final int PARENT_2_TYPE = 1;
+    public static final int CHILD_1_TYPE = 0;
+    public static final int CHILD_2_TYPE = 1;
 
-    private List<Parent> mData;
-
+    private List<MyParent> mData;
     private Context mContext;
+    private LayoutInflater mInflater;
 
-    public MyAdapter(Context context,List<Parent> data) {
+    public MyAdapter(Context context, List<MyParent> data) {
         super(data);
-        mContext=context;
-        mData=data;
+        mContext = context;
+        mInflater = LayoutInflater.from(context);
+        mData = data;
     }
 
-    public List<Parent> getData() {
+    public List<MyParent> getData() {
         return mData;
     }
 
     @Override
-    public BaseParentViewHolder onCreateParentViewHolder(ViewGroup parent, int parentType) {
-        View itemView=LayoutInflater.from(mContext).inflate(parentType==PARENT_1_TYPE?R.layout
-                .item_parent_1:R.layout.item_parent_2,parent,false);
-        return parentType==PARENT_1_TYPE?new Parent1ViewHolder(itemView):new Parent2ViewHolder(itemView);
+    public MyParentViewHolder onCreateParentViewHolder(ViewGroup parent, int parentType) {
+        View itemView = mInflater.inflate(
+                parentType == PARENT_1_TYPE ? R.layout.item_parent_1 : R.layout.item_parent_2,
+                parent, false);
+        return new MyParentViewHolder(itemView);
     }
 
     @Override
-    public BaseChildViewHolder onCreateChildViewHolder(ViewGroup child, int childType) {
-        View itemView=LayoutInflater.from(mContext).inflate(childType==CHILD_1_TYPE?R.layout
+    public MyChildViewHolder onCreateChildViewHolder(ViewGroup child, int childType) {
+        View itemView=mInflater.inflate(childType==CHILD_1_TYPE?R.layout
                 .item_child_1:R.layout.item_child_2,child,false);
-        return childType==CHILD_1_TYPE?new Child1ViewHolder(itemView):new Child2ViewHolder(itemView);
+        return new MyChildViewHolder(itemView);
     }
 
     @Override
-    public void onBindParentViewHolder(BaseParentViewHolder parentViewHolder, int parentPosition,
-            int parentAdapterPosition, ParentItem parentListItem)
+    public void onBindParentViewHolder(MyParentViewHolder parentViewHolder, int parentPosition,
+            Parent parentListItem)
     {
-        Parent parent = (Parent) parentListItem;
+        MyParent parent = (MyParent) parentListItem;
         int parentType = getParentType(parentPosition);
         String info = mContext.getString(R.string.parent_type, parentType, parentPosition,
-                parentAdapterPosition);
+                parentViewHolder.getAdapterPosition());
         parent.setInfo(info);
-
         parentViewHolder.bind(parent);
     }
 
     @Override
-    public void onBindChildViewHolder(BaseChildViewHolder childViewHolder, int parentPosition,
-            int childPosition, int parentAdapterPosition, int childAdapterPosition,
-            Object childListItem)
+    public void onBindChildViewHolder(MyChildViewHolder childViewHolder, int parentPosition,
+            int childPosition, Object childListItem)
     {
-        Child child = (Child) childListItem;
+        MyChild myChild = (MyChild) childListItem;
         int childType = getChildType(parentPosition, childPosition);
         String info = mContext.getString(R.string.child_type, childType, childPosition,
-                childAdapterPosition);
-        child.setInfo(info);
-        childViewHolder.bind(child);
+                childViewHolder.getAdapterPosition());
+        myChild.setInfo(info);
+        childViewHolder.bind(myChild);
     }
 
     @Override
     public int getParentType(int parentPosition) {
         Logger.i(TAG,"getParentType="+parentPosition);
-        Parent parent =mData.get(parentPosition);
-        return parent.getType();
+        MyParent myParent = (MyParent) mData.get(parentPosition);
+        return myParent.getType();
     }
 
     @Override
     public int getChildType(int parentPosition, int childPosition) {
         Logger.i(TAG,"getChildType="+parentPosition+","+childPosition);
-        Child child =mData.get(parentPosition).getChildItems().get(childPosition);
-        return child.getType();
+        MyChild myChild =  mData.get(parentPosition).getChildren().get(childPosition);
+        return myChild.getType();
     }
 
     public ItemDecoration getItemDecoration() {
@@ -110,13 +103,16 @@ public class MyAdapter extends ExpandableAdapter<BaseParentViewHolder,BaseChildV
     }
 
     private class ItemDecoration extends RecyclerView.ItemDecoration {
+
+        int itemOffset = mContext.getResources().getDimensionPixelSize(R.dimen.itemOffset);
+
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                 RecyclerView.State state)
         {
-            outRect.set(0,mContext.getResources().getDimensionPixelSize(R.dimen.itemOffset),0,0);
+            final int childAdapterPos = parent.getChildAdapterPosition(view);
+            outRect.set(0, itemOffset, 0, childAdapterPos == getItemCount() - 1 ? itemOffset : 0);
         }
     }
-
 
 }

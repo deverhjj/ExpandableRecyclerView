@@ -3,7 +3,7 @@ package com.jhj.expandablerecyclerviewexample.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.jhj.expandablerecyclerview.utils.Logger;
+import com.jhj.expandablerecyclerview.util.Logger;
 import com.jhj.expandablerecyclerviewexample.utils.Util;
 
 /**
@@ -13,7 +13,7 @@ public class Test implements Parcelable {
 
     private static final String TAG = "Test";
 
-    private Parent mParent= Util.getParent();
+    private MyParent mMyParent = Util.getParent();
 
     private String mString="Test";
 
@@ -22,7 +22,7 @@ public class Test implements Parcelable {
 
     private Test(Parcel in) {
         Logger.e(TAG, "create Test from Parcel");
-        mParent = in.readParcelable(Parent.class.getClassLoader());
+        mMyParent = in.readParcelable(MyParent.class.getClassLoader());
         mString = in.readString();
     }
 
@@ -48,12 +48,12 @@ public class Test implements Parcelable {
         mString = string;
     }
 
-    public Parent getParent() {
-        return mParent;
+    public MyParent getMyParent() {
+        return mMyParent;
     }
 
-    public void setParent(Parent parent) {
-        mParent = parent;
+    public void setMyParent(MyParent myParent) {
+        mMyParent = myParent;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Test implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         Logger.e(TAG,"writeToParcel");
-        dest.writeParcelable(mParent, flags);
+        dest.writeParcelable(mMyParent, flags);
         dest.writeString(mString);
     }
 }

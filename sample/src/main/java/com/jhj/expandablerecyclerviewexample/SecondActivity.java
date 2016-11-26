@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.jhj.expandablerecyclerview.utils.Logger;
-import com.jhj.expandablerecyclerviewexample.model.Child;
-import com.jhj.expandablerecyclerviewexample.model.Parent;
+import com.jhj.expandablerecyclerview.util.Logger;
+import com.jhj.expandablerecyclerviewexample.model.MyChild;
+import com.jhj.expandablerecyclerviewexample.model.MyParent;
 import com.jhj.expandablerecyclerviewexample.model.Test;
 
 import java.util.List;
@@ -24,10 +24,10 @@ public class SecondActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Test test=getIntent().getParcelableExtra("test");
-        Parent parent = test.getParent();
-        List<Child> children = parent.getChildItems();
-        boolean hasOneChild = children != null && !children.isEmpty();
-        Logger.e(TAG, "string=" + test.getString() + ",parent=" + parent.isInitiallyExpanded() +
-                ",child-dot=" + (hasOneChild ? children.get(0).getDot() : "none"));
+        MyParent myParent = test.getMyParent();
+        List<MyChild> myChildren = myParent.getChildren();
+        boolean hasOneChild = myChildren != null && !myChildren.isEmpty();
+        Logger.e(TAG, "string=" + test.getString() + ",myParent=" + myParent.isInitiallyExpanded() +
+                ",child-dot=" + (hasOneChild ? myChildren.get(0).getDot() : "none"));
     }
 }

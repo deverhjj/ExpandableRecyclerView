@@ -1,7 +1,4 @@
-package com.jhj.expandablerecyclerview.adapter;
-
-import com.jhj.expandablerecyclerview.model.ParentItem;
-import com.jhj.expandablerecyclerview.model.ParentItemWrapper;
+package com.jhj.expandablerecyclerview.widget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,21 +16,21 @@ class ExpandableAdapterHelper {
      * @param parentItems 客户端所有的父列表项数据集合
      * @return 本地数据模型集合
      */
-    static List<Object> generateItems(List<? extends ParentItem> parentItems)
+    static List<Object> generateItems(List<? extends Parent> parentItems)
     {
         List<Object> items = new ArrayList<>();
         final int parentCount = parentItems.size();
         for (int i = 0; i < parentCount; i++) {
-            ParentItem parentItem = parentItems.get(i);
-            if (parentItem == null) continue;
-            ParentItemWrapper parentItemWrapper = new ParentItemWrapper(parentItem);
-            items.add(parentItemWrapper);
+            Parent parent = parentItems.get(i);
+            if (parent == null) continue;
+            ParentWrapper parentWrapper = new ParentWrapper(parent);
+            items.add(parentWrapper);
 
-            if (parentItemWrapper.isInitiallyExpanded()) {
-                List<?> childItems = parentItemWrapper.getChildItems();
+            if (parentWrapper.isInitiallyExpanded()) {
+                List<?> childItems = parentWrapper.getChildren();
                 final boolean hasChildren = childItems != null && !childItems.isEmpty();
                 //父列表项返回的 ChildItems 为 null 或者 childCount 为0 设置为折叠状态
-                parentItemWrapper.setExpanded(hasChildren);
+                parentWrapper.setExpanded(hasChildren);
                 if (!hasChildren) continue;
                 final int childCount = childItems.size();
                 for (int j = 0; j < childCount; j++) {

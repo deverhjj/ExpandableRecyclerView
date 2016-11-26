@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.jhj.expandablerecyclerviewexample.model.Child;
-import com.jhj.expandablerecyclerviewexample.model.Parent;
+import com.jhj.expandablerecyclerviewexample.model.MyChild;
+import com.jhj.expandablerecyclerviewexample.model.MyParent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,29 +24,29 @@ public class Util {
     private static Random sRandom=new Random();
 
    // sRandom.nextInt(16) + 5
-    public static List<Parent> getListData() {
-        List<Parent> parents = new ArrayList<>();
+    public static List<MyParent> getListData() {
+        List<MyParent> myParents = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
-            Parent parent = getParent();
-            parents.add(parent);
+            MyParent myParent = getParent();
+            myParents.add(myParent);
         }
-        return parents;
+        return myParents;
     }
 
     @NonNull
-    public static Parent getParent() {
-        Parent parent =new Parent();
-        parent.setType(sRandom.nextInt(2));
+    public static MyParent getParent() {
+        MyParent myParent =new MyParent();
+        myParent.setType(sRandom.nextInt(2));
         if (sRandom.nextBoolean()) {
-            List<Child> children =new ArrayList<>();
+            List<MyChild> myChildren =new ArrayList<>();
             for (int j = 0; j < sRandom.nextInt(6); j++) {
-                Child child =new Child();
-                child.setType(sRandom.nextInt(2));
-                children.add(child);
+                MyChild myChild =new MyChild();
+                myChild.setType(sRandom.nextInt(2));
+                myChildren.add(myChild);
             }
-            parent.setChildren(children);
+            myParent.setMyChildren(myChildren);
         }
-        return parent;
+        return myParent;
     }
 
 

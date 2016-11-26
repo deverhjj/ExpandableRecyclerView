@@ -1,9 +1,9 @@
-package com.jhj.expandablerecyclerview.adapter;
+package com.jhj.expandablerecyclerview.widget;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.jhj.expandablerecyclerview.utils.Logger;
+import com.jhj.expandablerecyclerview.util.Logger;
 
 /**
  * Created by jhj_Plus on 2016/9/27.

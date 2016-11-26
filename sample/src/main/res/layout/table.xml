@@ -60,7 +60,7 @@
             android:layout_weight="1"
             style="@style/TextAppearance.AppCompat.Medium"
             android:gravity="center"
-            android:text="add"
+            android:text="insert"
             android:background="@color/md_deep_teal_300"/>
 
         <EditText
@@ -186,7 +186,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:tag="@string/notifyParent¥Moved"
-            android:hint="@string/special_parent_hint"
+            android:hint="@string/move_parent_hint"
             android:textColorHint="@android:color/transparent"/>
 
         <EditText
@@ -195,7 +195,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:tag="@string/notifyChild¥Moved"
-            android:hint="@string/special_child_hint"
+            android:hint="@string/move_child_hint"
             android:textColorHint="@android:color/transparent"/>
 
     </TableRow>

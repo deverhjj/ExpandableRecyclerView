@@ -1,4 +1,4 @@
-package com.jhj.expandablerecyclerview.utils;
+package com.jhj.expandablerecyclerview.util;
 
 import android.util.Log;
 

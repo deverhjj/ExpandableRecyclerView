@@ -17,14 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.jhj.expandablerecyclerview.adapter.ExpandableAdapter;
-import com.jhj.expandablerecyclerview.utils.Logger;
+import com.jhj.expandablerecyclerview.util.Logger;
+import com.jhj.expandablerecyclerview.widget.ExpandableAdapter;
+import com.jhj.expandablerecyclerview.widget.ParentViewHolder;
 import com.jhj.expandablerecyclerviewexample.adapter.MyAdapter;
-import com.jhj.expandablerecyclerviewexample.model.Child;
-import com.jhj.expandablerecyclerviewexample.model.Parent;
+import com.jhj.expandablerecyclerviewexample.model.MyChild;
+import com.jhj.expandablerecyclerviewexample.model.MyParent;
 import com.jhj.expandablerecyclerviewexample.model.Test;
 import com.jhj.expandablerecyclerviewexample.utils.Util;
-import com.jhj.expandablerecyclerviewexample.viewholder.BaseParentViewHolder;
+import com.jhj.expandablerecyclerviewexample.viewholder.MyParentViewHolder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,10 +39,8 @@ public class MainFragment extends Fragment {
     public static final int REQUEST_RESULT = 1;
     private static final String TAG = "MainFragment";
     private RecyclerView mRecyclerView;
-
     private PresenterImpl mIPresenter;
-
-    private List<Parent> mData=Util.getListData();
+    private List<MyParent> mData = Util.getListData();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,22 +81,27 @@ public class MainFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        MyAdapter adapter=new MyAdapter(getActivity(), mData);
-        adapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_SINGLE_EXPAND);
+        final MyAdapter adapter = new MyAdapter(getActivity(), mData);
+        adapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addItemDecoration(adapter.getItemDecoration());
-        adapter.setParentExpandCollapseListener(new ExpandableAdapter.OnParentExpandCollapseListener() {
+        adapter.setParentExpandCollapseListener(new ExpandableAdapter
+                .OnParentExpandCollapseListener() {
 
             @Override
-            public void onParentExpanded(int parentPosition, int parentAdapterPosition,
+            public void onParentExpanded(ParentViewHolder pvh, int parentPosition,
                     boolean byUser)
             {
                 Logger.e(TAG,"onParentExpanded="+parentPosition);
 
-                BaseParentViewHolder vh= (BaseParentViewHolder) mRecyclerView
-                        .findViewHolderForAdapterPosition(parentAdapterPosition);
-                if (vh==null) return;
+                MyParentViewHolder vh =
+                        (MyParentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(
+                                pvh.getAdapterPosition());
+                if (vh == null) return;
                 final ImageView arrow = vh.getView(R.id.arrow);
+                if (vh.isExpandable() && arrow.getVisibility() != View.VISIBLE) {
+                    arrow.setVisibility(View.VISIBLE);
+                }
                 final float currRotate=arrow.getRotation();
                 Logger.e(TAG, "currRotate=" + currRotate);
                 //重置为从0开始旋转
@@ -108,15 +112,19 @@ public class MainFragment extends Fragment {
             }
 
             @Override
-            public void onParentCollapsed(int parentPosition, int parentAdapterPosition,
+            public void onParentCollapsed(ParentViewHolder pvh, int parentPosition,
                     boolean byUser)
             {
                 Logger.e(TAG,"onParentCollapsed="+parentPosition);
 
-                BaseParentViewHolder vh= (BaseParentViewHolder) mRecyclerView
-                        .findViewHolderForAdapterPosition(parentAdapterPosition);
-                if (vh==null) return;
+                MyParentViewHolder vh =
+                        (MyParentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(
+                                pvh.getAdapterPosition());
+                if (vh == null) return;
                 final ImageView arrow = vh.getView(R.id.arrow);
+                if (!vh.isExpandable() && arrow.getVisibility() == View.VISIBLE) {
+                    arrow.setVisibility(View.GONE);
+                }
                 final float currRotate=arrow.getRotation();
                 Logger.e(TAG,"currRotate="+currRotate);
                 float rotate = 360;
@@ -127,7 +135,27 @@ public class MainFragment extends Fragment {
                 arrow.animate().rotation(rotate).setDuration(300).start();
             }
         });
-        mIPresenter=new PresenterImpl(adapter,mData);
+
+
+        adapter.addParentExpandCollapseListener(new ExpandableAdapter
+                .OnParentExpandCollapseListener() {
+
+            @Override
+            public void onParentExpanded(ParentViewHolder pvh, int parentPosition,
+                    boolean byUser)
+            {
+
+            }
+
+            @Override
+            public void onParentCollapsed(ParentViewHolder pvh, int parentPosition,
+                    boolean byUser)
+            {
+
+            }
+        });
+
+        mIPresenter = new PresenterImpl(adapter, mData);
     }
 
     @Override
@@ -154,8 +182,9 @@ public class MainFragment extends Fragment {
                 adapter.notifyAllChanged();
                 break;
             case R.id.action_toggle_expandable_1:
-                Parent parent = adapter.getData().get(1);
+                MyParent parent = adapter.getData().get(1);
                 parent.setExpandable(!parent.isExpandable());
+                adapter.notifyParentItemChanged(1);
                 break;
             case R.id.action_expand_all:
                 adapter.expandAllParent();
@@ -172,12 +201,12 @@ public class MainFragment extends Fragment {
             case R.id.action_settings:
                 Intent intent=new Intent(getActivity(),SecondActivity.class);
                 Test test=new Test();
-                Parent p=test.getParent();
-                List<Child> children=p.getChildItems();
+                MyParent myParent =test.getMyParent();
+                List<MyChild> myChildren = myParent.getChildren();
                 test.setString("pppppppppppp");
-                p.setInitiallyExpanded(false);
-                if (children != null && !children.isEmpty()) {
-                    children.get(0).setDot(1);
+                myParent.setInitiallyExpanded(false);
+                if (myChildren != null && !myChildren.isEmpty()) {
+                    myChildren.get(0).setDot(1);
                     Logger.e(TAG, "change child 0 dot");
                 }
                 intent.putExtra("test", test);
@@ -189,38 +218,36 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
+        if (resultCode != Activity.RESULT_OK) return;
         if (requestCode==REQUEST_RESULT) {
-
-            ArrayList<String> requests=data.getStringArrayListExtra(MyDialog.REQUEST);
-            Log.e(TAG,"requests="+requests.toString());
-
-            final int requestCount=requests.size();
-
-            for (int i = requestCount-1; i >=0; i--) {
+            ArrayList<String> requests = data.getStringArrayListExtra(MyDialog.REQUEST);
+            Log.e(TAG, "requests=" + requests.toString());
+            final int requestCount = requests.size();
+            for (int i = 0; i < requestCount; i++) {
                 String request = requests.get(i);
                 String[] requestSplit = request.split(",");
-                String method=requestSplit[0];
-                final int argsCount=requestSplit.length-1;
-
+                String method = requestSplit[0];
+                final int argsCount = requestSplit.length - 1;
                 try {
-                    Object[] args=new Object[argsCount];
-                    Class<?>[] argTypes=new Class<?>[argsCount];
+                    Object[] args = new Object[argsCount];
+                    Class<?>[] argTypes = new Class<?>[argsCount];
                     for (int k = 0; k < argsCount; k++) {
-                        argTypes[k]=int.class;
-                        args[k]=Integer.valueOf(requestSplit[k+1]);
+                        argTypes[k] = int.class;
+                        args[k] = Integer.valueOf(requestSplit[k + 1]);
                     }
-
                     Method m = IPresenter.class.getDeclaredMethod(method, argTypes);
                     Log.e(TAG, "method=" + m.toString());
                     m.setAccessible(true);
                     m.invoke(mIPresenter,args);
-
-                } catch (NoSuchMethodException | IllegalAccessException |
-                        InvocationTargetException e) {
+                } catch (NoSuchMethodException e) {
                     e.printStackTrace();
+                    Util.showToast(getContext(), "Test failed,please check input format");
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    Util.showToast(getContext(), "Test failed,please check input format");
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                    Util.showToast(getContext(), "Test failed,please check input format");
                 }
             }
         }
@@ -275,6 +302,5 @@ public class MainFragment extends Fragment {
         MyAdapter adapter= (MyAdapter) mRecyclerView.getAdapter();
         adapter.onSaveInstanceState(outState);
     }
-
 
 }

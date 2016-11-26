@@ -6,8 +6,8 @@ import android.os.Parcelable;
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class Child implements Parcelable {
-    private static final String TAG = "Child";
+public class MyChild implements Parcelable {
+    private static final String TAG = "MyChild";
 
     private int dot;
 
@@ -15,24 +15,24 @@ public class Child implements Parcelable {
 
     private String info;
 
-    public Child() {
+    public MyChild() {
     }
 
-    private Child(Parcel in) {
+    private MyChild(Parcel in) {
         dot = in.readInt();
         type = in.readInt();
         info = in.readString();
     }
 
-    public static final Creator<Child> CREATOR = new Creator<Child>() {
+    public static final Creator<MyChild> CREATOR = new Creator<MyChild>() {
         @Override
-        public Child createFromParcel(Parcel in) {
-            return new Child(in);
+        public MyChild createFromParcel(Parcel in) {
+            return new MyChild(in);
         }
 
         @Override
-        public Child[] newArray(int size) {
-            return new Child[size];
+        public MyChild[] newArray(int size) {
+            return new MyChild[size];
         }
     };
 
