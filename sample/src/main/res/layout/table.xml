@@ -72,7 +72,8 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:tag="@string/notifyParent¥Inserted"
             android:hint="@string/parent_hint"
-            android:textColorHint="@android:color/transparent"/>
+            android:textColorHint="@android:color/transparent"
+            android:textColor="@color/white_full"/>
 
         <EditText
             android:id="@+id/addChild"
@@ -81,7 +82,8 @@
             android:layout_weight="1"
             android:tag="@string/notifyChild¥Inserted"
             android:hint="@string/child_hint"
-            android:textColorHint="@android:color/transparent"/>
+            android:textColorHint="@android:color/transparent"
+            android:textColor="@color/white_full"/>
 
     </TableRow>
 
@@ -110,7 +112,8 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:tag="@string/notifyParent¥Removed"
             android:hint="@string/parent_hint"
-            android:textColorHint="@android:color/transparent"/>
+            android:textColorHint="@android:color/transparent"
+            android:textColor="@color/white_full"/>
 
         <EditText
             android:id="@+id/removeChild"
@@ -119,7 +122,8 @@
             android:layout_weight="1"
             android:tag="@string/notifyChild¥Removed"
             android:hint="@string/child_hint"
-            android:textColorHint="@android:color/transparent"/>
+            android:textColorHint="@android:color/transparent"
+            android:textColor="@color/white_full"/>
 
     </TableRow>
 
@@ -149,7 +153,8 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:tag="@string/notifyParent¥Changed"
             android:hint="@string/parent_hint"
-            android:textColorHint="@android:color/transparent"/>
+            android:textColorHint="@android:color/transparent"
+            android:textColor="@color/white_full"/>
 
         <EditText
             android:id="@+id/changeChild"
@@ -158,7 +163,8 @@
             android:layout_weight="1"
             android:tag="@string/notifyChild¥Changed"
             android:hint="@string/child_hint"
-            android:textColorHint="@android:color/transparent"/>
+            android:textColorHint="@android:color/transparent"
+            android:textColor="@color/white_full"/>
 
     </TableRow>
 
@@ -187,7 +193,8 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:tag="@string/notifyParent¥Moved"
             android:hint="@string/move_parent_hint"
-            android:textColorHint="@android:color/transparent"/>
+            android:textColorHint="@android:color/transparent"
+            android:textColor="@color/white_full"/>
 
         <EditText
             android:id="@+id/moveChild"
@@ -196,7 +203,8 @@
             android:layout_weight="1"
             android:tag="@string/notifyChild¥Moved"
             android:hint="@string/move_child_hint"
-            android:textColorHint="@android:color/transparent"/>
+            android:textColorHint="@android:color/transparent"
+            android:textColor="@color/white_full"/>
 
     </TableRow>
 
