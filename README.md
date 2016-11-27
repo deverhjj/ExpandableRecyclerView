@@ -11,8 +11,8 @@ Custom RecyclerView.Adapter that implement features like ExpandableListView
 
 ## Screenshots
 
-![Demo](/screenshots/screenshot_3.png)
-![Demo](/screenshots/screenshot_2.png)
+![Demo](/screenshots/screenshot_4.png)
+![Demo](/screenshots/screenshot_5.png)
 
 ## Usage
 * Add a dependency to your `build.gradle`:
