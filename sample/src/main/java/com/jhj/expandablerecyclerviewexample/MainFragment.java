@@ -211,7 +211,12 @@ public class MainFragment extends Fragment {
                     Class<?>[] argTypes = new Class<?>[argsCount];
                     for (int k = 0; k < argsCount; k++) {
                         argTypes[k] = int.class;
-                        args[k] = Integer.valueOf(requestSplit[k + 1]);
+                        try {
+                            args[k] = Integer.valueOf(requestSplit[k + 1]);
+                        } catch (NumberFormatException e) {
+                            Util.showToast(getContext(), "Test failed,please check input format");
+                            return;
+                        }
                     }
                     Method m = IPresenter.class.getDeclaredMethod(method, argTypes);
                     Log.e(TAG, "method=" + m.toString());
