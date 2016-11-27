@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cancel">CANCEL</string>
+    <string name="hint_input_error">Input form error! parent:parentPos,[count];          child:parentPos,childPos,[count];count default value is 1</string>
+    <string name="ok">OK</string>
+</resources>

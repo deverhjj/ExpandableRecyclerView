@@ -1,7 +1,6 @@
 package com.jhj.expandablerecyclerviewexample;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -36,33 +36,32 @@ public class MyDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        final View content = getActivity().getLayoutInflater().inflate(R.layout.table, null);
-
-        AlertDialog dialog=new AlertDialog.Builder(getActivity()).setTitle(getString(R.string.title_input))
-                .setView(content).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        Dialog dialog = new AlertDialog.Builder(getActivity(), R.style.MyDialogStyle).setView(
+                R.layout.table).setPositiveButton(getString(R.string.ok),
+                new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ArrayList<String> result = checkInput(content);
-                        if (result.isEmpty()) return;
+                        ArrayList<String> result = checkInput(getDialog().findViewById(R.id.table));
+                        if (result == null || result.isEmpty()) {
+                            return;
+                        }
                         Fragment targetFragment = getTargetFragment();
                         Intent data = new Intent();
                         data.putStringArrayListExtra(REQUEST, result);
                         targetFragment.onActivityResult(MainFragment.REQUEST_RESULT,
                                 Activity.RESULT_OK, data);
                     }
-                }).setNegativeButton("取消",null).create();
-
-        setCancelable(false);
-
+                }).setNegativeButton(getString(R.string.cancel), null).create();
         return dialog;
     }
 
 
-    private ArrayList<String> checkInput(View contentView) {
+
+    private ArrayList<String> checkInput(View table) {
+        if (!(table instanceof TableLayout)) return null;
         ArrayList<String> result = new ArrayList<>();
-        TableLayout tableLayout = (TableLayout) contentView.findViewById(R.id.table);
-        final int childCount=tableLayout.getChildCount();
+        TableLayout tableLayout = (TableLayout) table;
+        final int childCount = tableLayout.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View tableChild = tableLayout.getChildAt(i);
             if (tableChild instanceof TableRow) {

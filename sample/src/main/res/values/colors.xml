@@ -8,7 +8,11 @@
     <color name="md_deep_teal_300">#ff4db6ac</color>
     <color name="md_deep_teal_500">#ff009688</color>
 
+    <color name="white_full">#ffffffff</color>
     <color name="white_dark">#ffdcdcdc</color>
     <color name="colorControlHighlight">#4dFF4081</color>
-
+    <color name="translucent">#66ffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="colorAccent_translucent">#66FF4081</color>
+    <color name="md_deep_teal_300_translucent">#664db6ac</color>
 </resources>

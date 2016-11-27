@@ -4,7 +4,7 @@
              android:id="@+id/table"
              android:orientation="vertical"
              android:layout_width="match_parent"
-             android:layout_height="match_parent"
+             android:layout_height="wrap_content"
              android:padding="16dp">
 
     <TableRow
@@ -19,8 +19,8 @@
             android:layout_weight="1"
             style="@style/TextAppearance.AppCompat.Medium"
             android:gravity="center"
-            android:background="@color/colorAccent"
             android:padding="4dp"
+            android:textColor="@color/colorAccent"
             android:text="Operation \\ Type"/>
 
         <TextView
@@ -29,21 +29,21 @@
             android:layout_weight="1"
             android:padding="4dp"
             android:gravity="center"
-            android:background="@color/md_deep_teal_300"
             style="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:text="parent"/>
+            android:textColor="@color/colorPrimary"
+            android:text="Parent"/>
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="@style/TextAppearance.AppCompat.Medium"
-            android:background="@color/md_deep_teal_300"
             android:padding="4dp"
             android:gravity="center"
-            android:text="child"/>
+            android:textColor="@color/colorPrimary"
+            android:text="Child"/>
 
     </TableRow>
 
@@ -60,8 +60,8 @@
             android:layout_weight="1"
             style="@style/TextAppearance.AppCompat.Medium"
             android:gravity="center"
-            android:text="insert"
-            android:background="@color/md_deep_teal_300"/>
+            android:text="Insert"
+            android:textColor="@color/colorPrimary"/>
 
         <EditText
             android:id="@+id/addParent"
@@ -98,8 +98,8 @@
             android:layout_weight="1"
             style="@style/TextAppearance.AppCompat.Medium"
             android:gravity="center"
-            android:text="remove"
-            android:background="@color/md_deep_teal_300"/>
+            android:text="Remove"
+            android:textColor="@color/colorPrimary"/>
 
         <EditText
             android:id="@+id/removeParent"
@@ -137,8 +137,8 @@
             android:layout_weight="1"
             style="@style/TextAppearance.AppCompat.Medium"
             android:gravity="center"
-            android:text="change"
-            android:background="@color/md_deep_teal_300"/>
+            android:text="Change"
+            android:textColor="@color/colorPrimary"/>
 
         <EditText
             android:id="@+id/changeParent"
@@ -175,8 +175,8 @@
             android:layout_weight="1"
             style="@style/TextAppearance.AppCompat.Medium"
             android:gravity="center"
-            android:text="move"
-            android:background="@color/md_deep_teal_300"/>
+            android:text="Move"
+            android:textColor="@color/colorPrimary"/>
 
         <EditText
             android:id="@+id/moveParent"
@@ -192,7 +192,7 @@
         <EditText
             android:id="@+id/moveChild"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:tag="@string/notifyChild¥Moved"
             android:hint="@string/move_child_hint"

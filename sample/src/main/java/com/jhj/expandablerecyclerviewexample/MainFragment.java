@@ -136,25 +136,6 @@ public class MainFragment extends Fragment {
             }
         });
 
-
-        adapter.addParentExpandCollapseListener(new ExpandableAdapter
-                .OnParentExpandCollapseListener() {
-
-            @Override
-            public void onParentExpanded(ParentViewHolder pvh, int parentPosition,
-                    boolean byUser)
-            {
-
-            }
-
-            @Override
-            public void onParentCollapsed(ParentViewHolder pvh, int parentPosition,
-                    boolean byUser)
-            {
-
-            }
-        });
-
         mIPresenter = new PresenterImpl(adapter, mData);
     }
 
@@ -169,14 +150,11 @@ public class MainFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case  R.id.action_test:
-                DialogFragment dialog= (DialogFragment) getActivity().getSupportFragmentManager().findFragmentByTag
-                        ("dialog");
-                if (dialog == null) {
-                    Logger.e(TAG,"create new Dialog");
-                    dialog = new MyDialog();
-                }
+                DialogFragment dialog =
+                        (DialogFragment) getChildFragmentManager().findFragmentByTag("dialog");
+                if (dialog == null) dialog = new MyDialog();
                 dialog.setTargetFragment(this, REQUEST_RESULT);
-                dialog.show(getActivity().getSupportFragmentManager(), "dialog");
+                dialog.show(getChildFragmentManager(), "dialog");
                 break;
             case R.id.action_refresh:
                 adapter.notifyAllChanged();
@@ -219,7 +197,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != Activity.RESULT_OK) return;
-        if (requestCode==REQUEST_RESULT) {
+        if (requestCode == REQUEST_RESULT) {
             ArrayList<String> requests = data.getStringArrayListExtra(MyDialog.REQUEST);
             Log.e(TAG, "requests=" + requests.toString());
             final int requestCount = requests.size();
