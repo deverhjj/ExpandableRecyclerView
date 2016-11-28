@@ -400,8 +400,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         if (adapterPosition == 0) return 0;
         Object item = getItem(adapterPosition);
         if (item instanceof ParentWrapper) {
-            int beforeExpandedChildItemCount = getBeforeExpandedChildCount(adapterPosition);
-            return adapterPosition - beforeExpandedChildItemCount;
+            return adapterPosition - getBeforeExpandedChildCount(adapterPosition);
         } else {
             for (int i = adapterPosition - 1; i >= 0; i--) {
                 if (getItem(i) instanceof ParentWrapper) {
@@ -687,7 +686,6 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         Logger.e(TAG, "syncViewExpansionState=>" + parentAdapterPosition);
         if (parentAdapterPosition == RecyclerView.NO_POSITION) return;
 
-        //for debug
         final int parentPos = getParentPosition(parentAdapterPosition);
 
         for (RecyclerView recyclerView : mAttachedRecyclerViews) {
