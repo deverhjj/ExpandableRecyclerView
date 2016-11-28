@@ -1,4 +1,4 @@
-<manifest package="com.jhj.expandablerecyclerview"
+<manifest package="com.github.huajianjiang.expandablerecyclerview"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application

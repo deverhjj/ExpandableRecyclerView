@@ -5,7 +5,7 @@ android {
     buildToolsVersion '24.0.2'
 
     defaultConfig {
-        applicationId "com.jhj.expandablerecyclerviewexample"
+        applicationId "com.github.huajianjiang.expandablerecyclerview.sample"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
