@@ -55,4 +55,3 @@ dependencies {
 
 apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/installv1.gradle'
 apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/bintrayv1.gradle'
-apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/gradle-mvn-push.gradle'
