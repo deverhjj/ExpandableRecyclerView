@@ -2,8 +2,9 @@ package com.github.huajianjiang.expandablerecyclerview.widget;
 
 import android.view.View;
 
+import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
-import com.jhj.lib.baserecyclerview.viewholder.BaseViewHolder;
+
 
 /**
  * <p>父列表项 ViewHolder，监听父列表项的点击事件并根据当前展开或收缩状态触发父列表项展开或折叠事件
@@ -64,7 +65,7 @@ public class ParentViewHolder extends BaseViewHolder {
     }
 
     @Override
-    protected void onItemClick(BaseViewHolder vh, View v, int adapterPosition) {
+    public void onItemClick(BaseViewHolder vh, View v, int adapterPosition) {
         if (v != itemView) return;
         if (mExpanded) {
             collapseParent();

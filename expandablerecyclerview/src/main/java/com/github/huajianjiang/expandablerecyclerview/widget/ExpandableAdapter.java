@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.util.Packager;
-import com.jhj.lib.baserecyclerview.viewholder.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

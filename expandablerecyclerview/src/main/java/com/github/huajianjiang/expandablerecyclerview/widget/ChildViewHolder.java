@@ -2,7 +2,8 @@ package com.github.huajianjiang.expandablerecyclerview.widget;
 
 import android.view.View;
 
-import com.jhj.lib.baserecyclerview.viewholder.BaseViewHolder;
+import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
+
 
 /**
  * <p>
