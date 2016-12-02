@@ -50,7 +50,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.0.1'
-    compile 'com.github.huajianjiang:baserecyclerview:1.0.0-RC1'
+    compile 'com.github.huajianjiang:baserecyclerview:1.0.0'
 }
 
 apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/installv1.gradle'
