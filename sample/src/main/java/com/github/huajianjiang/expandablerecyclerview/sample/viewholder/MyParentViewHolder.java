@@ -3,8 +3,10 @@ package com.github.huajianjiang.expandablerecyclerview.sample.viewholder;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
 import com.github.huajianjiang.expandablerecyclerview.sample.R;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
+import com.github.huajianjiang.expandablerecyclerview.sample.utils.Util;
 import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 
 
@@ -29,9 +31,16 @@ public class MyParentViewHolder extends ParentViewHolder {
         if (isExpandable()) {
             arrow.setRotation(isExpanded() ? 180 : 0);
         }
-//        if (getAdapterPosition() == 1) {
-            //Logger.e(TAG, "***********bind**************>>" + getAdapterPosition());
-       // }
     }
 
+    @Override
+    public int[] onRegisterLongClickEvent() {
+        return new int[]{itemView.getId()};
+    }
+
+    @Override
+    public boolean onItemLongClick(BaseViewHolder vh, View v, int adapterPosition) {
+        Util.showToast(v.getContext(), "Parent LongClick=" + adapterPosition);
+        return true;
+    }
 }

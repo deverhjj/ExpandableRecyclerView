@@ -87,7 +87,7 @@ public class MyAdapter extends ExpandableAdapter<MyParentViewHolder,MyChildViewH
     @Override
     public int getParentType(int parentPosition) {
         Logger.i(TAG,"getParentType="+parentPosition);
-        MyParent myParent = (MyParent) mData.get(parentPosition);
+        MyParent myParent = mData.get(parentPosition);
         return myParent.getType();
     }
 

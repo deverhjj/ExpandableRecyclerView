@@ -90,7 +90,7 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onParentExpanded(ParentViewHolder pvh, int parentPosition,
-                    boolean byUser)
+                    boolean pendingCause, boolean byUser)
             {
                 Logger.e(TAG,"onParentExpanded="+parentPosition);
 
@@ -108,12 +108,16 @@ public class MainFragment extends Fragment {
                 if (currRotate == 360) {
                     arrow.setRotation(0);
                 }
-                arrow.animate().rotation(180).setDuration(300).start();
+                if (pendingCause) {
+                    arrow.setRotation(180);
+                } else {
+                    arrow.animate().rotation(180).setDuration(300).start();
+                }
             }
 
             @Override
             public void onParentCollapsed(ParentViewHolder pvh, int parentPosition,
-                    boolean byUser)
+                    boolean pendingCause, boolean byUser)
             {
                 Logger.e(TAG,"onParentCollapsed="+parentPosition);
 
@@ -132,7 +136,11 @@ public class MainFragment extends Fragment {
                 if (currRotate < 180) {
                     rotate = 0;
                 }
-                arrow.animate().rotation(rotate).setDuration(300).start();
+                if (pendingCause) {
+                    arrow.setRotation(rotate);
+                } else {
+                    arrow.animate().rotation(rotate).setDuration(300).start();
+                }
             }
         });
 
