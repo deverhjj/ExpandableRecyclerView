@@ -19,7 +19,7 @@ Custom RecyclerView.Adapter that implement features like ExpandableListView
 
 ```grooey
 dependencies {
-    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.2'
+    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.3'
 }
 ```
 
@@ -29,7 +29,7 @@ dependencies {
 <dependency>
   <groupId>com.github.huajianjiang</groupId>
   <artifactId>expandablerecyclerview</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <type>pom</type>
 </dependency>
 ```
