@@ -10,16 +10,26 @@ import com.github.huajianjiang.expandablerecyclerview.util.Logger;
  */
 public class SavedState implements Parcelable {
     private static final String TAG = "SavedState";
-
+    private boolean[] mExpandableState;
     private boolean[] mExpansionState;
 
-    public SavedState(boolean[] expansionState) {
+    public SavedState(boolean[] expandableState, boolean[] expansionState) {
+        mExpandableState = expandableState;
         mExpansionState = expansionState;
     }
 
     private SavedState(Parcel in) {
         Logger.e(TAG,"***********create SavedState from Parcel*********");
+        mExpandableState = in.createBooleanArray();
         mExpansionState = in.createBooleanArray();
+    }
+
+    public boolean[] getExpandableState() {
+        return mExpandableState;
+    }
+
+    public void setExpandableState(boolean[] expandableState) {
+        mExpandableState = expandableState;
     }
 
     public boolean[] getExpansionState() {
@@ -52,6 +62,7 @@ public class SavedState implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         Logger.e(TAG,"***********writeToParcel*********");
+        dest.writeBooleanArray(mExpandableState);
         dest.writeBooleanArray(mExpansionState);
     }
 }

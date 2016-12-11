@@ -70,7 +70,7 @@ public class MyParent implements Parent<MyChild>, Parcelable {
     }
 
     @Override
-    public boolean isExpandable() {
+    public boolean isInitiallyExpandable() {
         return isExpandable;
     }
 

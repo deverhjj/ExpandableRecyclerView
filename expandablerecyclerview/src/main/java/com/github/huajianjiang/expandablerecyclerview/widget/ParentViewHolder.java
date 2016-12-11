@@ -80,7 +80,7 @@ public class ParentViewHolder extends BaseViewHolder {
     private void expandParent() {
         if (mExpandCollapseListener != null) {
             setExpanded(mExpandCollapseListener.onParentExpand(ParentViewHolder.this));
-            Logger.e(TAG, "*******expandParent*******>" + mExpanded);
+            Logger.e(TAG, "*******expandParent*******>expanded=" + mExpanded+",expandable="+mExpandable);
         }
     }
 
@@ -90,7 +90,7 @@ public class ParentViewHolder extends BaseViewHolder {
     private void collapseParent() {
         if (mExpandCollapseListener != null) {
             setExpanded(!mExpandCollapseListener.onParentCollapse(ParentViewHolder.this));
-            Logger.e(TAG, "*******collapseParent*******>" + mExpanded);
+            Logger.e(TAG, "*******collapseParent*******>expanded=" + mExpanded+",expandable="+mExpandable);
         }
     }
 

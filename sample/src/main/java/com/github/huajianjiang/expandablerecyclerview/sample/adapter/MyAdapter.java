@@ -14,14 +14,14 @@ import com.github.huajianjiang.expandablerecyclerview.sample.viewholder.MyChildV
 import com.github.huajianjiang.expandablerecyclerview.sample.viewholder.MyParentViewHolder;
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
-import com.github.huajianjiang.expandablerecyclerview.widget.Parent;
 
 import java.util.List;
 
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class MyAdapter extends ExpandableAdapter<MyParentViewHolder,MyChildViewHolder>
+public class MyAdapter
+        extends ExpandableAdapter<MyParentViewHolder, MyChildViewHolder, MyParent, MyChild>
 {
     private static final String TAG = "MyAdapter";
 
@@ -62,9 +62,8 @@ public class MyAdapter extends ExpandableAdapter<MyParentViewHolder,MyChildViewH
 
     @Override
     public void onBindParentViewHolder(MyParentViewHolder parentViewHolder, int parentPosition,
-            Parent parentListItem)
+            MyParent parent)
     {
-        MyParent parent = (MyParent) parentListItem;
         int parentType = getParentType(parentPosition);
         String info = mContext.getString(R.string.parent_type, parentType, parentPosition,
                 parentViewHolder.getAdapterPosition());
@@ -74,14 +73,13 @@ public class MyAdapter extends ExpandableAdapter<MyParentViewHolder,MyChildViewH
 
     @Override
     public void onBindChildViewHolder(MyChildViewHolder childViewHolder, int parentPosition,
-            int childPosition, Object childListItem)
+            int childPosition, MyChild child)
     {
-        MyChild myChild = (MyChild) childListItem;
         int childType = getChildType(parentPosition, childPosition);
         String info = mContext.getString(R.string.child_type, childType, childPosition,
                 childViewHolder.getAdapterPosition());
-        myChild.setInfo(info);
-        childViewHolder.bind(myChild);
+        child.setInfo(info);
+        childViewHolder.bind(child);
     }
 
     @Override

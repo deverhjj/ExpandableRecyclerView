@@ -18,7 +18,7 @@ import java.util.Random;
 public class PresenterImpl implements IPresenter {
     private static final String TAG = "PresenterImpl";
 
-    private Random mRandom=new Random();
+    private Random mRandom = new Random();
 
     private ExpandableAdapter mAdapter;
     private List<MyParent> mData;
@@ -62,7 +62,7 @@ public class PresenterImpl implements IPresenter {
     @Override
     public void notifyParentItemRangeInserted(int parentPositionStart, int parentItemCount) {
         for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
-            MyParent myParent =getParentItem();
+            MyParent myParent = getParentItem();
             mData.add(i, myParent);
         }
         mAdapter.notifyParentItemRangeInserted(parentPositionStart,parentItemCount);
@@ -89,7 +89,7 @@ public class PresenterImpl implements IPresenter {
 
         Logger.e(TAG,"myChildren="+ myChildren.size());
 
-        mAdapter.notifyChildItemRangeInserted(parentPosition,childPositionStart,childItemCount);
+        mAdapter.notifyChildItemRangeInserted(parentPosition,childPositionStart,childItemCount,true);
         autoNotifyAllChanged();
     }
 
@@ -121,7 +121,7 @@ public class PresenterImpl implements IPresenter {
     public void notifyChildItemRangeRemoved(int parentPosition, int childPositionStart,
             int childItemCount)
     {
-        MyParent myParent =mData.get(parentPosition);
+        MyParent myParent = mData.get(parentPosition);
         List<MyChild> myChildren = myParent.getChildren();
         Logger.e(TAG,"myChildren="+ myChildren.size());
         for (int i = childPositionStart; i <childPositionStart+childItemCount ; i++) {

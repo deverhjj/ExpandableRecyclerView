@@ -18,7 +18,7 @@ public interface Parent<T> {
      * 单独设置该父列表项是否可以展开折叠,不影响 {@link #isInitiallyExpanded()}，但是后期无法再展开折叠，除非再次设置该返回值
      * @return 该父父列表项是否可展开折叠
      */
-    boolean isExpandable();
+    boolean isInitiallyExpandable();
 
     /**
      * 父列表项初始化时是否展开回调

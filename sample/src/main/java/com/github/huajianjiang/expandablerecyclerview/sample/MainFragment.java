@@ -99,10 +99,8 @@ public class MainFragment extends Fragment {
                                 pvh.getAdapterPosition());
                 if (vh == null) return;
                 final ImageView arrow = vh.getView(R.id.arrow);
-                if (vh.isExpandable() && arrow.getVisibility() != View.VISIBLE) {
-                    arrow.setVisibility(View.VISIBLE);
-                }
-                final float currRotate=arrow.getRotation();
+                if (arrow.getVisibility() != View.VISIBLE) return;
+                final float currRotate = arrow.getRotation();
                 Logger.e(TAG, "currRotate=" + currRotate);
                 //重置为从0开始旋转
                 if (currRotate == 360) {
@@ -126,10 +124,8 @@ public class MainFragment extends Fragment {
                                 pvh.getAdapterPosition());
                 if (vh == null) return;
                 final ImageView arrow = vh.getView(R.id.arrow);
-                if (!vh.isExpandable() && arrow.getVisibility() == View.VISIBLE) {
-                    arrow.setVisibility(View.GONE);
-                }
-                final float currRotate=arrow.getRotation();
+                if (arrow.getVisibility() != View.VISIBLE) return;
+                final float currRotate = arrow.getRotation();
                 Logger.e(TAG,"currRotate="+currRotate);
                 float rotate = 360;
                 //未展开完全并且当前旋转角度小于180，逆转回去
@@ -140,6 +136,28 @@ public class MainFragment extends Fragment {
                     arrow.setRotation(rotate);
                 } else {
                     arrow.animate().rotation(rotate).setDuration(300).start();
+                }
+            }
+        });
+
+        adapter.addParentExpandableStateChangeListener(new ExpandableAdapter.OnParentExpandableStateChangeListener() {
+
+            @Override
+            public void onParentExpandableStateChanged(ParentViewHolder pvh, int parentPosition,
+                    boolean expandable)
+            {
+                Logger.e(TAG, "onParentExpandableStateChanged=" + parentPosition);
+
+                MyParentViewHolder vh =
+                        (MyParentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(
+                                pvh.getAdapterPosition());
+                if (vh == null) return;
+                final ImageView arrow = vh.getView(R.id.arrow);
+                if (expandable && arrow.getVisibility() != View.VISIBLE) {
+                    arrow.setVisibility(View.VISIBLE);
+                    arrow.setRotation(pvh.isExpanded() ? 180 : 0);
+                } else if (!expandable && arrow.getVisibility() == View.VISIBLE) {
+                    arrow.setVisibility(View.GONE);
                 }
             }
         });
@@ -168,9 +186,7 @@ public class MainFragment extends Fragment {
                 adapter.notifyAllChanged();
                 break;
             case R.id.action_toggle_expandable_1:
-                MyParent parent = adapter.getData().get(1);
-                parent.setExpandable(!parent.isExpandable());
-                adapter.notifyParentItemChanged(1);
+                adapter.toggleExpandable(1);
                 break;
             case R.id.action_expand_all:
                 adapter.expandAllParents();

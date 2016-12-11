@@ -17,6 +17,7 @@ public class Packager {
     private static final int TYPE_SHIFT = 30;
     private static final int TYPE_MASK = 0x3 << TYPE_SHIFT;
 
+    public static final int ITEM_VIEW_TYPE_ILLEGAL = -1;
     public static final int ITEM_VIEW_TYPE_DEFAULT = 0 << TYPE_SHIFT;
     public static final int ITEM_VIEW_TYPE_PARENT = 1 << TYPE_SHIFT;
     public static final int ITEM_VIEW_TYPE_CHILD = 2 << TYPE_SHIFT;
