@@ -486,17 +486,18 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 newParentPosition == RecyclerView.NO_POSITION) return 0;
         P newParent = mParents.get(newParentPosition);
         ParentWrapper<P, C> newParentWrapper = new ParentWrapper<>(newParent);
+        List<C> children = newParentWrapper.getChildren();
+        final boolean hasChildren = newParentWrapper.hasChildren(children);
         mItems.add(parentWrapperPosition, newParentWrapper);
         int insertedItemCount = 1;
+        newParentWrapper.setExpandable(newParentWrapper.isInitiallyExpandable() && hasChildren);
         //parent 初始化展开但是当前展开折叠模式是单项展开模式时强制不展开该 parent
-        //parent 当前展开折叠模式是单项折叠模式时但是初始化不展开时强制进行对有 child 的 parent 展开
+        //parent 当前展开折叠模式是单项折叠模式时不管初始化是否展开强制进行对有 child 的 parent 展开
         if ((newParentWrapper.isInitiallyExpanded() &&
                 getExpandCollapseMode() != ExpandCollapseMode.MODE_SINGLE_EXPAND) ||
-                (!newParentWrapper.isInitiallyExpanded() &&
-                        getExpandCollapseMode() == ExpandCollapseMode.MODE_SINGLE_COLLAPSE))
+                getExpandCollapseMode() == ExpandCollapseMode.MODE_SINGLE_COLLAPSE)
         {
-            List<C> children = newParentWrapper.getChildren();
-            final boolean hasChildren = newParentWrapper.hasChildren(children);
+
             newParentWrapper.setExpanded(hasChildren);
             if (hasChildren) {
                 insertedItemCount += addChildWrapper(getParentPosition(parentWrapperPosition), 0,
@@ -1063,6 +1064,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         //注意：通知客户端通知的前提是当前所有的 Parent 已经 notifyItemRangeInserted 通知 recyclerView 了
         index = 0;
         for (int j = parentPositionStart; j < parentPositionStart + parentItemCount; j++) {
+            syncParentExpandableState(j);
             if (insertedItemCounts[index++] > 1) syncViewExpansionState(j);
         }
     }
@@ -1145,8 +1147,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         //获取子列表数据然后再添加到模型数据层再刷新界面的，这里如果判断没展开就不能添加数据，否则有重复数据显示
         if (!parentWrapper.isExpanded()) {
             if (parentWrapper.isInitiallyExpandable() && parentWrapper.setExpandable(
-                    parentWrapper.hasChildren()))
-            {
+                    parentWrapper.hasChildren())) {
                 syncParentExpandableState(parentPosition);
             }
             if (forceExpandParent) {
