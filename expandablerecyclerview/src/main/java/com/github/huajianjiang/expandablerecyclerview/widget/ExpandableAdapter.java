@@ -497,7 +497,6 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 getExpandCollapseMode() != ExpandCollapseMode.MODE_SINGLE_EXPAND) ||
                 getExpandCollapseMode() == ExpandCollapseMode.MODE_SINGLE_COLLAPSE)
         {
-
             newParentWrapper.setExpanded(hasChildren);
             if (hasChildren) {
                 insertedItemCount += addChildWrapper(getParentPosition(parentWrapperPosition), 0,
