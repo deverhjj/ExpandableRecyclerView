@@ -1,5 +1,6 @@
 package com.github.huajianjiang.expandablerecyclerview.widget;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
@@ -12,8 +13,10 @@ import com.github.huajianjiang.expandablerecyclerview.util.Logger;
  * </p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentViewHolder extends BaseViewHolder {
+public class ParentViewHolder<T extends Parent> extends BaseViewHolder implements ExpandableViewHolderCallback<ParentViewHolder, T> {
     private static final String TAG = "ParentViewHolder";
+
+    private ExpandableAdapter mAdapter;
 
     private InnerOnParentExpandCollapseListener mExpandCollapseListener;
 
@@ -29,6 +32,10 @@ public class ParentViewHolder extends BaseViewHolder {
 
     public ParentViewHolder(View itemView) {
         super(itemView);
+    }
+
+    void setExpandableAdapter(ExpandableAdapter adapter) {
+        mAdapter = adapter;
     }
 
     public boolean isExpandable() {
@@ -64,6 +71,13 @@ public class ParentViewHolder extends BaseViewHolder {
         mExpandCollapseListener = listener;
     }
 
+    /**
+     * 当父列表项点击时的回调,包括之前注册的在父列表项里的子 view 的点击监听
+     * 客户端不应该覆盖该实现, 应该实现 {@link #onExpandableItemClick(BaseViewHolder, View, Object, int, int)}
+     * @param vh
+     * @param v
+     * @param adapterPosition
+     */
     @Override
     public void onItemClick(BaseViewHolder vh, View v, int adapterPosition) {
         if (v != itemView) return;
@@ -72,6 +86,20 @@ public class ParentViewHolder extends BaseViewHolder {
         } else {
             expandParent();
         }
+        onExpandableItemClick(ParentViewHolder.this, v, (T) mAdapter.getParentForAdapterPosition(adapterPosition),mAdapter.getParentPosition(adapterPosition), RecyclerView.NO_POSITION);
+    }
+
+    /**
+     * 当父列表项长按时的回调,包括之前注册的在父列表项里的子 view 的长按事件监听
+     * 客户端不应该覆盖该实现, 应该实现 {@link #onExpandableItemLongClick(BaseViewHolder, View, Object, int, int)}
+     * @param vh
+     * @param v
+     * @param adapterPosition
+     * @return
+     */
+    @Override
+    public boolean onItemLongClick(BaseViewHolder vh, View v, int adapterPosition) {
+        return onExpandableItemLongClick(ParentViewHolder.this, v, (T) mAdapter.getParentForAdapterPosition(adapterPosition), mAdapter.getParentPosition(adapterPosition), RecyclerView.NO_POSITION);
     }
 
     /**
@@ -94,4 +122,14 @@ public class ParentViewHolder extends BaseViewHolder {
         }
     }
 
+    @Override
+    public void onExpandableItemClick(ParentViewHolder pvh, View v, T item, int parentPosition, int childPosition) {
+        // do nothing, let client implement it
+    }
+
+    @Override
+    public boolean onExpandableItemLongClick(ParentViewHolder pvh, View v, T item, int parentPosition, int childPosition) {
+        // do nothing, let client implement it
+        return false;
+    }
 }

@@ -3,7 +3,6 @@ package com.github.huajianjiang.expandablerecyclerview.sample.viewholder;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
 import com.github.huajianjiang.expandablerecyclerview.sample.R;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 import com.github.huajianjiang.expandablerecyclerview.sample.utils.Util;
@@ -14,7 +13,7 @@ import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class MyParentViewHolder extends ParentViewHolder {
+public class MyParentViewHolder extends ParentViewHolder<MyParent> {
     private static final String TAG = "MyParentViewHolder";
 
     public MyParentViewHolder(View itemView) {
@@ -39,8 +38,8 @@ public class MyParentViewHolder extends ParentViewHolder {
     }
 
     @Override
-    public boolean onItemLongClick(BaseViewHolder vh, View v, int adapterPosition) {
-        Util.showToast(v.getContext(), "Parent LongClick=" + adapterPosition);
+    public boolean onExpandableItemLongClick(ParentViewHolder pvh, View v, MyParent item, int parentPosition, int childPosition) {
+        Util.showToast(v.getContext(), "Parent LongClick=" + parentPosition);
         return true;
     }
 }

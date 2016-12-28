@@ -8,8 +8,10 @@ import java.util.List;
  * {@link ExpandableAdapter} 业务助手
  * Created by jhj_Plus on 2015/12/23.
  */
-class ExpandableAdapterHelper {
+final class ExpandableAdapterHelper {
     private static final String TAG = "ExpandableAdapterHelper";
+
+    private ExpandableAdapterHelper(){}
 
     /**
      * 按照数据源的数据顺序构建并返回本地数据模型
@@ -17,28 +19,28 @@ class ExpandableAdapterHelper {
      * @param parents 客户端所有的父列表项数据集合
      * @return 本地数据模型集合
      */
-    public static <P extends Parent, C> List<ParentWrapper<P, C>> generateItems(List<P> parents)
+    static <P extends Parent, C> List<ItemWrapper<P, C>> generateItems(List<P> parents)
     {
         if (parents == null) return Collections.EMPTY_LIST;
-        List<ParentWrapper<P, C>> items = new ArrayList<>();
+        List<ItemWrapper<P, C>> items = new ArrayList<>();
         final int parentCount = parents.size();
         for (int i = 0; i < parentCount; i++) {
             P parent = parents.get(i);
             if (parent == null) continue;
-            ParentWrapper<P, C> parentWrapper = new ParentWrapper<>(parent);
-            items.add(parentWrapper);
-            final boolean hasChildren = parentWrapper.hasChildren();
-            if (parent.isInitiallyExpandable()) parentWrapper.setExpandable(hasChildren);
-            if (parentWrapper.isInitiallyExpanded()) {
-                List<C> children = parentWrapper.getChildren();
+            ItemWrapper<P, C> itemWrapper = new ItemWrapper<>(parent);
+            items.add(itemWrapper);
+            final boolean hasChildren = itemWrapper.hasChildren();
+            if (parent.isInitiallyExpandable()) itemWrapper.setExpandable(hasChildren);
+            if (itemWrapper.isInitiallyExpanded()) {
+                List<C> children = itemWrapper.getChildren();
                 //父列表项返回的 ChildItems 为 null 或者 childCount 为0 设置为折叠状态
-                parentWrapper.setExpanded(hasChildren);
+                itemWrapper.setExpanded(hasChildren);
                 if (!hasChildren) continue;
                 final int childCount = children.size();
                 for (int j = 0; j < childCount; j++) {
                     C child = children.get(j);
                     if (child == null) continue;
-                    items.add(new ParentWrapper<P, C>(child));
+                    items.add(new ItemWrapper<P, C>(child));
                 }
             }
         }

@@ -3,12 +3,12 @@ package com.github.huajianjiang.expandablerecyclerview.widget;
 import java.util.List;
 
 /**
- * 客户端父列表包装类，包装客户端父列表项相关的数据，与客户端数据模型分离达到不影响客户端模型数据的前提下
- * 去实现本 Lib 所要实现的业务逻辑
+ * 客户端列表项模型层类的包装类，包装客户端父列表/子列表项项相关的数据，与客户端数据模型分离达到不影响客户端模型数据的前提下
+ * 去实现本 lib 所要实现的业务逻辑
  * Created by jhj_Plus on 2015/12/23.
  */
-class ParentWrapper<P extends Parent, C> {
-    private static final String TAG = "ParentWrapper";
+class ItemWrapper<P extends Parent, C> {
+    private static final String TAG = "ItemWrapper";
     /**
      * 客户端的父列表项模型类
      */
@@ -25,11 +25,11 @@ class ParentWrapper<P extends Parent, C> {
      */
     private boolean mExpanded = false;
 
-    ParentWrapper(P parent) {
+    ItemWrapper(P parent) {
         mParent = parent;
     }
 
-    ParentWrapper(C child) {
+    ItemWrapper(C child) {
         mChild = child;
     }
 

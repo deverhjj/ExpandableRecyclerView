@@ -3,7 +3,6 @@ package com.github.huajianjiang.expandablerecyclerview.sample.viewholder;
 import android.view.View;
 import android.widget.TextView;
 
-import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
 import com.github.huajianjiang.expandablerecyclerview.sample.R;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyChild;
 import com.github.huajianjiang.expandablerecyclerview.sample.utils.Util;
@@ -32,8 +31,8 @@ public class MyChildViewHolder extends ChildViewHolder {
     }
 
     @Override
-    public boolean onItemLongClick(BaseViewHolder vh, View v, int adapterPosition) {
-        Util.showToast(v.getContext(), "Child LongClick=" + adapterPosition);
+    public boolean onExpandableItemLongClick(ChildViewHolder childViewHolder, View v, Object item, int parentPosition, int childPosition) {
+        Util.showToast(v.getContext(), "Child LongClick=" + parentPosition + "," + childPosition);
         return true;
     }
 }
