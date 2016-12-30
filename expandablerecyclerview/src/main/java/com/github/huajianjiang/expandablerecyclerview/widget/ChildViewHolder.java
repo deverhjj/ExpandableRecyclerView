@@ -13,7 +13,9 @@ import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
  * <p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ChildViewHolder<T> extends BaseViewHolder implements ExpandableViewHolderCallback<ChildViewHolder, T> {
+public class ChildViewHolder<P, C> extends BaseViewHolder
+        implements ExpandableViewHolderCallback<ChildViewHolder, P, C>
+{
     private static final String TAG = "ChildViewHolder";
 
     private ExpandableAdapter mAdapter;
@@ -27,22 +29,36 @@ public class ChildViewHolder<T> extends BaseViewHolder implements ExpandableView
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onItemClick(BaseViewHolder vh, View v, int adapterPosition) {
-        onExpandableItemClick(ChildViewHolder.this, v, (T) mAdapter.getChildForAdapterPosition(adapterPosition), mAdapter.getParentPosition(adapterPosition), mAdapter.getChildPosition(adapterPosition));
+        onExpandableItemClick(ChildViewHolder.this, v,
+                (P) mAdapter.getParentForAdapterPosition(adapterPosition),
+                (C) mAdapter.getChildForAdapterPosition(adapterPosition),
+                mAdapter.getParentPosition(adapterPosition),
+                mAdapter.getChildPosition(adapterPosition));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean onItemLongClick(BaseViewHolder vh, View v, int adapterPosition) {
-        return onExpandableItemLongClick(ChildViewHolder.this, v, (T) mAdapter.getChildForAdapterPosition(adapterPosition), mAdapter.getParentPosition(adapterPosition), mAdapter.getChildPosition(adapterPosition));
+        return onExpandableItemLongClick(ChildViewHolder.this, v,
+                (P) mAdapter.getParentForAdapterPosition(adapterPosition),
+                (C) mAdapter.getChildForAdapterPosition(adapterPosition),
+                mAdapter.getParentPosition(adapterPosition),
+                mAdapter.getChildPosition(adapterPosition));
     }
 
     @Override
-    public void onExpandableItemClick(ChildViewHolder childViewHolder, View v, T item, int parentPosition, int childPosition) {
+    public void onExpandableItemClick(ChildViewHolder childViewHolder, View v, P parent, C child,
+                                      int parentPosition, int childPosition)
+    {
         // do nothing, let client implement it
     }
 
     @Override
-    public boolean onExpandableItemLongClick(ChildViewHolder childViewHolder, View v, T item, int parentPosition, int childPosition) {
+    public boolean onExpandableItemLongClick(ChildViewHolder childViewHolder, View v, P parent,
+                                             C child, int parentPosition, int childPosition)
+    {
         // do nothing, let client implement it
         return false;
     }
