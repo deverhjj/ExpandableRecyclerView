@@ -7,7 +7,7 @@ import java.util.List;
  * 去实现本 lib 所要实现的业务逻辑
  * Created by jhj_Plus on 2015/12/23.
  */
-class ItemWrapper<P extends Parent<C>, C> {
+class ItemWrapper<P extends Parent, C> {
     private static final String TAG = "ItemWrapper";
     /**
      * 客户端的父列表项模型类

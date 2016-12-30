@@ -19,7 +19,7 @@ final class ExpandableAdapterHelper {
      * @param parents 客户端所有的父列表项数据集合
      * @return 本地数据模型集合
      */
-    static <P extends Parent<C>, C> List<ItemWrapper<P, C>> generateItems(List<P> parents)
+    static <P extends Parent, C> List<ItemWrapper<P, C>> generateItems(List<P> parents)
     {
         if (parents == null) return Collections.EMPTY_LIST;
         List<ItemWrapper<P, C>> items = new ArrayList<>();

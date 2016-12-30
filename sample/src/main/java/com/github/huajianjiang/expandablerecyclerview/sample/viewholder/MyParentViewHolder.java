@@ -9,7 +9,6 @@ import com.github.huajianjiang.expandablerecyclerview.sample.utils.Util;
 import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 
 
-
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
@@ -38,8 +37,11 @@ public class MyParentViewHolder extends ParentViewHolder<MyParent> {
     }
 
     @Override
-    public boolean onExpandableItemLongClick(ParentViewHolder pvh, View v, MyParent item, int parentPosition, int childPosition) {
-        Util.showToast(v.getContext(), "Parent LongClick=" + parentPosition);
+    public boolean onExpandableItemLongClick(ParentViewHolder pvh, View v, MyParent parent,
+                                             Void child, int parentPosition, int childPosition)
+    {
+        Util.showToast(v.getContext(), "Parent LongClick==>" + parentPosition);
         return true;
     }
+
 }

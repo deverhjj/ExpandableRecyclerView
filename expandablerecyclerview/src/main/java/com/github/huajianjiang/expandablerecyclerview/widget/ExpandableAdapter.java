@@ -37,7 +37,7 @@ import java.util.List;
  * </p>
  *
  */
-public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extends ChildViewHolder, P extends Parent<C>, C>
+public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extends ChildViewHolder, P extends Parent, C>
         extends RecyclerView.Adapter<BaseViewHolder> implements InnerOnParentExpandCollapseListener
 {
     private static final String TAG = ExpandableAdapter.class.getSimpleName();

@@ -13,7 +13,7 @@ import com.github.huajianjiang.expandablerecyclerview.util.Logger;
  * </p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentViewHolder<T extends Parent<Void>> extends BaseViewHolder
+public class ParentViewHolder<T extends Parent> extends BaseViewHolder
         implements ExpandableViewHolderCallback<ParentViewHolder, T, Void>
 {
     private static final String TAG = "ParentViewHolder";

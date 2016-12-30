@@ -9,7 +9,7 @@ import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
  *         Date 2016/12/29.
  */
 
-interface ExpandableViewHolderCallback<VH extends BaseViewHolder, P extends Parent<C>, C> {
+interface ExpandableViewHolderCallback<VH extends BaseViewHolder, P extends Parent, C> {
 
     void onExpandableItemClick(VH vh, View v, P parent, C child, int parentPosition,
                                int childPosition);
