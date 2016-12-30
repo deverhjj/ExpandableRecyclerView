@@ -13,7 +13,7 @@ import com.github.huajianjiang.expandablerecyclerview.util.Logger;
  * </p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentViewHolder<T extends Parent> extends BaseViewHolder
+public class ParentViewHolder<T extends Parent<Void>> extends BaseViewHolder
         implements ExpandableViewHolderCallback<ParentViewHolder, T, Void>
 {
     private static final String TAG = "ParentViewHolder";
@@ -75,7 +75,7 @@ public class ParentViewHolder<T extends Parent> extends BaseViewHolder
 
     /**
      * 当父列表项点击时的回调,包括之前注册的在父列表项里的子 view 的点击监听
-     * 客户端不应该覆盖该实现, 应该实现 {@link #onExpandableItemClick(BaseViewHolder, View, Object, Object, int, int)}
+     * 客户端不应该覆盖该实现, 应该实现 {@link #onExpandableItemClick(BaseViewHolder, View, Parent, Object, int, int)}
      *
      * @param vh
      * @param v
@@ -97,7 +97,7 @@ public class ParentViewHolder<T extends Parent> extends BaseViewHolder
 
     /**
      * 当父列表项长按时的回调,包括之前注册的在父列表项里的子 view 的长按事件监听
-     * 客户端不应该覆盖该实现, 应该实现 {@link #onExpandableItemLongClick(BaseViewHolder, View, Object, Object, int, int)}
+     * 客户端不应该覆盖该实现, 应该实现 {@link #onExpandableItemLongClick(BaseViewHolder, View, Parent, Object, int, int)}
      *
      * @param vh
      * @param v
