@@ -8,16 +8,16 @@ ext {
     libraryName = 'expandablerecyclerview'
     artifact = 'expandablerecyclerview'
 
-    libraryDescription = 'Custom RecyclerView.Adapter that implement features like ExpandableListView'
+    libraryDescription = 'Custom RecyclerView#Adapter that implement features like ExpandableListView'
 
     siteUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView'
     gitUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView.git'
 
-    libraryVersion = '1.0.3'
+    libraryVersion = '1.0.4'
 
     developerId = 'huajianjiang'
-    developerName = 'HuaJian Jiang'
-    developerEmail = 'jhj.andever@gmail.com'
+    developerName = 'Huajian Jiang'
+    developerEmail = 'developer.huajianjiang@gmail.com'
 
     licenseName = 'The Apache Software License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 5
+        versionName "1.0.4"
     }
     buildTypes {
         release {

@@ -84,15 +84,15 @@ public class ParentViewHolder<T extends Parent> extends BaseViewHolder
     @Override
     @SuppressWarnings("unchecked")
     public void onItemClick(BaseViewHolder vh, View v, int adapterPosition) {
+        onExpandableItemClick(ParentViewHolder.this, v,
+                (T) mAdapter.getParentForAdapterPosition(adapterPosition), null,
+                mAdapter.getParentPosition(adapterPosition), RecyclerView.NO_POSITION);
         if (v != itemView) return;
         if (mExpanded) {
             collapseParent();
         } else {
             expandParent();
         }
-        onExpandableItemClick(ParentViewHolder.this, v,
-                (T) mAdapter.getParentForAdapterPosition(adapterPosition), null,
-                mAdapter.getParentPosition(adapterPosition), RecyclerView.NO_POSITION);
     }
 
     /**
