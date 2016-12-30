@@ -13,7 +13,7 @@ import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
  * <p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ChildViewHolder<P, C> extends BaseViewHolder
+public class ChildViewHolder<P extends Parent<C>, C> extends BaseViewHolder
         implements ExpandableViewHolderCallback<ChildViewHolder, P, C>
 {
     private static final String TAG = "ChildViewHolder";
