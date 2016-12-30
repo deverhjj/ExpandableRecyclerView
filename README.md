@@ -19,7 +19,7 @@ Custom RecyclerView.Adapter that implement features like ExpandableListView
 
 ```grooey
 dependencies {
-    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.3'
+    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.4'
 }
 ```
 
@@ -29,7 +29,7 @@ dependencies {
 <dependency>
   <groupId>com.github.huajianjiang</groupId>
   <artifactId>expandablerecyclerview</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <type>pom</type>
 </dependency>
 ```
@@ -37,6 +37,7 @@ dependencies {
 ## Thanks
 
 * [bignerdranch/expandable-recycler-view](https://github.com/bignerdranch/expandable-recycler-view)
+* [huajianjiang/BaseRecyclerView](https://github.com/huajianjiang/BaseRecyclerView)
 
 License
 =======
