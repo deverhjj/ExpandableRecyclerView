@@ -1,5 +1,5 @@
 # ExpandableRecyclerView
-Custom RecyclerView.Adapter that implement features like ExpandableListView
+Custom RecyclerView#Adapter that implement features like ExpandableListView
 
 ## Features
 
@@ -19,7 +19,7 @@ Custom RecyclerView.Adapter that implement features like ExpandableListView
 
 ```grooey
 dependencies {
-    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.4'
+    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.5'
 }
 ```
 
@@ -29,7 +29,7 @@ dependencies {
 <dependency>
   <groupId>com.github.huajianjiang</groupId>
   <artifactId>expandablerecyclerview</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
   <type>pom</type>
 </dependency>
 ```
@@ -42,7 +42,7 @@ dependencies {
 License
 =======
 
-    Copyright (C) 2015 HuaJian Jiang
+    Copyright (C) 2015 Huajian Jiang
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
