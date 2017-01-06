@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.huajianjiang.expandablerecyclerview.sample.adapter.MyAdapter;
+import com.github.huajianjiang.expandablerecyclerview.sample.anim.CircularRevealItemAnimator;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyChild;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.Test;
@@ -79,12 +81,14 @@ public class MainFragment extends Fragment {
 
     private void init(View rootView) {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         final MyAdapter adapter = new MyAdapter(getActivity(), mData);
         adapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.addItemDecoration(adapter.getItemDecoration());
+        final RecyclerView.ItemAnimator itemAnimator =
+                Util.checkLollipop() ? new CircularRevealItemAnimator() : new DefaultItemAnimator();
+        mRecyclerView.setItemAnimator(itemAnimator);
         adapter.setParentExpandCollapseListener(new ExpandableAdapter
                 .OnParentExpandCollapseListener() {
 
@@ -109,7 +113,8 @@ public class MainFragment extends Fragment {
                 if (pendingCause) {
                     arrow.setRotation(180);
                 } else {
-                    arrow.animate().rotation(180).setDuration(300).start();
+                    arrow.animate().rotation(180).setDuration(itemAnimator.getAddDuration() + 180)
+                            .start();
                 }
             }
 
@@ -135,7 +140,8 @@ public class MainFragment extends Fragment {
                 if (pendingCause) {
                     arrow.setRotation(rotate);
                 } else {
-                    arrow.animate().rotation(rotate).setDuration(300).start();
+                    arrow.animate().rotation(rotate)
+                            .setDuration(itemAnimator.getRemoveDuration() + 180).start();
                 }
             }
         });

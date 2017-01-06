@@ -36,7 +36,7 @@ public class ParentViewHolder<T extends Parent> extends BaseViewHolder
         super(itemView);
     }
 
-    void setExpandableAdapter(ExpandableAdapter adapter) {
+    void connectAdapter(ExpandableAdapter adapter) {
         mAdapter = adapter;
     }
 

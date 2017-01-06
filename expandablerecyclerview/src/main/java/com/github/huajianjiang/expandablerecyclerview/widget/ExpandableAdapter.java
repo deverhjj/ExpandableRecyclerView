@@ -282,12 +282,12 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
             PVH pvh = onCreateParentViewHolder(parent, clientViewType);
             //注册 ParentItemView 点击回调监听器
             pvh.setOnParentExpandCollapseListener(this);
-            pvh.setExpandableAdapter(ExpandableAdapter.this);
+            pvh.connectAdapter(ExpandableAdapter.this);
             return pvh;
         } else if (localViewType == Packager.ITEM_VIEW_TYPE_CHILD) {
             ////回调并返回子列表项视图 ChildViewHolder
             CVH cvh = onCreateChildViewHolder(parent, clientViewType);
-            cvh.setExpandableAdapter(ExpandableAdapter.this);
+            cvh.connectAdapter(ExpandableAdapter.this);
             return cvh;
         } else {
             throw new IllegalStateException("Incorrect ViewType found=>" + viewType);
@@ -753,8 +753,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         final int collapsePosStart = parentAdapterPosition + 1;
         final int childCount = children.size();
         //按照顺序依次将该父列表项下的子列表项移除
-        mItems.removeAll(
-                mItems.subList(parentAdapterPosition + 1, parentAdapterPosition + 1 + childCount));
+        for (int i = collapsePosStart; i < collapsePosStart + childCount; i++) {
+            mItems.remove(collapsePosStart);
+        }
         //通知 RecyclerView 指定位置有列表项已移除，刷新界面
         notifyItemRangeRemoved(collapsePosStart, childCount);
         //检查当前的折叠模式，如果为单项折叠模式处理单项 parentItem 折叠逻辑
@@ -1270,17 +1271,19 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         if (parentAdapterPosStart == RecyclerView.NO_POSITION) return;
         //计算移除的 ItemView 个数
         int removedItemCount = 0;
-        for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
+        for (int i = parentAdapterPosStart; i < parentAdapterPosStart + parentItemCount; i++) {
             ItemWrapper<P, C> itemWrapper = getItem(parentAdapterPosStart);
-            mItems.remove(itemWrapper);
+            mItems.remove(parentAdapterPosStart);
             removedItemCount++;
             //判断当前 Parent 是否为展开状态
             if (!itemWrapper.isExpanded()) continue;
             List<C> children = itemWrapper.getChildren();
             if (!itemWrapper.hasChildren(children)) continue;
             int removedChildCount = children.size();
-            mItems.removeAll(mItems.subList(parentAdapterPosStart,
-                    parentAdapterPosStart + removedChildCount));
+            for (int j = parentAdapterPosStart; j < parentAdapterPosStart + removedChildCount; j++)
+            {
+                mItems.remove(parentAdapterPosStart);
+            }
             removedItemCount += removedChildCount;
         }
         notifyItemRangeRemoved(parentAdapterPosStart, removedItemCount);
@@ -1346,8 +1349,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         int childAdapterPosStart = getChildAdapterPosition(parentPosition, childPositionStart);
         if (childAdapterPosStart == RecyclerView.NO_POSITION) return;
 
-        mItems.removeAll(
-                mItems.subList(childAdapterPosStart, childAdapterPosStart + childItemCount));
+        for (int i = childAdapterPosStart; i < childAdapterPosStart + childItemCount; i++) {
+            mItems.remove(childAdapterPosStart);
+        }
         notifyItemRangeRemoved(childAdapterPosStart, childItemCount);
 
         //强制在移除 child 时自动折叠 parent

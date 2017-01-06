@@ -12,7 +12,6 @@ import com.github.huajianjiang.expandablerecyclerview.sample.model.MyChild;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 import com.github.huajianjiang.expandablerecyclerview.sample.viewholder.MyChildViewHolder;
 import com.github.huajianjiang.expandablerecyclerview.sample.viewholder.MyParentViewHolder;
-import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
 
 import java.util.List;
@@ -84,14 +83,13 @@ public class MyAdapter
 
     @Override
     public int getParentType(int parentPosition) {
-        Logger.i(TAG,"getParentType="+parentPosition);
         MyParent myParent = mData.get(parentPosition);
         return myParent.getType();
     }
 
     @Override
     public int getChildType(int parentPosition, int childPosition) {
-        Logger.i(TAG,"getChildType="+parentPosition+","+childPosition);
+//        Logger.e(TAG,parentPosition+","+childPosition);
         MyChild myChild =  mData.get(parentPosition).getChildren().get(childPosition);
         return myChild.getType();
     }

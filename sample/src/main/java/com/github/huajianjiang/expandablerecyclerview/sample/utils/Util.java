@@ -2,11 +2,13 @@ package com.github.huajianjiang.expandablerecyclerview.sample.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyChild;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 
@@ -22,7 +24,11 @@ public class Util {
 
     private static Random sRandom=new Random();
 
-   // sRandom.nextInt(16) + 5
+    public static boolean checkLollipop() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    // sRandom.nextInt(16) + 5
     public static List<MyParent> getListData() {
         List<MyParent> myParents = new ArrayList<>();
         for (int i = 0; i < 15; i++) {

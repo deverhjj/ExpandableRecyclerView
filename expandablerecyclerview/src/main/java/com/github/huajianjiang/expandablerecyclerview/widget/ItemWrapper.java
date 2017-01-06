@@ -148,4 +148,12 @@ class ItemWrapper<P extends Parent, C> {
                     "Illegal type, attempt access parent from no parent " + "type");
         }
     }
+
+    @Override
+    public String toString() {
+        return "ItemWrapper{" +"isParent="+isParent()+",isChild="+isChild()+
+               ",mParent=" + mParent +
+               ", mChild=" + mChild +
+               '}';
+    }
 }

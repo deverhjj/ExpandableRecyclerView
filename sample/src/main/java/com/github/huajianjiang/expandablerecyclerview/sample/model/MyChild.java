@@ -68,4 +68,9 @@ public class MyChild implements Parcelable {
         dest.writeInt(type);
         dest.writeString(info);
     }
+
+    @Override
+    public String toString() {
+        return hashCode() + "";
+    }
 }

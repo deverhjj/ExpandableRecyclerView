@@ -24,7 +24,7 @@ public class ChildViewHolder<P extends Parent, C> extends BaseViewHolder
         super(itemView);
     }
 
-    void setExpandableAdapter(ExpandableAdapter adapter) {
+    void connectAdapter(ExpandableAdapter adapter) {
         mAdapter = adapter;
     }
 
