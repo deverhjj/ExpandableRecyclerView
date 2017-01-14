@@ -11,6 +11,7 @@ Custom RecyclerView#Adapter that implement features like ExpandableListView
 
 ## Screenshots
 
+![Demo](screenshots/demo.gif)
 ![Demo](/screenshots/screenshot_4.png)
 ![Demo](/screenshots/screenshot_5.png)
 
