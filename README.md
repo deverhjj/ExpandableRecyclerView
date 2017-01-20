@@ -1,6 +1,11 @@
 # ExpandableRecyclerView
 Custom RecyclerView#Adapter that implement features like ExpandableListView
 
+## Demo
+You can watch a short [Demo Video][] on YouTube and download Sample APK in [Releases][] section.
+[Demo Video]: https://youtu.be/KHVdrWEInBc
+[Releases]: https://github.com/huajianjiang/ExpandableRecyclerView/releases
+
 ## Features
 
 * support `getParentType` and `getChildType`,support create different Parent or/and Child ItemView
@@ -11,6 +16,7 @@ Custom RecyclerView#Adapter that implement features like ExpandableListView
 
 ## Screenshots
 
+![Demo](screenshots/demo.gif)
 ![Demo](/screenshots/screenshot_4.png)
 ![Demo](/screenshots/screenshot_5.png)
 
