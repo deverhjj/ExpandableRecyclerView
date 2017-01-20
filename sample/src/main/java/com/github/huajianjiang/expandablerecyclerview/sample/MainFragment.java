@@ -93,14 +93,13 @@ public class MainFragment extends Fragment {
                 .OnParentExpandCollapseListener() {
 
             @Override
-            public void onParentExpanded(ParentViewHolder pvh, int parentPosition,
-                    boolean pendingCause, boolean byUser)
+            public void onParentExpanded(RecyclerView parent, ParentViewHolder pvh,
+                                         int parentPosition, boolean pendingCause, boolean byUser)
             {
-                Logger.e(TAG,"onParentExpanded="+parentPosition);
+                Logger.e(TAG, "onParentExpanded=" + parentPosition);
 
-                MyParentViewHolder vh =
-                        (MyParentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(
-                                pvh.getAdapterPosition());
+                MyParentViewHolder vh = (MyParentViewHolder) mRecyclerView
+                        .findViewHolderForAdapterPosition(pvh.getAdapterPosition());
                 if (vh == null) return;
                 final ImageView arrow = vh.getView(R.id.arrow);
                 if (arrow.getVisibility() != View.VISIBLE) return;
@@ -119,10 +118,10 @@ public class MainFragment extends Fragment {
             }
 
             @Override
-            public void onParentCollapsed(ParentViewHolder pvh, int parentPosition,
-                    boolean pendingCause, boolean byUser)
+            public void onParentCollapsed(RecyclerView parent, ParentViewHolder pvh,
+                                          int parentPosition, boolean pendingCause, boolean byUser)
             {
-                Logger.e(TAG,"onParentCollapsed="+parentPosition);
+                Logger.e(TAG, "onParentCollapsed=" + parentPosition);
 
                 MyParentViewHolder vh =
                         (MyParentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(
@@ -131,7 +130,7 @@ public class MainFragment extends Fragment {
                 final ImageView arrow = vh.getView(R.id.arrow);
                 if (arrow.getVisibility() != View.VISIBLE) return;
                 final float currRotate = arrow.getRotation();
-                Logger.e(TAG,"currRotate="+currRotate);
+                Logger.e(TAG, "currRotate=" + currRotate);
                 float rotate = 360;
                 //未展开完全并且当前旋转角度小于180，逆转回去
                 if (currRotate < 180) {
@@ -146,27 +145,24 @@ public class MainFragment extends Fragment {
             }
         });
 
-        adapter.addParentExpandableStateChangeListener(new ExpandableAdapter.OnParentExpandableStateChangeListener() {
+        adapter.addParentExpandableStateChangeListener(
+                new ExpandableAdapter.OnParentExpandableStateChangeListener() {
 
-            @Override
-            public void onParentExpandableStateChanged(ParentViewHolder pvh, int parentPosition,
-                    boolean expandable)
-            {
-                Logger.e(TAG, "onParentExpandableStateChanged=" + parentPosition);
-
-                MyParentViewHolder vh =
-                        (MyParentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(
-                                pvh.getAdapterPosition());
-                if (vh == null) return;
-                final ImageView arrow = vh.getView(R.id.arrow);
-                if (expandable && arrow.getVisibility() != View.VISIBLE) {
-                    arrow.setVisibility(View.VISIBLE);
-                    arrow.setRotation(pvh.isExpanded() ? 180 : 0);
-                } else if (!expandable && arrow.getVisibility() == View.VISIBLE) {
-                    arrow.setVisibility(View.GONE);
-                }
-            }
-        });
+                    @Override
+                    public void onParentExpandableStateChanged(RecyclerView parent,
+                            ParentViewHolder pvh, int parentPosition, boolean expandable)
+                    {
+                        Logger.e(TAG, "onParentExpandableStateChanged=" + parentPosition);
+                        if (pvh == null) return;
+                        final ImageView arrow = pvh.getView(R.id.arrow);
+                        if (expandable && arrow.getVisibility() != View.VISIBLE) {
+                            arrow.setVisibility(View.VISIBLE);
+                            arrow.setRotation(pvh.isExpanded() ? 180 : 0);
+                        } else if (!expandable && arrow.getVisibility() == View.VISIBLE) {
+                            arrow.setVisibility(View.GONE);
+                        }
+                    }
+                });
 
         mIPresenter = new PresenterImpl(adapter, mData);
     }

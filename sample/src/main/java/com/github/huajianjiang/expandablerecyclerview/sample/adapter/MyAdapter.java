@@ -89,7 +89,6 @@ public class MyAdapter
 
     @Override
     public int getChildType(int parentPosition, int childPosition) {
-//        Logger.e(TAG,parentPosition+","+childPosition);
         MyChild myChild =  mData.get(parentPosition).getChildren().get(childPosition);
         return myChild.getType();
     }

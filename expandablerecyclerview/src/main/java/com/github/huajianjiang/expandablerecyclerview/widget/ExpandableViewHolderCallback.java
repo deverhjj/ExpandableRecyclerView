@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
 
+
 /**
  * @author HuaJian Jiang.
  *         Date 2016/12/29.

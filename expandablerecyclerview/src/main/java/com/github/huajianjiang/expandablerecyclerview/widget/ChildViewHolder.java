@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2015 Huajian Jiang
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package com.github.huajianjiang.expandablerecyclerview.widget;
 
 import android.view.View;
@@ -13,39 +29,35 @@ import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
  * <p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ChildViewHolder<P extends Parent, C> extends BaseViewHolder
+public class ChildViewHolder<P extends Parent, C> extends BaseExpandableViewHolder
         implements ExpandableViewHolderCallback<ChildViewHolder, P, C>
 {
     private static final String TAG = "ChildViewHolder";
-
-    private ExpandableAdapter mAdapter;
 
     public ChildViewHolder(View itemView) {
         super(itemView);
     }
 
-    void connectAdapter(ExpandableAdapter adapter) {
-        mAdapter = adapter;
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public void onItemClick(BaseViewHolder vh, View v, int adapterPosition) {
-        onExpandableItemClick(ChildViewHolder.this, v,
-                (P) mAdapter.getParentForAdapterPosition(adapterPosition),
-                (C) mAdapter.getChildForAdapterPosition(adapterPosition),
-                mAdapter.getParentPosition(adapterPosition),
-                mAdapter.getChildPosition(adapterPosition));
+        if (isReceiveExpandableItemEvent() && getAssociateAdapter() != null)
+            onExpandableItemClick(ChildViewHolder.this, v,
+                    (P) getAssociateAdapter().getParentForAdapterPosition(adapterPosition),
+                    (C) getAssociateAdapter().getChildForAdapterPosition(adapterPosition),
+                    getAssociateAdapter().getParentPosition(adapterPosition),
+                    getAssociateAdapter().getChildPosition(adapterPosition));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public boolean onItemLongClick(BaseViewHolder vh, View v, int adapterPosition) {
-        return onExpandableItemLongClick(ChildViewHolder.this, v,
-                (P) mAdapter.getParentForAdapterPosition(adapterPosition),
-                (C) mAdapter.getChildForAdapterPosition(adapterPosition),
-                mAdapter.getParentPosition(adapterPosition),
-                mAdapter.getChildPosition(adapterPosition));
+        return isReceiveExpandableItemEvent() && getAssociateAdapter() != null &&
+               onExpandableItemLongClick(ChildViewHolder.this, v,
+                       (P) getAssociateAdapter().getParentForAdapterPosition(adapterPosition),
+                       (C) getAssociateAdapter().getChildForAdapterPosition(adapterPosition),
+                       getAssociateAdapter().getParentPosition(adapterPosition),
+                       getAssociateAdapter().getChildPosition(adapterPosition));
     }
 
     @Override
