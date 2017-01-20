@@ -13,7 +13,7 @@ public class BaseExpandableViewHolder extends BaseViewHolder {
 
     private ExpandableAdapter adapter;
 
-    private boolean mReceiveExpandableItemEvent;
+    private boolean mReceiveExpandableItemEvent = true;
 
     public BaseExpandableViewHolder(View itemView) {
         super(itemView);
