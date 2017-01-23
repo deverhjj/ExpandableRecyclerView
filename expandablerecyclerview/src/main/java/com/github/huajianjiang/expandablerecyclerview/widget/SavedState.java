@@ -19,7 +19,6 @@ public class SavedState implements Parcelable {
     }
 
     private SavedState(Parcel in) {
-        Logger.e(TAG,"***********create SavedState from Parcel*********");
         mExpandableState = in.createBooleanArray();
         mExpansionState = in.createBooleanArray();
     }
@@ -43,13 +42,11 @@ public class SavedState implements Parcelable {
     public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
         @Override
         public SavedState createFromParcel(Parcel in) {
-            Logger.e(TAG,"***********createFromParcel*********");
             return new SavedState(in);
         }
 
         @Override
         public SavedState[] newArray(int size) {
-            Logger.e(TAG,"***********newArray*********");
             return new SavedState[size];
         }
     };
@@ -61,7 +58,6 @@ public class SavedState implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        Logger.e(TAG,"***********writeToParcel*********");
         dest.writeBooleanArray(mExpandableState);
         dest.writeBooleanArray(mExpansionState);
     }

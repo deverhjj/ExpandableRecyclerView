@@ -8,5 +8,7 @@
     <string name="action_expand_1">expand 1</string>
     <string name="action_expand_all">expand all</string>
     <string name="action_toggle_expandable_1">toggle expandable 1</string>
+    <string name="jump_multiple_rv">Multiple RecyclerView with the same Adapter</string>
+    <string name="jump_single_rv">Single RecyclerView</string>
 
 </resources>

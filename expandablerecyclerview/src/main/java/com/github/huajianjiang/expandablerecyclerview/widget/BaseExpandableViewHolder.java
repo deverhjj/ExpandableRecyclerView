@@ -102,11 +102,11 @@ public class BaseExpandableViewHolder extends RecyclerView.ViewHolder
     public int[] onRegisterClickEvent(RecyclerView rv) {return null;}
 
     @Override
-    public void onItemClick(RecyclerView rv, BaseExpandableViewHolder vh, View v) {}
+    public void onItemClick(RecyclerView rv, View v) {}
 
     @Override
     public int[] onRegisterLongClickEvent(RecyclerView rv) {return null;}
 
     @Override
-    public boolean onItemLongClick(RecyclerView rv, BaseExpandableViewHolder vh, View v) {return false;}
+    public boolean onItemLongClick(RecyclerView rv, View v) {return false;}
 }

@@ -1,4 +1,4 @@
-package com.github.huajianjiang.expandablerecyclerview.sample.utils;
+package com.github.huajianjiang.expandablerecyclerview.sample.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,8 +19,8 @@ import java.util.Random;
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class Util {
-    private static final String TAG = "Util";
+public class AppUtil {
+    private static final String TAG = "AppUtil";
 
     private static Random sRandom=new Random();
 

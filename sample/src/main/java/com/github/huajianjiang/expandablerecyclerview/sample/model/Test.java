@@ -3,7 +3,7 @@ package com.github.huajianjiang.expandablerecyclerview.sample.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.github.huajianjiang.expandablerecyclerview.sample.utils.Util;
+import com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil;
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 
 
@@ -14,7 +14,7 @@ public class Test implements Parcelable {
 
     private static final String TAG = "Test";
 
-    private MyParent mMyParent = Util.getParent();
+    private MyParent mMyParent = AppUtil.getParent();
 
     private String mString="Test";
 

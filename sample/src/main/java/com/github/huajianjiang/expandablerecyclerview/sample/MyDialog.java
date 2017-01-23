@@ -48,7 +48,7 @@ public class MyDialog extends DialogFragment {
                         Fragment targetFragment = getTargetFragment();
                         Intent data = new Intent();
                         data.putStringArrayListExtra(REQUEST, result);
-                        targetFragment.onActivityResult(MainFragment.REQUEST_RESULT,
+                        targetFragment.onActivityResult(SingleRvFragment.REQUEST_RESULT,
                                 Activity.RESULT_OK, data);
                     }
                 }).setNegativeButton(getString(R.string.cancel), null).create();

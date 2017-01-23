@@ -2,6 +2,12 @@
     <string name="app_name" translatable="false">ExpandableRecyclerView</string>
     <string name="action_settings" translatable="false">Settings</string>
 
+    <string name="single_rv_title">single_rv</string>
+    <string name="multiple_rv_title">multiple_rv</string>
+
+    <string name="jump_single_rv">单个 RecyclerView</string>
+    <string name="jump_multiple_rv">共享 Adapter 的双 RecyclerView</string>
+
     <string name="action_test" translatable="false">Test</string>
     <string name="action_expand_all">全部展开</string>
     <string name="action_collapse_all">全部折叠</string>

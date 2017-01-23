@@ -1,42 +1,42 @@
 package com.github.huajianjiang.expandablerecyclerview.sample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import com.github.huajianjiang.expandablerecyclerview.util.Logger;
+import android.view.LayoutInflater;
+import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = "MainActivity";
+/**
+ * @author HuaJian Jiang.
+ *         Date 2017/1/23.
+ */
+public class MainActivity extends BaseActivity implements View.OnClickListener {
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Logger.e(TAG, "***********onCreate*********");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        View mainView = LayoutInflater.from(getApplicationContext())
+                .inflate(R.layout.fragment_main, null);
+        getFragmentContainer().addView(mainView);
+        findViewById(R.id.jump_single_rv).setOnClickListener(this);
+        findViewById(R.id.jump_multiple_rv).setOnClickListener(this);
+    }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
-        if (fragment == null) {
-            fragmentManager.beginTransaction().replace(R.id.fragmentContainer,
-                    new MainFragment()).commit();
+    @Override
+    public Fragment getFragment() {
+        return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.jump_single_rv:
+                startActivity(new Intent(this, SingleRvActivity.class));
+                break;
+            case R.id.jump_multiple_rv:
+                startActivity(new Intent(this, MultipleRvActivity.class));
+                break;
         }
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        Logger.e(TAG, "***********onSaveInstanceState*********");
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Logger.e(TAG, "***********onRestoreInstanceState*********");
-        super.onRestoreInstanceState(savedInstanceState);
     }
 }

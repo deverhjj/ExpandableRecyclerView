@@ -13,7 +13,7 @@ import java.util.List;
 public class MyParent implements Parent<MyChild>, Parcelable {
     private static final String TAG = "MyParent";
     private boolean isExpandable = true;
-    private boolean isInitiallyExpanded = true;
+    private boolean isInitiallyExpanded = false;
     private int dot;
     private int type;
     private String info;

@@ -12,9 +12,9 @@ interface ExpandableViewHolderCallback {
 
     int[] onRegisterClickEvent(RecyclerView rv);
 
-    void onItemClick(RecyclerView rv, BaseExpandableViewHolder vh, View v);
+    void onItemClick(RecyclerView rv, View v);
 
     int[] onRegisterLongClickEvent(RecyclerView rv);
 
-    boolean onItemLongClick(RecyclerView rv, BaseExpandableViewHolder vh, View v);
+    boolean onItemLongClick(RecyclerView rv, View v);
 }

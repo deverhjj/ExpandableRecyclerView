@@ -26,7 +26,9 @@ import com.github.huajianjiang.expandablerecyclerview.util.Packager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 扩展 {@link RecyclerView.Adapter} 实现可展开折叠的 {@link RecyclerView}
@@ -178,11 +180,11 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         /**
          * 父列表项可展开状态更改时的回调
          * @param pvh 更改可展开状态的 {@link ParentViewHolder} 所代表的父列表项
-         * @param parentPosition 状态更新所对应的父列表项的位置
+         * @param position 状态更新所对应的父列表项的位置
          * @param expandable 当前该父列表项是否可展开折叠
          */
-        void onParentExpandableStateChanged(RecyclerView rv, ParentViewHolder pvh,
-                int parentPosition, boolean expandable);
+        void onParentExpandableStateChanged(RecyclerView rv, ParentViewHolder pvh, int position,
+                boolean expandable);
     }
 
     /**
@@ -225,12 +227,12 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
          *     <li>{@link #expandAllParents()}  </li>
          * </ul>
          * </p>
-         * @param parentPosition 该父列表项在父列表里的位置
+         * @param position 该父列表项在父列表里的位置
          * @param pendingCause 是否是后期待展开操作造成的回调，eg: 如果调用 {@link #collapseAllParents()} 导致不在当前中的 parent 获得不到回调，但是后期该 parent attach 到屏幕时会回调先前未完成的回调
          * @param byUser 是否属于用户点击父列表项之后产生的展开事件，用于区分用户手动还是程序触发的
          *
          */
-        void onParentExpanded(RecyclerView rv, ParentViewHolder pvh, int parentPosition,
+        void onParentExpanded(RecyclerView rv, ParentViewHolder pvh, int position,
                 boolean pendingCause, boolean byUser);
 
         /**
@@ -242,11 +244,11 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
          *         <li>{@link #notifyChildItemRangeRemoved(int, int, int)}</li>
          *     </ul>
          * </p>
-         * @param parentPosition 该父列表项在父列表里的位置
+         * @param position 该父列表项在父列表里的位置
          * @param pendingCause 是否是后期待折叠操作造成的回调，eg: 如果调用 {@link #collapseAllParents()} 导致不在当前中的 parent 获得不到回调，但是后期该 parent attach 到屏幕时会回调先前未完成的回调
          * @param byUser 是否属于用户点击父列表项之后产生的折叠事件，用于区分用户手动还是程序触发的
          */
-        void onParentCollapsed(RecyclerView rv, ParentViewHolder pvh, int parentPosition,
+        void onParentCollapsed(RecyclerView rv, ParentViewHolder pvh, int position,
                 boolean pendingCause, boolean byUser);
     }
 
@@ -447,8 +449,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      */
     @Override
     public boolean onParentExpand(ParentViewHolder pvh) {
-        boolean succeed = expandParent(getParentPosition(pvh.getAdapterPosition()), false);
-        if (succeed) notifyParentExpanded(pvh, false, true);
+        final int pos = getParentPosition(pvh.getAdapterPosition());
+        boolean succeed = expandParent(pos, false);
+        if (succeed) syncViewExpansionState(pos);
         return succeed;
     }
 
@@ -458,8 +461,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      */
     @Override
     public boolean onParentCollapse(ParentViewHolder pvh) {
-        boolean succeed = collapseParent(getParentPosition(pvh.getAdapterPosition()), false);
-        if (succeed) notifyParentCollapsed(pvh, false, true);
+        final int pos = getParentPosition(pvh.getAdapterPosition());
+        boolean succeed = collapseParent(pos, false);
+        if (succeed) syncViewCollapseState(pos);
         return succeed;
     }
 
@@ -474,6 +478,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mAttachedRecyclerViews.add(recyclerView);
+        mPendingExpandablePositionMap.put(recyclerView, new ArrayList<Integer>());
+        mPendingExpandPositionMap.put(recyclerView, new ArrayList<Integer>());
+        mPendingCollapsePositionMap.put(recyclerView, new ArrayList<Integer>());
     }
 
     /**
@@ -484,6 +491,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         mAttachedRecyclerViews.remove(recyclerView);
+        mPendingExpandablePositionMap.remove(recyclerView);
+        mPendingExpandPositionMap.remove(recyclerView);
+        mPendingCollapsePositionMap.remove(recyclerView);
     }
 
     /**
@@ -737,15 +747,16 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         final int parentAdapterPos = getParentAdapterPosition(parentPosition);
         if (parentAdapterPos == RecyclerView.NO_POSITION) return;
         Logger.e(TAG, "syncParentExpandableState=>" + parentPosition);
-        final ItemWrapper itemWrapper = getItem(parentAdapterPos);
+        ItemWrapper itemWrapper = getItem(parentAdapterPos);
+        final boolean expandable = itemWrapper.isExpandable();
         for (RecyclerView rv : mAttachedRecyclerViews) {
             ParentViewHolder pvh = (ParentViewHolder) rv
                     .findViewHolderForAdapterPosition(parentAdapterPos);
-            if (pvh != null && pvh.isExpandable() != itemWrapper.isExpandable()) {
-                pvh.setExpandable(itemWrapper.isExpandable());
-                notifyParentExpandableStateChanged(pvh, itemWrapper.isExpandable());
+            if (pvh != null && pvh.isExpandable() != expandable) {
+                pvh.setExpandable(expandable);
+                notifyParentExpandableStateChanged(pvh, expandable);
             } else if (pvh == null) {
-                mPendingExpandablePositions.add(parentPosition);
+                mPendingExpandablePositionMap.get(rv).add(parentPosition);
             }
         }
     }
@@ -918,17 +929,16 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         Logger.e(TAG, "syncViewExpansionState=>" + parentPosition);
         final int parentAdapterPos = getParentAdapterPosition(parentPosition);
         if (parentAdapterPos == RecyclerView.NO_POSITION) return;
+        ItemWrapper itemWrapper = getItem(parentAdapterPos);
+        final boolean expanded = itemWrapper.isExpanded();
 
         for (RecyclerView rv : mAttachedRecyclerViews) {
             PVH pvh = (PVH) rv.findViewHolderForAdapterPosition(parentAdapterPos);
-            ItemWrapper itemWrapper = getItem(parentAdapterPos);
-            boolean expanded = itemWrapper.isExpanded();
             if (pvh != null && !pvh.isExpanded() && expanded) {
                 //这里需要额外判断当该 parent 可以 expandable 时才应用同步设置和通知展开逻辑
                 //防止不可展开的 parent 的不必要的同步设置和通知处理
                 pvh.setExpanded(true);
                 notifyParentExpanded(pvh, false, false);
-                Logger.e(TAG, "expanded=" + true);
             } else if (pvh == null && expanded) {
                 Logger.e(TAG, "expandViews pvh is null---->parentPos=" + parentPosition +
                         ",parentAdapterPos=" +
@@ -936,10 +946,10 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 //未 laid out 的 Parent ,虽然无法获取并设置展开折叠标识，
                 // 这里添加待处理展开逻辑的所有 parentItem 的 position
                 // 如果先前已经记录待折叠位置记录，移除该记录并以最新的待展开记录为准!
-                if (mPendingCollapsePositions.contains(parentPosition)) {
-                    mPendingCollapsePositions.remove((Integer) parentPosition);
+                if (mPendingCollapsePositionMap.get(rv).contains(parentPosition)) {
+                    mPendingCollapsePositionMap.get(rv).remove((Integer) parentPosition);
                 }
-                mPendingExpandPositions.add(parentPosition);
+                mPendingExpandPositionMap.get(rv).add(parentPosition);
             }
         }
     }
@@ -950,16 +960,15 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         Logger.e(TAG, "syncViewCollapseState=>" + parentPosition);
         final int parentAdapterPos = getParentAdapterPosition(parentPosition);
         if (parentAdapterPos == RecyclerView.NO_POSITION) return;
+        ItemWrapper itemWrapper = getItem(parentAdapterPos);
+        final boolean collapsed = !itemWrapper.isExpanded();
 
         for (RecyclerView rv : mAttachedRecyclerViews) {
             PVH pvh = (PVH) rv.findViewHolderForAdapterPosition(parentAdapterPos);
-            ItemWrapper itemWrapper = getItem(parentAdapterPos);
-            boolean collapsed = !itemWrapper.isExpanded();
             if (pvh != null && pvh.isExpanded() && collapsed) {
                 pvh.setExpanded(false);
                 // 通知所有监听 Parent 展开折叠状态监听器当前 Parent 已折叠
                 notifyParentCollapsed(pvh, false, false);
-                Logger.e(TAG, "collapsed=" + true);
             } else if (pvh == null && collapsed) {
                 // 判断当前的 parent 是否 expandable ,防止记录不可 expandable 的 parent 的待折叠位置信息
                 // 当该后期应用该位置的 parent 折叠操作时导致本该应用该位置的 parent 展开操作时被该折叠操作所覆盖问题
@@ -969,10 +978,10 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 // 未 laid out 的 Parent ,虽然无法获取并设置展开折叠标识，
                 // 这里添加待处理折叠逻辑的所有 parentItem 的 position
                 // 如果先前已经记录待折叠位置记录，移除该记录并以最新的待展开记录为准!
-                if (mPendingExpandPositions.contains(parentPosition)) {
-                    mPendingExpandPositions.remove((Integer) parentPosition);
+                if (mPendingExpandPositionMap.get(rv).contains(parentPosition)) {
+                    mPendingExpandPositionMap.get(rv).remove((Integer) parentPosition);
                 }
-                mPendingCollapsePositions.add(parentPosition);
+                mPendingCollapsePositionMap.get(rv).add(parentPosition);
             }
         }
     }
@@ -1083,9 +1092,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      *
      * </p>
      */
-    private List<Integer> mPendingExpandPositions = new ArrayList<>();
-    private List<Integer> mPendingCollapsePositions = new ArrayList<>();
-    private List<Integer> mPendingExpandablePositions = new ArrayList<>();
+    private Map<RecyclerView, List<Integer>> mPendingExpandablePositionMap = new HashMap<>();
+    private Map<RecyclerView, List<Integer>> mPendingExpandPositionMap = new HashMap<>();
+    private Map<RecyclerView, List<Integer>> mPendingCollapsePositionMap = new HashMap<>();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -1093,42 +1102,38 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         super.onViewAttachedToWindow(holder);
         if (!(holder instanceof ParentViewHolder)) return;
         PVH pvh = (PVH) holder;
+        final RecyclerView rv = pvh.getAssociateRecyclerView();
         final int adapterPos = pvh.getAdapterPosition();
         final int pos = getParentPosition(adapterPos);
 
-        if (mPendingExpandPositions.contains(pos)) {
+        if (mPendingExpandPositionMap.get(rv).contains(pos)) {
             Logger.e(TAG, "onViewAttachedToWindow==PendingExpandPosition=>" + pos);
             if (!pvh.isExpanded()) {
                 pvh.setExpanded(true);
                 notifyParentExpanded(pvh, true, false);
             }
-            mPendingExpandPositions.remove((Integer) pos);
+            mPendingExpandPositionMap.get(rv).remove((Integer) pos);
         }
 
-        if (mPendingCollapsePositions.contains(pos)) {
+        if (mPendingCollapsePositionMap.get(rv).contains(pos)) {
             Logger.e(TAG, "onViewAttachedToWindow==PendingCollapsePosition=>" + pos);
             if (pvh.isExpanded()) {
                 pvh.setExpanded(false);
                 notifyParentCollapsed(pvh, true, false);
             }
-            mPendingCollapsePositions.remove((Integer) pos);
+            mPendingCollapsePositionMap.get(rv).remove((Integer) pos);
         }
 
         //同步之前记录的位置下的 parent 的是否可展开属性
-        if (mPendingExpandablePositions.contains(pos)) {
+        if (mPendingExpandablePositionMap.get(rv).contains(pos)) {
             Logger.e(TAG, "onViewAttachedToWindow==PendingExpandablePosition=>" + pos);
             boolean expandable = getItem(adapterPos).isExpandable();
             if (pvh.isExpandable() != expandable) {
                 pvh.setExpandable(expandable);
                 notifyParentExpandableStateChanged(pvh, expandable);
             }
-            mPendingExpandablePositions.remove((Integer) pos);
+            mPendingExpandablePositionMap.get(rv).remove((Integer) pos);
         }
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(BaseExpandableViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
     }
 
     /**
@@ -1685,7 +1690,6 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     //TODO 保存并恢复当前 expandCollapseMode 为非 default 时的先前 折叠/展开 的 parent位置信息
     public void onSaveInstanceState(Bundle outState) {
         if (outState == null) return;
-        Logger.e(TAG, "onSaveInstanceState");
         outState.putParcelable(SAVED_EXPANSION_STATE, getSavedState());
     }
 
@@ -1729,8 +1733,6 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         boolean[] savedExpandableState = savedState.getExpandableState();
         boolean[] savedExpansionState = savedState.getExpansionState();
         if (savedExpandableState == null || savedExpansionState == null) return;
-
-        Logger.e(TAG, "onRestoreInstanceState");
 
         List<ItemWrapper<P, C>> savedItems = new ArrayList<>();
         final int savedCount = savedExpansionState.length;
@@ -1822,7 +1824,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 BaseExpandableViewHolder vh = (BaseExpandableViewHolder) parent
                         .findContainingViewHolder(v);
                 if (vh != null) {
-                    vh.onItemClick(parent, vh, v);
+                    vh.onItemClick(parent, v);
                     break;
                 }
             }
@@ -1835,7 +1837,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 BaseExpandableViewHolder vh = (BaseExpandableViewHolder) parent
                         .findContainingViewHolder(v);
                 if (vh != null) {
-                    handled = vh.onItemLongClick(parent, vh, v);
+                    handled = vh.onItemLongClick(parent, v);
                     break;
                 }
             }

@@ -7,8 +7,7 @@ import android.widget.TextView;
 import com.github.huajianjiang.expandablerecyclerview.sample.R;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyChild;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
-import com.github.huajianjiang.expandablerecyclerview.sample.utils.Util;
-import com.github.huajianjiang.expandablerecyclerview.widget.BaseExpandableViewHolder;
+import com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil;
 import com.github.huajianjiang.expandablerecyclerview.widget.ChildViewHolder;
 
 /**
@@ -34,10 +33,10 @@ public class MyChildViewHolder extends ChildViewHolder {
     }
 
     @Override
-    public boolean onItemLongClick(RecyclerView rv, BaseExpandableViewHolder vh, View v) {
-        Util.showToast(v.getContext(), "Child LongClick==>" + getAssociateAdapter()
+    public boolean onItemLongClick(RecyclerView rv, View v) {
+        AppUtil.showToast(v.getContext(), "Child LongClick==>" + getAssociateAdapter()
                 .getParentPosition(getAdapterPosition()) + " , " + getAssociateAdapter()
-                                               .getChildPosition(getAdapterPosition()));
+                                                  .getChildPosition(getAdapterPosition()));
         MyParent myParent = (MyParent) getAssociateAdapter()
                 .getParentForAdapterPosition(getAdapterPosition());
         MyChild myChild = (MyChild) getAssociateAdapter()

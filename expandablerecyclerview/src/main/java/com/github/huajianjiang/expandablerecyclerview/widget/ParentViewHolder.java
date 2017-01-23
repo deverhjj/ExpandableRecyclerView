@@ -3,8 +3,6 @@ package com.github.huajianjiang.expandablerecyclerview.widget;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.github.huajianjiang.expandablerecyclerview.util.Logger;
-
 
 /**
  * <p>父列表项 ViewHolder，监听父列表项的点击事件并根据当前展开或收缩状态触发父列表项展开或折叠事件
@@ -71,13 +69,13 @@ public class ParentViewHolder extends BaseExpandableViewHolder
     /**
      * 当父列表项点击时的回调,包括之前注册的在父列表项里的子 view 的点击监听
      * <p>
-     *     make sure call super {@link #onItemClick(RecyclerView rv,BaseExpandableViewHolder, View)} method
+     *     make sure call super {@link #onItemClick(RecyclerView rv, View)} method
      * </p>
      * @param v
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void onItemClick(RecyclerView rv, BaseExpandableViewHolder vh, View v) {
+    public void onItemClick(RecyclerView rv, View v) {
         if (v != itemView) return;
         if (mExpanded) {
             collapseParent();
@@ -92,8 +90,6 @@ public class ParentViewHolder extends BaseExpandableViewHolder
     private void expandParent() {
         if (mExpandCollapseListener != null) {
             setExpanded(mExpandCollapseListener.onParentExpand(ParentViewHolder.this));
-            Logger.e(TAG, "*******expandParent*******>expanded=" + mExpanded + ",expandable=" +
-                          mExpandable);
         }
     }
 
@@ -103,8 +99,6 @@ public class ParentViewHolder extends BaseExpandableViewHolder
     private void collapseParent() {
         if (mExpandCollapseListener != null) {
             setExpanded(!mExpandCollapseListener.onParentCollapse(ParentViewHolder.this));
-            Logger.e(TAG, "*******collapseParent*******>expanded=" + mExpanded + ",expandable=" +
-                          mExpandable);
         }
     }
 }
