@@ -25,7 +25,7 @@ You can watch a short [Demo Video][] on YouTube and download Sample APK in [Rele
 
 ```grooey
 dependencies {
-    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.5'
+    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.6'
 }
 ```
 
@@ -35,7 +35,7 @@ dependencies {
 <dependency>
   <groupId>com.github.huajianjiang</groupId>
   <artifactId>expandablerecyclerview</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
   <type>pom</type>
 </dependency>
 ```
