@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +39,7 @@ import java.util.List;
 public class MainFragment extends Fragment {
     public static final int REQUEST_RESULT = 1;
     private static final String TAG = "MainFragment";
-    private RecyclerView mRecyclerView;
+    private RecyclerView mRv;
     private PresenterImpl mIPresenter;
     private List<MyParent> mData = Util.getListData();
 
@@ -74,31 +73,28 @@ public class MainFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // 保存 ExpandableRecyclerView 状态
-        MyAdapter adapter= (MyAdapter) mRecyclerView.getAdapter();
+        MyAdapter adapter= (MyAdapter) mRv.getAdapter();
         adapter.onRestoreInstanceState(savedInstanceState);
-
     }
 
     private void init(View rootView) {
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRv = (RecyclerView) rootView.findViewById(R.id.rv);
         final MyAdapter adapter = new MyAdapter(getActivity(), mData);
         adapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT);
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.addItemDecoration(adapter.getItemDecoration());
+        mRv.setAdapter(adapter);
+        mRv.addItemDecoration(adapter.getItemDecoration());
         final RecyclerView.ItemAnimator itemAnimator =
                 Util.checkLollipop() ? new CircularRevealItemAnimator() : new DefaultItemAnimator();
-        mRecyclerView.setItemAnimator(itemAnimator);
+        mRv.setItemAnimator(itemAnimator);
         adapter.setParentExpandCollapseListener(new ExpandableAdapter
                 .OnParentExpandCollapseListener() {
-
             @Override
-            public void onParentExpanded(RecyclerView parent, ParentViewHolder pvh,
-                                         int parentPosition, boolean pendingCause, boolean byUser)
+            public void onParentExpanded(RecyclerView rv, ParentViewHolder pvh, int parentPosition,
+                    boolean pendingCause, boolean byUser)
             {
                 Logger.e(TAG, "onParentExpanded=" + parentPosition);
 
-                MyParentViewHolder vh = (MyParentViewHolder) mRecyclerView
+                MyParentViewHolder vh = (MyParentViewHolder) mRv
                         .findViewHolderForAdapterPosition(pvh.getAdapterPosition());
                 if (vh == null) return;
                 final ImageView arrow = vh.getView(R.id.arrow);
@@ -118,13 +114,13 @@ public class MainFragment extends Fragment {
             }
 
             @Override
-            public void onParentCollapsed(RecyclerView parent, ParentViewHolder pvh,
-                                          int parentPosition, boolean pendingCause, boolean byUser)
+            public void onParentCollapsed(RecyclerView rv, ParentViewHolder pvh, int parentPosition,
+                    boolean pendingCause, boolean byUser)
             {
                 Logger.e(TAG, "onParentCollapsed=" + parentPosition);
 
                 MyParentViewHolder vh =
-                        (MyParentViewHolder) mRecyclerView.findViewHolderForAdapterPosition(
+                        (MyParentViewHolder) mRv.findViewHolderForAdapterPosition(
                                 pvh.getAdapterPosition());
                 if (vh == null) return;
                 final ImageView arrow = vh.getView(R.id.arrow);
@@ -147,9 +143,8 @@ public class MainFragment extends Fragment {
 
         adapter.addParentExpandableStateChangeListener(
                 new ExpandableAdapter.OnParentExpandableStateChangeListener() {
-
                     @Override
-                    public void onParentExpandableStateChanged(RecyclerView parent,
+                    public void onParentExpandableStateChanged(RecyclerView rv,
                             ParentViewHolder pvh, int parentPosition, boolean expandable)
                     {
                         Logger.e(TAG, "onParentExpandableStateChanged=" + parentPosition);
@@ -163,7 +158,6 @@ public class MainFragment extends Fragment {
                         }
                     }
                 });
-
         mIPresenter = new PresenterImpl(adapter, mData);
     }
 
@@ -174,7 +168,7 @@ public class MainFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        MyAdapter adapter= (MyAdapter) mRecyclerView.getAdapter();
+        MyAdapter adapter= (MyAdapter) mRv.getAdapter();
         int id = item.getItemId();
         switch (id) {
             case  R.id.action_test:
@@ -203,8 +197,8 @@ public class MainFragment extends Fragment {
                 adapter.collapseParent(1);
                 break;
             case R.id.action_settings:
-                Intent intent=new Intent(getActivity(), SecondActivity.class);
-                Test test=new Test();
+                Intent intent = new Intent(getActivity(), SecondActivity.class);
+                Test test = new Test();
                 MyParent myParent = test.getMyParent();
                 List<MyChild> myChildren = myParent.getChildren();
                 test.setString("pppppppppppp");
@@ -308,7 +302,7 @@ public class MainFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         Logger.e(TAG,"***********onSaveInstanceState*********");
         super.onSaveInstanceState(outState);
-        MyAdapter adapter= (MyAdapter) mRecyclerView.getAdapter();
+        MyAdapter adapter= (MyAdapter) mRv.getAdapter();
         adapter.onSaveInstanceState(outState);
     }
 

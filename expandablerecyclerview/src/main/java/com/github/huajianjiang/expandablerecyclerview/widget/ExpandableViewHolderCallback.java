@@ -1,20 +1,20 @@
 package com.github.huajianjiang.expandablerecyclerview.widget;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
-import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
-
-
 /**
+ * {@link android.support.v7.widget.RecyclerView.ViewHolder} 所代表的 {@code itemView} 的 {@link View}
+ * ,包含 {@code itemView} 中的子 {@link View} 的{@code View} 的交互事件回调
  * @author HuaJian Jiang.
- *         Date 2016/12/29.
+ *         Date 2017/1/22.
  */
+interface ExpandableViewHolderCallback {
 
-interface ExpandableViewHolderCallback<VH extends BaseViewHolder, P extends Parent, C> {
+    int[] onRegisterClickEvent(RecyclerView rv);
 
-    void onExpandableItemClick(VH vh, View v, P parent, C child, int parentPosition,
-                               int childPosition);
+    void onItemClick(RecyclerView rv, BaseExpandableViewHolder vh, View v);
 
-    boolean onExpandableItemLongClick(VH vh, View v, P parent, C child, int parentPosition,
-                                      int childPosition);
+    int[] onRegisterLongClickEvent(RecyclerView rv);
+
+    boolean onItemLongClick(RecyclerView rv, BaseExpandableViewHolder vh, View v);
 }

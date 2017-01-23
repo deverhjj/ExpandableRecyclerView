@@ -2,15 +2,6 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="com.jhj.expandablerecyclerviewexample.MainActivity">
-    <item
-        android:id="@+id/action_test"
-        android:title="Test"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_settings"
-        android:title="设置"
-        app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_refresh"
@@ -18,31 +9,37 @@
         app:showAsAction="withText|ifRoom"/>
 
     <item
-        android:id="@+id/action_toggle_expandable_1"
-        android:orderInCategory="200"
-        android:title="切换 1 的是否可展开属性"
+        android:id="@+id/action_test"
+        android:title="@string/action_test"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_expand_all"
-        android:orderInCategory="200"
-        android:title="全部展开"
+        android:title="@string/action_expand_all"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_collapse_all"
-        android:title="全部折叠"
+        android:title="@string/action_collapse_all"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_expand_1"
-        android:orderInCategory="200"
-        android:title="展开 1"
+        android:title="@string/action_expand_1"
         app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_collapse_1"
-        android:title="折叠 1"
+        android:title="@string/action_collapse_1"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_toggle_expandable_1"
+        android:title="@string/action_toggle_expandable_1"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
 </menu>

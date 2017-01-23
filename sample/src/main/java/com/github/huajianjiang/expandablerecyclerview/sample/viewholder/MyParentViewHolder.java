@@ -1,18 +1,20 @@
 package com.github.huajianjiang.expandablerecyclerview.sample.viewholder;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.github.huajianjiang.expandablerecyclerview.sample.R;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 import com.github.huajianjiang.expandablerecyclerview.sample.utils.Util;
+import com.github.huajianjiang.expandablerecyclerview.widget.BaseExpandableViewHolder;
 import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 
 
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class MyParentViewHolder extends ParentViewHolder<MyParent> {
+public class MyParentViewHolder extends ParentViewHolder {
     private static final String TAG = "MyParentViewHolder";
 
     public MyParentViewHolder(View itemView) {
@@ -32,15 +34,16 @@ public class MyParentViewHolder extends ParentViewHolder<MyParent> {
     }
 
     @Override
-    public int[] onRegisterLongClickEvent() {
+    public int[] onRegisterLongClickEvent(RecyclerView rv) {
         return new int[]{itemView.getId()};
     }
 
     @Override
-    public boolean onExpandableItemLongClick(ParentViewHolder pvh, View v, MyParent parent,
-                                             Void child, int parentPosition, int childPosition)
-    {
-        Util.showToast(v.getContext(), "Parent LongClick==>" + parentPosition);
+    public boolean onItemLongClick(RecyclerView rv, BaseExpandableViewHolder vh, View v) {
+        Util.showToast(v.getContext(), "Parent LongClick==>" + getAssociateAdapter()
+                .getParentPosition(getAdapterPosition()));
+        MyParent myParent = (MyParent) getAssociateAdapter()
+                .getParentForAdapterPosition(getAdapterPosition());
         return true;
     }
 

@@ -3,7 +3,8 @@
               android:id="@+id/child"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@color/md_deep_teal_500"
+              android:background="@drawable/bg_child"
+              android:clickable="true"
               android:orientation="horizontal">
 
     <ImageView

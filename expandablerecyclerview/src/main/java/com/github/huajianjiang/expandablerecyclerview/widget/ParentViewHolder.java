@@ -3,7 +3,6 @@ package com.github.huajianjiang.expandablerecyclerview.widget;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 
 
@@ -13,8 +12,7 @@ import com.github.huajianjiang.expandablerecyclerview.util.Logger;
  * </p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentViewHolder<T extends Parent> extends BaseExpandableViewHolder
-        implements ExpandableViewHolderCallback<ParentViewHolder, T, Void>
+public class ParentViewHolder extends BaseExpandableViewHolder
 {
     private static final String TAG = "ParentViewHolder";
 
@@ -32,7 +30,7 @@ public class ParentViewHolder<T extends Parent> extends BaseExpandableViewHolder
 
     public ParentViewHolder(View itemView) {
         super(itemView);
-        // make sure we can receive parent item click event callback at least
+        // make sure we can receive parent item click callback
         itemView.setEnabled(true);
         itemView.setClickable(true);
     }
@@ -72,49 +70,20 @@ public class ParentViewHolder<T extends Parent> extends BaseExpandableViewHolder
 
     /**
      * 当父列表项点击时的回调,包括之前注册的在父列表项里的子 view 的点击监听
-     * 客户端不应该覆盖该实现, 应该实现 {@link #onExpandableItemClick(BaseViewHolder, View, Parent, Object, int, int)}
      * <p>
-     *     if you override this method, make sure call super method
+     *     make sure call super {@link #onItemClick(RecyclerView rv,BaseExpandableViewHolder, View)} method
      * </p>
-     * @param vh
      * @param v
-     * @param adapterPosition
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void onItemClick(BaseViewHolder vh, View v, int adapterPosition) {
-        if (isReceiveExpandableItemEvent() && getAssociateAdapter() != null)
-            onExpandableItemClick(ParentViewHolder.this, v,
-                    (T) getAssociateAdapter().getParentForAdapterPosition(adapterPosition), null,
-                    getAssociateAdapter().getParentPosition(adapterPosition),
-                    RecyclerView.NO_POSITION);
+    public void onItemClick(RecyclerView rv, BaseExpandableViewHolder vh, View v) {
         if (v != itemView) return;
         if (mExpanded) {
             collapseParent();
         } else {
             expandParent();
         }
-    }
-
-    /**
-     * 当父列表项长按时的回调,包括之前注册的在父列表项里的子 view 的长按事件监听
-     * 客户端不应该覆盖该实现, 应该实现 {@link #onExpandableItemLongClick(BaseViewHolder, View, Parent, Object, int, int)}
-     * <p>
-     *     if you override this method, make sure call super method
-     * </p>
-     * @param vh
-     * @param v
-     * @param adapterPosition
-     * @return
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean onItemLongClick(BaseViewHolder vh, View v, int adapterPosition) {
-        return isReceiveExpandableItemEvent() && getAssociateAdapter() != null &&
-               onExpandableItemLongClick(ParentViewHolder.this, v,
-                       (T) getAssociateAdapter().getParentForAdapterPosition(adapterPosition), null,
-                       getAssociateAdapter().getParentPosition(adapterPosition),
-                       RecyclerView.NO_POSITION);
     }
 
     /**
@@ -137,20 +106,5 @@ public class ParentViewHolder<T extends Parent> extends BaseExpandableViewHolder
             Logger.e(TAG, "*******collapseParent*******>expanded=" + mExpanded + ",expandable=" +
                           mExpandable);
         }
-    }
-
-    @Override
-    public void onExpandableItemClick(ParentViewHolder pvh, View v, T parent, Void child,
-                                      int parentPosition, int noPosition)
-    {
-        // do nothing, let client implement it
-    }
-
-    @Override
-    public boolean onExpandableItemLongClick(ParentViewHolder pvh, View v, T parent, Void child,
-                                             int parentPosition, int noPosition)
-    {
-        // do nothing, let client implement it
-        return false;
     }
 }

@@ -18,8 +18,6 @@ package com.github.huajianjiang.expandablerecyclerview.widget;
 
 import android.view.View;
 
-import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
-
 
 /**
  * <p>
@@ -29,49 +27,11 @@ import com.github.huajianjiang.baserecyclerview.viewholder.BaseViewHolder;
  * <p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ChildViewHolder<P extends Parent, C> extends BaseExpandableViewHolder
-        implements ExpandableViewHolderCallback<ChildViewHolder, P, C>
+public class ChildViewHolder extends BaseExpandableViewHolder
 {
     private static final String TAG = "ChildViewHolder";
 
     public ChildViewHolder(View itemView) {
         super(itemView);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void onItemClick(BaseViewHolder vh, View v, int adapterPosition) {
-        if (isReceiveExpandableItemEvent() && getAssociateAdapter() != null)
-            onExpandableItemClick(ChildViewHolder.this, v,
-                    (P) getAssociateAdapter().getParentForAdapterPosition(adapterPosition),
-                    (C) getAssociateAdapter().getChildForAdapterPosition(adapterPosition),
-                    getAssociateAdapter().getParentPosition(adapterPosition),
-                    getAssociateAdapter().getChildPosition(adapterPosition));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean onItemLongClick(BaseViewHolder vh, View v, int adapterPosition) {
-        return isReceiveExpandableItemEvent() && getAssociateAdapter() != null &&
-               onExpandableItemLongClick(ChildViewHolder.this, v,
-                       (P) getAssociateAdapter().getParentForAdapterPosition(adapterPosition),
-                       (C) getAssociateAdapter().getChildForAdapterPosition(adapterPosition),
-                       getAssociateAdapter().getParentPosition(adapterPosition),
-                       getAssociateAdapter().getChildPosition(adapterPosition));
-    }
-
-    @Override
-    public void onExpandableItemClick(ChildViewHolder childViewHolder, View v, P parent, C child,
-                                      int parentPosition, int childPosition)
-    {
-        // do nothing, let client implement it
-    }
-
-    @Override
-    public boolean onExpandableItemLongClick(ChildViewHolder childViewHolder, View v, P parent,
-                                             C child, int parentPosition, int childPosition)
-    {
-        // do nothing, let client implement it
-        return false;
     }
 }

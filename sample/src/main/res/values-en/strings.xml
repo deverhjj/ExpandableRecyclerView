@@ -3,4 +3,10 @@
     <string name="cancel">CANCEL</string>
     <string name="hint_input_error">Input form error! parent:parentPos,[count];          child:parentPos,childPos,[count];count default value is 1</string>
     <string name="ok">OK</string>
+    <string name="action_collapse_1">collapse 1</string>
+    <string name="action_collapse_all">collapse all</string>
+    <string name="action_expand_1">expand 1</string>
+    <string name="action_expand_all">expand all</string>
+    <string name="action_toggle_expandable_1">toggle expandable 1</string>
+
 </resources>

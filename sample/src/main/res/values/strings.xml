@@ -2,6 +2,13 @@
     <string name="app_name" translatable="false">ExpandableRecyclerView</string>
     <string name="action_settings" translatable="false">Settings</string>
 
+    <string name="action_test" translatable="false">Test</string>
+    <string name="action_expand_all">全部展开</string>
+    <string name="action_collapse_all">全部折叠</string>
+    <string name="action_expand_1">展开 1</string>
+    <string name="action_collapse_1">折叠 1</string>
+    <string name="action_toggle_expandable_1">切换 1 的是否可展开属性</string>
+
     <string name="parent_type" translatable="false">ParentType:%1$d , Pos:%2$d , AdapterPos:%3$d</string>
     <string name="child_type" translatable="false">ChildType:%1$d , Pos:%2$d , AdapterPos:%3$d</string>
 

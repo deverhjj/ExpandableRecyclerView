@@ -23,11 +23,11 @@ public class SecondActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Test test=getIntent().getParcelableExtra("test");
+        Test test = getIntent().getParcelableExtra("test");
         MyParent myParent = test.getMyParent();
         List<MyChild> myChildren = myParent.getChildren();
         boolean hasOneChild = myChildren != null && !myChildren.isEmpty();
         Logger.e(TAG, "string=" + test.getString() + ",myParent=" + myParent.isInitiallyExpanded() +
-                ",child-dot=" + (hasOneChild ? myChildren.get(0).getDot() : "none"));
+                      ",child-dot=" + (hasOneChild ? myChildren.get(0).getDot() : "none"));
     }
 }
