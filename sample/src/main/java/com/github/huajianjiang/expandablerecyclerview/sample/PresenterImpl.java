@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyChild;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
-import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
 
 import java.util.ArrayList;
@@ -26,13 +25,6 @@ public class PresenterImpl implements IPresenter {
     public PresenterImpl(ExpandableAdapter adapter,List<MyParent> data) {
         mAdapter=adapter;
         mData = data;
-    }
-
-    /**
-     * 因为数据结构发生改变，所有更新所有的列表项数据
-     */
-    public void autoNotifyAllChanged() {
-        //mAdapter.notifyAllChanged();
     }
 
     @NonNull
@@ -56,7 +48,6 @@ public class PresenterImpl implements IPresenter {
     @Override
     public void notifyParentItemInserted(int parentPosition) {
         notifyParentItemRangeInserted(parentPosition,1);
-        Logger.e(TAG,"notifyParentItemInserted");
     }
 
     @Override
@@ -66,8 +57,6 @@ public class PresenterImpl implements IPresenter {
             mData.add(i, myParent);
         }
         mAdapter.notifyParentItemRangeInserted(parentPositionStart,parentItemCount);
-        autoNotifyAllChanged();
-        Logger.e(TAG,"notifyParentItemRangeInserted");
     }
 
     @Override
@@ -87,29 +76,21 @@ public class PresenterImpl implements IPresenter {
             myChildren.add(i, myChild);
         }
 
-        Logger.e(TAG,"myChildren="+ myChildren.size());
-
         mAdapter.notifyChildItemRangeInserted(parentPosition,childPositionStart,childItemCount,true);
-        autoNotifyAllChanged();
     }
 
     @Override
     public void notifyParentItemRemoved(int parentPosition) {
         notifyParentItemRangeRemoved(parentPosition,1);
-        Logger.e(TAG,"notifyParentItemRemoved");
     }
 
     @Override
     public void notifyParentItemRangeRemoved(int parentPositionStart, int parentItemCount) {
-
         for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
             //注意这里删除数据的 index 不是 i
             mData.remove(parentPositionStart);
         }
-
         mAdapter.notifyParentItemRangeRemoved(parentPositionStart,parentItemCount);
-
-        autoNotifyAllChanged();
     }
 
     @Override
@@ -123,15 +104,11 @@ public class PresenterImpl implements IPresenter {
     {
         MyParent myParent = mData.get(parentPosition);
         List<MyChild> myChildren = myParent.getChildren();
-        Logger.e(TAG,"myChildren="+ myChildren.size());
         for (int i = childPositionStart; i <childPositionStart+childItemCount ; i++) {
             //注意这里删除数据的 index 不是 i
             myChildren.remove(childPositionStart);
         }
-
         mAdapter.notifyChildItemRangeRemoved(parentPosition,childPositionStart,childItemCount,false);
-
-        autoNotifyAllChanged();
     }
 
     @Override
@@ -171,10 +148,8 @@ public class PresenterImpl implements IPresenter {
     @Override
     public void notifyParentItemMoved(int fromParentPosition, int toParentPosition) {
         MyParent fromMyParent = mData.get(fromParentPosition);
-        Logger.e(TAG, "before" + mData);
         mData.remove(fromParentPosition);
         mData.add(toParentPosition, fromMyParent);
-        Logger.e(TAG, "after" + mData);
 
         mAdapter.notifyParentItemMoved(fromParentPosition,toParentPosition);
     }
@@ -188,14 +163,9 @@ public class PresenterImpl implements IPresenter {
 
         //from-> 先 get 再 remove
         MyChild fromMyChild = checkChildItems(fromMyParent).get(fromChildPosition);
-        Logger.e(TAG, "before_fromParent.getChildItems()" + "\n" + fromMyParent.getChildren()
-                +"\n"+"before_toParent.getChildItems()"+"\n"+ toMyParent.getChildren());
         fromMyParent.getChildren().remove(fromChildPosition);
         //to-> add fromMyChild
         checkChildItems(toMyParent).add(toChildPosition, fromMyChild);
-        Logger.e(TAG,"notifyChildItemMoved"+"\n"+"after_fromParent.getChildItems()="+ fromMyParent
-                .getChildren()+"\n"+"after_toMyParent.getChildItems()="+ toMyParent.getChildren());
-
         mAdapter.notifyChildItemMoved(fromParentPosition, fromChildPosition, toParentPosition,
                 toChildPosition);
     }
