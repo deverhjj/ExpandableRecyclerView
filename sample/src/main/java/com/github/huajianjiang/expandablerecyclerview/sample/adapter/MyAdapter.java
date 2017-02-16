@@ -54,31 +54,32 @@ public class MyAdapter
 
     @Override
     public MyChildViewHolder onCreateChildViewHolder(ViewGroup child, int childType) {
-        View itemView=mInflater.inflate(childType==CHILD_1_TYPE?R.layout
-                .item_child_1:R.layout.item_child_2,child,false);
+        View itemView = mInflater
+                .inflate(childType == CHILD_1_TYPE ? R.layout.item_child_1 : R.layout.item_child_2,
+                        child, false);
         return new MyChildViewHolder(itemView);
     }
 
     @Override
-    public void onBindParentViewHolder(MyParentViewHolder parentViewHolder, int parentPosition,
+    public void onBindParentViewHolder(MyParentViewHolder pvh, int parentPosition,
             MyParent parent)
     {
-        int parentType = getParentType(parentPosition);
+        final int parentType = pvh.getType();
         String info = mContext.getString(R.string.parent_type, parentType, parentPosition,
-                parentViewHolder.getAdapterPosition());
+                pvh.getAdapterPosition());
         parent.setInfo(info);
-        parentViewHolder.bind(parent);
+        pvh.bind(parent);
     }
 
     @Override
-    public void onBindChildViewHolder(MyChildViewHolder childViewHolder, int parentPosition,
+    public void onBindChildViewHolder(MyChildViewHolder cvh, int parentPosition,
             int childPosition, MyChild child)
     {
-        int childType = getChildType(parentPosition, childPosition);
-        String info = mContext.getString(R.string.child_type, childType, childPosition,
-                childViewHolder.getAdapterPosition());
+        final int childType = cvh.getType();
+        String info = mContext
+                .getString(R.string.child_type, childType, childPosition, cvh.getAdapterPosition());
         child.setInfo(info);
-        childViewHolder.bind(child);
+        cvh.bind(child);
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.github.huajianjiang.expandablerecyclerview.widget.ChildViewHolder;
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class MyChildViewHolder extends ChildViewHolder {
+public class MyChildViewHolder extends ChildViewHolder<MyChild> {
     private static final String TAG = "MyChildViewHolder";
 
     public MyChildViewHolder(View itemView) {
@@ -39,8 +39,9 @@ public class MyChildViewHolder extends ChildViewHolder {
                                                   .getChildPosition(getAdapterPosition()));
         MyParent myParent = (MyParent) getAssociateAdapter()
                 .getParentForAdapterPosition(getAdapterPosition());
-        MyChild myChild = (MyChild) getAssociateAdapter()
-                .getChildForAdapterPosition(getAdapterPosition());
+//        MyChild myChild = (MyChild) getAssociateAdapter()
+//                .getChildForAdapterPosition(getAdapterPosition());
+        MyChild myChild = getChild();
         return true;
     }
 

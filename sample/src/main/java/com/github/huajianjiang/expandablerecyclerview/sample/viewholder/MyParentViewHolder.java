@@ -13,7 +13,7 @@ import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
-public class MyParentViewHolder extends ParentViewHolder {
+public class MyParentViewHolder extends ParentViewHolder<MyParent> {
     private static final String TAG = "MyParentViewHolder";
 
     public MyParentViewHolder(View itemView) {
@@ -41,8 +41,9 @@ public class MyParentViewHolder extends ParentViewHolder {
     public boolean onItemLongClick(RecyclerView rv,View v) {
         AppUtil.showToast(v.getContext(), "Parent LongClick==>" + getAssociateAdapter()
                 .getParentPosition(getAdapterPosition()));
-        MyParent myParent = (MyParent) getAssociateAdapter()
-                .getParentForAdapterPosition(getAdapterPosition());
+//        MyParent myParent = (MyParent) getAssociateAdapter()
+//                .getParentForAdapterPosition(getAdapterPosition());
+        MyParent myParent = getParent();
         return true;
     }
 
