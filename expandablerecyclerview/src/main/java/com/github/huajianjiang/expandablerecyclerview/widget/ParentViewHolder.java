@@ -10,11 +10,15 @@ import android.view.View;
  * </p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentViewHolder extends BaseExpandableViewHolder
+public class ParentViewHolder<P extends Parent> extends BaseExpandableViewHolder
 {
     private static final String TAG = "ParentViewHolder";
 
     private InnerOnParentExpandCollapseListener mExpandCollapseListener;
+
+    private int parentPosition;
+
+    private P parent;
 
     /**
      * 是否该可展开折叠
@@ -56,6 +60,22 @@ public class ParentViewHolder extends BaseExpandableViewHolder
     void setExpanded(boolean expanded) {
         if (expanded == mExpanded) return;
         mExpanded = expanded;
+    }
+
+    public int getParentPosition() {
+        return parentPosition;
+    }
+
+    void setParentPosition(int parentPosition) {
+        this.parentPosition = parentPosition;
+    }
+
+    public P getParent() {
+        return parent;
+    }
+
+    void setParent(P parent) {
+        this.parent = parent;
     }
 
     /**

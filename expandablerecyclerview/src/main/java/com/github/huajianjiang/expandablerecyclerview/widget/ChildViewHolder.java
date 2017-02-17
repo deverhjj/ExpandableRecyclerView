@@ -27,11 +27,41 @@ import android.view.View;
  * <p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ChildViewHolder extends BaseExpandableViewHolder
+public class ChildViewHolder<C> extends BaseExpandableViewHolder
 {
     private static final String TAG = "ChildViewHolder";
 
+    private int parentPosition;
+
+    private int childPosition;
+
+    private C child;
+
     public ChildViewHolder(View itemView) {
         super(itemView);
+    }
+
+    public int getParentPosition() {
+        return parentPosition;
+    }
+
+    void setParentPosition(int parentPosition) {
+        this.parentPosition = parentPosition;
+    }
+
+    public int getChildPosition() {
+        return childPosition;
+    }
+
+    void setChildPosition(int childPosition) {
+        this.childPosition = childPosition;
+    }
+
+    public C getChild() {
+        return child;
+    }
+
+    void setChild(C child) {
+        this.child = child;
     }
 }

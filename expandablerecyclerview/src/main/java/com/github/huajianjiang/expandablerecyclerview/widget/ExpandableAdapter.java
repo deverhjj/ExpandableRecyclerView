@@ -66,7 +66,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     /**
      * ExpandableRecyclerView 展开折叠模式处理类
      */
-    private ExpandCollapseMode mExpandCollapseMode = new ExpandCollapseMode();
+    private ExpandCollapseMode mExpandCollapseMode = null;
 
     /**
      * 父列表项集合
@@ -79,18 +79,17 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     /**
      * 当前所有监听适配器的 RecyclerView 集合
      */
-    private List<RecyclerView> mAttachedRecyclerViews = new ArrayList<>(1);
+    private List<RecyclerView> mAttachedRecyclerViews = new ArrayList<>(2);
 
     /**
      * 所有监听父列表项展开折叠状态监听器集合
      */
-    private List<OnParentExpandCollapseListener> mExpandCollapseListeners = new ArrayList<>(1);
+    private List<OnParentExpandCollapseListener> mExpandCollapseListeners = null;
 
     /**
      * 父列表项是否可折叠展开监听器集合
      */
-    private List<OnParentExpandableStateChangeListener> mExpandableStateChangeListeners =
-            new ArrayList<>(1);
+    private List<OnParentExpandableStateChangeListener> mExpandableStateChangeListeners = null;
 
     public ExpandableAdapter(List<P> parents) {
         init(parents);
@@ -110,12 +109,21 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         notifyDataSetChanged();
     }
 
+    private ExpandCollapseMode getMode() {
+        if (mExpandCollapseMode == null) {
+            mExpandCollapseMode = new ExpandCollapseMode();
+        }
+        return mExpandCollapseMode;
+    }
+
     /**
      * 设置当前的展开折叠模式
      * @param mode 指定的模式
      * @see ExpandCollapseMode
      */
     public void setExpandCollapseMode(int mode) {
+        getMode();
+        if (mode == mExpandCollapseMode.mode) return;
         mExpandCollapseMode.mode = mode;
     }
 
@@ -125,7 +133,8 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @see ExpandCollapseMode
      */
     public int getExpandCollapseMode() {
-        return mExpandCollapseMode.mode;
+        return mExpandCollapseMode == null ? ExpandCollapseMode.MODE_DEFAULT :
+                mExpandCollapseMode.mode;
     }
 
     /**
@@ -187,6 +196,13 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 boolean expandable);
     }
 
+    private List<OnParentExpandableStateChangeListener> getExpandableStateChangeListeners() {
+        if (mExpandableStateChangeListeners == null) {
+            mExpandableStateChangeListeners = new ArrayList<>();
+        }
+        return mExpandableStateChangeListeners;
+    }
+
     /**
      * 注册监听父列表项可展开状态改变监听器
      * @param listener 监听器
@@ -195,7 +211,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     public void addParentExpandableStateChangeListener(
             OnParentExpandableStateChangeListener listener)
     {
-        if (listener == null || mExpandableStateChangeListeners.contains(listener)) return;
+        if (listener == null || getExpandableStateChangeListeners().contains(listener)) return;
         mExpandableStateChangeListeners.add(listener);
     }
 
@@ -206,7 +222,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     public void unregisterParentExpandableStateChangeListener(
             OnParentExpandableStateChangeListener listener)
     {
-        if (listener == null) return;
+        if (listener == null || mExpandableStateChangeListeners == null) return;
         mExpandableStateChangeListeners.remove(listener);
     }
 
@@ -252,6 +268,12 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 boolean pendingCause, boolean byUser);
     }
 
+    private List<ExpandableAdapter.OnParentExpandCollapseListener> getExpandCollapseListeners() {
+        if (mExpandCollapseListeners == null) {
+            mExpandCollapseListeners = new ArrayList<>();
+        }
+        return mExpandCollapseListeners;
+    }
 
     /**
      * 注册一个监听父列表项展开或折叠状态改变监听器.
@@ -270,7 +292,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param listener 监听器
      */
     public void addParentExpandCollapseListener(OnParentExpandCollapseListener listener) {
-        if (listener == null || mExpandCollapseListeners.contains(listener)) return;
+        if (listener == null || getExpandCollapseListeners().contains(listener)) return;
         mExpandCollapseListeners.add(listener);
     }
 
@@ -279,10 +301,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param listener 需要取消注册的监听器
      */
     public void unregisterParentExpandCollapseListener(OnParentExpandCollapseListener listener) {
-        if (listener == null) return;
+        if (listener == null || mExpandCollapseListeners == null) return;
         mExpandCollapseListeners.remove(listener);
     }
-
 
     /**
      * <p>
@@ -340,17 +361,29 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     @SuppressWarnings("unchecked")
     public void onBindViewHolder(BaseExpandableViewHolder holder, int position) {
         ItemWrapper<P, C> item = getItem(position);
-        int parentPosition = getParentPosition(position);
+        int parentPos = getParentPosition(position);
         if (item.isParent()) {
             PVH pvh = (PVH) holder;
+            P parent = item.getParent();
             //初始化可展开状态
             pvh.setExpandable(item.isExpandable());
             //初始化展开折叠状态
             pvh.setExpanded(item.isExpanded());
-            onBindParentViewHolder(pvh, parentPosition, item.getParent());
+            //bind associate parent bean
+            pvh.setParent(parent);
+            //position binding
+            pvh.setParentPosition(parentPos);
+            onBindParentViewHolder(pvh, parentPos, parent);
         } else if (item.isChild()) {
             CVH cvh = (CVH) holder;
-            onBindChildViewHolder(cvh, parentPosition, getChildPosition(position), item.getChild());
+            int childPos = getChildPosition(position);
+            C child = item.getChild();
+            //bind associate child bean
+            cvh.setChild(child);
+            //position binding
+            cvh.setParentPosition(parentPos);
+            cvh.setChildPosition(childPos);
+            onBindChildViewHolder(cvh, parentPos, childPos, child);
         }
     }
 
@@ -768,6 +801,8 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      */
     private void notifyParentExpandableStateChanged(ParentViewHolder pvh, boolean expandable)
     {
+        if (mExpandableStateChangeListeners == null || mExpandableStateChangeListeners.isEmpty())
+            return;
         int parentAdapterPos = pvh.getAdapterPosition();
         for (OnParentExpandableStateChangeListener listener : mExpandableStateChangeListeners) {
             int parentPos = parentAdapterPos - getBeforeExpandedChildCount(parentAdapterPos);
@@ -838,6 +873,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     private void notifyParentExpanded(ParentViewHolder pvh, boolean pendingCause,
             boolean byUser)
     {
+        if (mExpandCollapseListeners == null || mExpandCollapseListeners.isEmpty()) return;
         int parentAdapterPos = pvh.getAdapterPosition();
         for (OnParentExpandCollapseListener listener : mExpandCollapseListeners) {
             int parentPos = parentAdapterPos - getBeforeExpandedChildCount(parentAdapterPos);
@@ -905,6 +941,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param byUser 是否是被用户手动折叠的
      */
     private void notifyParentCollapsed(ParentViewHolder pvh, boolean pendingCause, boolean byUser) {
+        if (mExpandCollapseListeners == null || mExpandCollapseListeners.isEmpty()) return;
         int parentAdapterPos = pvh.getAdapterPosition();
         for (OnParentExpandCollapseListener listener : mExpandCollapseListeners) {
             int parentPos = parentAdapterPos - getBeforeExpandedChildCount(parentAdapterPos);

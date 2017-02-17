@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
 
+import com.github.huajianjiang.expandablerecyclerview.util.Packager;
+
 /**
  * @author HuaJian Jiang.
  *         Date 2017/1/20.
@@ -96,6 +98,15 @@ public class BaseExpandableViewHolder extends RecyclerView.ViewHolder
      */
     public ExpandableAdapter getAssociateAdapter() {
         return mAdapter;
+    }
+
+    /**
+     * you should use this method to get {@link android.support.v7.widget.RecyclerView.ViewHolder} associate view type
+     *
+     * @return The view type of this {@link android.support.v7.widget.RecyclerView.ViewHolder}.
+     */
+    public int getType() {
+        return Packager.getClientViewType(getItemViewType());
     }
 
     @Override
