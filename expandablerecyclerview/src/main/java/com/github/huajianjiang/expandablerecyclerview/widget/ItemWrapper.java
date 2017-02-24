@@ -18,7 +18,7 @@ class ItemWrapper<P extends Parent, C> {
      */
     private C mChild;
 
-    private boolean mExpandable = false;
+    private boolean mExpandable = true;
 
     /**
      * 当前父列表项是否已展开
@@ -56,7 +56,7 @@ class ItemWrapper<P extends Parent, C> {
      */
     public void setParent(P parent)
     {
-        mExpandable = false;
+        mExpandable = true;
         mExpanded = false;
         mParent = parent;
     }

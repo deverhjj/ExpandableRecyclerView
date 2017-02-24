@@ -23,14 +23,14 @@ final class ExpandableAdapterHelper {
     {
         if (parents == null) return Collections.EMPTY_LIST;
         List<ItemWrapper<P, C>> items = new ArrayList<>();
-        final int parentCount = parents.size();
+        int parentCount = parents.size();
         for (int i = 0; i < parentCount; i++) {
             P parent = parents.get(i);
             if (parent == null) continue;
             ItemWrapper<P, C> itemWrapper = new ItemWrapper<>(parent);
             items.add(itemWrapper);
-            final boolean hasChildren = itemWrapper.hasChildren();
-            if (parent.isInitiallyExpandable()) itemWrapper.setExpandable(hasChildren);
+            boolean hasChildren = itemWrapper.hasChildren();
+            itemWrapper.setExpandable(parent.isInitiallyExpandable() && hasChildren);
             if (itemWrapper.isInitiallyExpanded()) {
                 List<C> children = itemWrapper.getChildren();
                 //父列表项返回的 ChildItems 为 null 或者 childCount 为0 设置为折叠状态

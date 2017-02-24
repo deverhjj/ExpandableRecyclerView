@@ -23,7 +23,7 @@ public class ParentViewHolder<P extends Parent> extends BaseExpandableViewHolder
     /**
      * 是否该可展开折叠
      */
-    private boolean mExpandable = false;
+    private boolean mExpandable = true;
 
     /**
      * 设置当前父列表项是否已展开
@@ -41,9 +41,10 @@ public class ParentViewHolder<P extends Parent> extends BaseExpandableViewHolder
         return mExpandable;
     }
 
-    void setExpandable(boolean expandable) {
-        if (expandable == mExpandable) return;
+    boolean setExpandable(boolean expandable) {
+        if (expandable == mExpandable) return false;
         mExpandable = expandable;
+        return true;
     }
 
     /**
@@ -57,9 +58,10 @@ public class ParentViewHolder<P extends Parent> extends BaseExpandableViewHolder
     /**设置父列表项是否已展开
      * @param expanded 父列表项是否已展开
      */
-    void setExpanded(boolean expanded) {
-        if (expanded == mExpanded) return;
+    boolean setExpanded(boolean expanded) {
+        if (expanded == mExpanded) return false;
         mExpanded = expanded;
+        return true;
     }
 
     public int getParentPosition() {
