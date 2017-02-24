@@ -60,7 +60,7 @@ public class SingleRvFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init(getView());
+        init(view);
     }
 
     @Override
@@ -111,11 +111,11 @@ public class SingleRvFragment extends Fragment {
         public void onParentExpanded(RecyclerView rv, ParentViewHolder pvh, int position,
                 boolean pendingCause, boolean byUser)
         {
-            Logger.e(TAG, "onParentExpanded=" + position + "," + rv.getTag());
+            Logger.e(TAG, "onParentExpanded=" + position + "," + rv.getTag() + ",byUser=" + byUser);
             if (pvh == null) return;
-            final ImageView arrow = pvh.getView(R.id.arrow);
+            ImageView arrow = pvh.getView(R.id.arrow);
             if (arrow.getVisibility() != View.VISIBLE) return;
-            final float currRotate = arrow.getRotation();
+            float currRotate = arrow.getRotation();
             //重置为从0开始旋转
             if (currRotate == 360) {
                 arrow.setRotation(0);
@@ -132,12 +132,13 @@ public class SingleRvFragment extends Fragment {
         public void onParentCollapsed(RecyclerView rv, ParentViewHolder pvh, int position,
                 boolean pendingCause, boolean byUser)
         {
-            Logger.e(TAG, "onParentCollapsed=" + position + "," + rv.getTag());
+            Logger.e(TAG,
+                    "onParentCollapsed=" + position + ",tag=" + rv.getTag() + ",byUser=" + byUser);
 
             if (pvh == null) return;
-            final ImageView arrow = pvh.getView(R.id.arrow);
+            ImageView arrow = pvh.getView(R.id.arrow);
             if (arrow.getVisibility() != View.VISIBLE) return;
-            final float currRotate = arrow.getRotation();
+            float currRotate = arrow.getRotation();
             float rotate = 360;
             //未展开完全并且当前旋转角度小于180，逆转回去
             if (currRotate < 180) {

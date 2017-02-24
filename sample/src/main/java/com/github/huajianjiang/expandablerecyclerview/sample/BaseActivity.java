@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 public abstract class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     private Toolbar mToolbar;
+
     public abstract Fragment getFragment();
 
     public ViewGroup getFragmentContainer() {
