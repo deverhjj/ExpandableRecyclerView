@@ -4,9 +4,7 @@ Custom RecyclerView#Adapter that implement features like ExpandableListView
 [![Android Arsenal](https://img.shields.io/badge/%20Android%20Arsenal%20-%20ExpandableRecyclerView%20-brightgreen.svg)](https://android-arsenal.com/details/1/5071)
 
 ## Demo
-You can watch a short [Demo Video][] on YouTube and download Sample APK in [Releases][] section.
-[Demo Video]: https://youtu.be/KHVdrWEInBc
-[Releases]: https://github.com/huajianjiang/ExpandableRecyclerView/releases
+You can watch a short [Demo Video](https://youtu.be/KHVdrWEInBc) on YouTube and download Sample APK in [Releases](https://github.com/huajianjiang/ExpandableRecyclerView/releases) section.
 
 ## Features
 
