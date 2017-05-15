@@ -10,7 +10,7 @@ import android.view.View;
  * </p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentViewHolder<P extends Parent> extends BaseExpandableViewHolder
+public class ParentViewHolder<P extends Parent> extends BaseViewHolder
 {
     private static final String TAG = "ParentViewHolder";
 

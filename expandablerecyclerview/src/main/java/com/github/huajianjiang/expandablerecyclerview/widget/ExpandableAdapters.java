@@ -8,10 +8,10 @@ import java.util.List;
  * {@link ExpandableAdapter} 业务助手
  * Created by jhj_Plus on 2015/12/23.
  */
-final class ExpandableAdapterHelper {
-    private static final String TAG = "ExpandableAdapterHelper";
+final class ExpandableAdapters {
+    private static final String TAG = "ExpandableAdapters";
 
-    private ExpandableAdapterHelper(){}
+    private ExpandableAdapters(){}
 
     /**
      * 按照数据源的数据顺序构建并返回本地数据模型

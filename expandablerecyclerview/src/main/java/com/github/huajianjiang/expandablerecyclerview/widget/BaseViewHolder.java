@@ -10,10 +10,10 @@ import com.github.huajianjiang.expandablerecyclerview.util.Packager;
  * @author HuaJian Jiang.
  *         Date 2017/1/20.
  */
-public class BaseExpandableViewHolder extends RecyclerView.ViewHolder
-        implements ExpandableViewHolderCallback
+public class BaseViewHolder extends RecyclerView.ViewHolder
+        implements ViewHolderCallback
 {
-    private static final String TAG = BaseExpandableViewHolder.class.getSimpleName();
+    private static final String TAG = BaseViewHolder.class.getSimpleName();
     /**
      * ItemView 的 childView 缓存
      * 便于根据 id 查找对应的 View
@@ -29,7 +29,7 @@ public class BaseExpandableViewHolder extends RecyclerView.ViewHolder
      */
     private ExpandableAdapter mAdapter;
 
-    public BaseExpandableViewHolder(View itemView) {
+    public BaseViewHolder(View itemView) {
         super(itemView);
     }
 
@@ -110,14 +110,14 @@ public class BaseExpandableViewHolder extends RecyclerView.ViewHolder
     }
 
     @Override
-    public int[] onRegisterClickEvent(RecyclerView rv) {return null;}
+    public int[] onRegisterClickEvent(RecyclerView parent) {return null;}
 
     @Override
-    public void onItemClick(RecyclerView rv, View v) {}
+    public void onItemClick(RecyclerView parent, View v) {}
 
     @Override
-    public int[] onRegisterLongClickEvent(RecyclerView rv) {return null;}
+    public int[] onRegisterLongClickEvent(RecyclerView parent) {return null;}
 
     @Override
-    public boolean onItemLongClick(RecyclerView rv, View v) {return false;}
+    public boolean onItemLongClick(RecyclerView parent, View v) {return false;}
 }

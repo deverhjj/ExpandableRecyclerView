@@ -27,7 +27,7 @@ import android.view.View;
  * <p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ChildViewHolder<C> extends BaseExpandableViewHolder
+public class ChildViewHolder<C> extends BaseViewHolder
 {
     private static final String TAG = "ChildViewHolder";
 

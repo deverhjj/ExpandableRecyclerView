@@ -54,7 +54,7 @@ public class SingleRvFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState)
     {
-        return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_single_rv, container, false);
+        return inflater.inflate(R.layout.fragment_single_rv, container, false);
     }
 
     @Override
@@ -126,6 +126,12 @@ public class SingleRvFragment extends Fragment {
                 arrow.animate().rotation(180).setDuration(mItemAnimator.getAddDuration() + 180)
                         .start();
             }
+
+//            if (byUser) {
+//                int scrollToPos =
+//                        pvh.getAdapterPosition() + ((MyParent) pvh.getParent()).getChildCount();
+//                rv.scrollToPosition(scrollToPos);
+//            }
         }
 
         @Override

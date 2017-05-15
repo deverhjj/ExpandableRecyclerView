@@ -149,11 +149,4 @@ class ItemWrapper<P extends Parent, C> {
         }
     }
 
-    @Override
-    public String toString() {
-        return "ItemWrapper{" +"isParent="+isParent()+",isChild="+isChild()+
-               ",mParent=" + mParent +
-               ", mChild=" + mChild +
-               '}';
-    }
 }

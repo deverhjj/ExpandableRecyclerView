@@ -55,8 +55,7 @@ public class MultipleRvFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState)
     {
-        return LayoutInflater.from(getActivity())
-                .inflate(R.layout.fragment_multiple_rv, container, false);
+        return inflater.inflate(R.layout.fragment_multiple_rv, container, false);
     }
 
     @Override

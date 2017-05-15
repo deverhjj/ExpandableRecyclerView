@@ -61,9 +61,9 @@ public class MyAdapter
     }
 
     @Override
-    public void onBindParentViewHolder(MyParentViewHolder pvh, int parentPosition,
-            MyParent parent)
+    public void onBindParentViewHolder(MyParentViewHolder pvh, int parentPosition)
     {
+        MyParent parent = getParent(parentPosition);
         final int parentType = pvh.getType();
         String info = mContext.getString(R.string.parent_type, parentType, parentPosition,
                 pvh.getAdapterPosition());
@@ -72,9 +72,9 @@ public class MyAdapter
     }
 
     @Override
-    public void onBindChildViewHolder(MyChildViewHolder cvh, int parentPosition,
-            int childPosition, MyChild child)
+    public void onBindChildViewHolder(MyChildViewHolder cvh, int parentPosition, int childPosition)
     {
+        MyChild child = getChild(parentPosition, childPosition);
         final int childType = cvh.getType();
         String info = mContext
                 .getString(R.string.child_type, childType, childPosition, cvh.getAdapterPosition());

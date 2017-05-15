@@ -69,6 +69,10 @@ public class MyParent implements Parent<MyChild>, Parcelable {
         return mMyChildren;
     }
 
+    public int getChildCount() {
+        return hasChildren() ? mMyChildren.size() : 0;
+    }
+
     @Override
     public boolean isInitiallyExpandable() {
         return isExpandable;
