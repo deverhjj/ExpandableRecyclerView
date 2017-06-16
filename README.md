@@ -35,7 +35,7 @@ dependencies {
 <dependency>
   <groupId>com.github.huajianjiang</groupId>
   <artifactId>expandablerecyclerview</artifactId>
-  <version>1.0.7</version>
+  <version>1.0.8</version>
   <type>pom</type>
 </dependency>
 ```
