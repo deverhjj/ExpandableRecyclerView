@@ -876,7 +876,8 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param currExpandedParentPosition 当前已展开的 parent 的父列表项位置
      */
     private void checkSingleExpandMode(int currExpandedParentPosition) {
-        if (mExpandCollapseMode.mode != ExpandCollapseMode.MODE_SINGLE_EXPAND) return;
+        if (mExpandCollapseMode == null ||
+            mExpandCollapseMode.mode != ExpandCollapseMode.MODE_SINGLE_EXPAND) return;
         final int lastExpandedPosition = mExpandCollapseMode.lastExpandedPosition;
         if (lastExpandedPosition == currExpandedParentPosition) return;
         Logger.e(TAG, "checkSingleExpandMode " +
@@ -946,7 +947,8 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param currCollapsedParentPosition 当前已折叠的 parent 的父列表项位置
      */
     private void checkSingleCollapseMode(int currCollapsedParentPosition) {
-        if (mExpandCollapseMode.mode != ExpandCollapseMode.MODE_SINGLE_COLLAPSE) return;
+        if (mExpandCollapseMode == null ||
+            mExpandCollapseMode.mode != ExpandCollapseMode.MODE_SINGLE_COLLAPSE) return;
         final int lastCollapsedPosition = mExpandCollapseMode.lastCollapsedPosition;
         if (currCollapsedParentPosition == lastCollapsedPosition) return;
         Logger.e(TAG, "checkSingleCollapseMode " +
