@@ -25,7 +25,7 @@ You can watch a short [Demo Video](https://youtu.be/KHVdrWEInBc) on YouTube and 
 
 ```grooey
 dependencies {
-    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.7'
+    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.8'
 }
 ```
 
