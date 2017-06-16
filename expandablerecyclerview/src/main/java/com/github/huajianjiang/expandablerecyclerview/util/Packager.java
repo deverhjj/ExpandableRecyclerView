@@ -14,13 +14,13 @@ import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
  */
 public class Packager {
     private static final String TAG = "Packager";
-    private static final int TYPE_SHIFT = 30;
-    private static final int TYPE_MASK = 0x3 << TYPE_SHIFT;
+    private static final int TYPE_SHIFT = 31;
+    private static final int TYPE_MASK = 0x1 << TYPE_SHIFT;
 
     public static final int ITEM_VIEW_TYPE_ILLEGAL = -1;
-    public static final int ITEM_VIEW_TYPE_DEFAULT = 0 << TYPE_SHIFT;
-    public static final int ITEM_VIEW_TYPE_PARENT = 1 << TYPE_SHIFT;
-    public static final int ITEM_VIEW_TYPE_CHILD = 2 << TYPE_SHIFT;
+    public static final int ITEM_VIEW_TYPE_DEFAULT = 2;
+    public static final int ITEM_VIEW_TYPE_PARENT = 0 << TYPE_SHIFT;
+    public static final int ITEM_VIEW_TYPE_CHILD = 1 << TYPE_SHIFT;
 
     //------------打包(客户端的 ItemView 类型和本地类型)----------------
     public static int makeItemViewTypeSpec(int clientViewType, int localViewType) {
