@@ -52,5 +52,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
 }
 
-//apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/installv1.gradle'
-//apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/bintrayv1.gradle'
+apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/bintrayv1.gradle'
