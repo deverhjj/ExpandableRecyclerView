@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil.TYPE_CHILD;
+import static com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil.TYPE_PARENT;
+
 /**
  * Created by jhj_Plus on 2016/9/2.
  */
@@ -30,14 +33,14 @@ public class PresenterImpl implements IPresenter {
     @NonNull
     private MyParent getParentItem() {
         MyParent myParent =new MyParent();
-        myParent.setType(mRandom.nextInt(2));
+        myParent.setType(TYPE_PARENT[mRandom.nextInt(2)]);
         boolean hasChild=mRandom.nextBoolean();
         if (hasChild) {
             List<MyChild> myChildren =new ArrayList<>();
             final int childCount=mRandom.nextInt(6);
             for (int i = 0; i < childCount; i++) {
                 MyChild myChild =new MyChild();
-                myChild.setType(mRandom.nextInt(2));
+                myChild.setType(TYPE_CHILD[mRandom.nextInt(2)]);
                 myChildren.add(myChild);
             }
             myParent.setMyChildren(myChildren);
@@ -71,8 +74,8 @@ public class PresenterImpl implements IPresenter {
         MyParent myParent =mData.get(parentPosition);
         List<MyChild> myChildren = checkChildItems(myParent);
         for (int i = childPositionStart; i <childPositionStart+childItemCount ; i++) {
-            MyChild myChild =new MyChild();
-            myChild.setType(mRandom.nextInt(2));
+            MyChild myChild = new MyChild();
+            myChild.setType(TYPE_CHILD[mRandom.nextInt(2)]);
             myChildren.add(i, myChild);
         }
 

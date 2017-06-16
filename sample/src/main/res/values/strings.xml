@@ -15,8 +15,8 @@
     <string name="action_collapse_1">折叠 1</string>
     <string name="action_toggle_expandable_1">切换 1 的是否可展开属性</string>
 
-    <string name="parent_type" translatable="false">ParentType:%1$d , Pos:%2$d , AdapterPos:%3$d</string>
-    <string name="child_type" translatable="false">ChildType:%1$d , Pos:%2$d , AdapterPos:%3$d</string>
+    <string name="parent_type" translatable="false">ParentType:%1$s , Pos:%2$d , AdapterPos:%3$d</string>
+    <string name="child_type" translatable="false">ChildType:%1$s , Pos:%2$d , AdapterPos:%3$d</string>
 
     <string name="snack" translatable="false">AdapterPos:%1$s</string>
 
