@@ -23,12 +23,6 @@ public class MyAdapter
         extends ExpandableAdapter<MyParentViewHolder, MyChildViewHolder, MyParent, MyChild>
 {
     private static final String TAG = "MyAdapter";
-
-    public static final int PARENT_1_TYPE = 0;
-    public static final int PARENT_2_TYPE = 1;
-    public static final int CHILD_1_TYPE = 0;
-    public static final int CHILD_2_TYPE = 1;
-
     private List<MyParent> mData;
     private Context mContext;
     private LayoutInflater mInflater;
@@ -46,17 +40,13 @@ public class MyAdapter
 
     @Override
     public MyParentViewHolder onCreateParentViewHolder(ViewGroup parent, int parentType) {
-        View itemView = mInflater.inflate(
-                parentType == PARENT_1_TYPE ? R.layout.item_parent_1 : R.layout.item_parent_2,
-                parent, false);
+        View itemView = mInflater.inflate(parentType, parent, false);
         return new MyParentViewHolder(itemView);
     }
 
     @Override
     public MyChildViewHolder onCreateChildViewHolder(ViewGroup child, int childType) {
-        View itemView = mInflater
-                .inflate(childType == CHILD_1_TYPE ? R.layout.item_child_1 : R.layout.item_child_2,
-                        child, false);
+        View itemView = mInflater.inflate(childType, child, false);
         return new MyChildViewHolder(itemView);
     }
 
@@ -64,7 +54,7 @@ public class MyAdapter
     public void onBindParentViewHolder(MyParentViewHolder pvh, int parentPosition)
     {
         MyParent parent = getParent(parentPosition);
-        final int parentType = pvh.getType();
+        final String parentType = "0x" + Integer.toHexString(pvh.getType());
         String info = mContext.getString(R.string.parent_type, parentType, parentPosition,
                 pvh.getAdapterPosition());
         parent.setInfo(info);
@@ -75,7 +65,7 @@ public class MyAdapter
     public void onBindChildViewHolder(MyChildViewHolder cvh, int parentPosition, int childPosition)
     {
         MyChild child = getChild(parentPosition, childPosition);
-        final int childType = cvh.getType();
+        final String childType = "0x" + Integer.toHexString(cvh.getType());
         String info = mContext
                 .getString(R.string.child_type, childType, childPosition, cvh.getAdapterPosition());
         child.setInfo(info);
@@ -90,7 +80,7 @@ public class MyAdapter
 
     @Override
     public int getChildType(int parentPosition, int childPosition) {
-        MyChild myChild =  mData.get(parentPosition).getChildren().get(childPosition);
+        MyChild myChild = mData.get(parentPosition).getChildren().get(childPosition);
         return myChild.getType();
     }
 

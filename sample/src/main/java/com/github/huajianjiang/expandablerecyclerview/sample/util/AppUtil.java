@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.github.huajianjiang.expandablerecyclerview.sample.R;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyChild;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 
@@ -22,7 +23,10 @@ import java.util.Random;
 public class AppUtil {
     private static final String TAG = "AppUtil";
 
-    private static Random sRandom=new Random();
+    private static Random sRandom = new Random();
+
+    public static final int[] TYPE_PARENT = {R.layout.item_parent_1, R.layout.item_parent_2};
+    public static final int[] TYPE_CHILD = {R.layout.item_child_1, R.layout.item_child_2};
 
     public static boolean checkLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
@@ -40,13 +44,13 @@ public class AppUtil {
 
     @NonNull
     public static MyParent getParent() {
-        MyParent myParent =new MyParent();
-        myParent.setType(sRandom.nextInt(2));
+        MyParent myParent = new MyParent();
+        myParent.setType(TYPE_PARENT[sRandom.nextInt(2)]);
         if (sRandom.nextBoolean()) {
             List<MyChild> myChildren =new ArrayList<>();
             for (int j = 0; j < sRandom.nextInt(6); j++) {
-                MyChild myChild =new MyChild();
-                myChild.setType(sRandom.nextInt(2));
+                MyChild myChild = new MyChild();
+                myChild.setType(TYPE_CHILD[sRandom.nextInt(2)]);
                 myChildren.add(myChild);
             }
             myParent.setMyChildren(myChildren);
