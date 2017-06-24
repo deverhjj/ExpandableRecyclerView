@@ -26,6 +26,7 @@ import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.util.Packager;
 import com.github.huajianjiang.expandablerecyclerview.util.Preconditions;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -145,9 +146,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * <p>
      * </p>
      */
-    private Map<RecyclerView, Set<Integer>> mPendingExpandablePositionMap = new HashMap<>();
-    private Map<RecyclerView, Set<Integer>> mPendingExpandPositionMap = new HashMap<>();
-    private Map<RecyclerView, Set<Integer>> mPendingCollapsePositionMap = new HashMap<>();
+    private Map<ViewGroup, Set<Integer>> mPendingExpandablePositionMap = new HashMap<>();
+    private Map<ViewGroup, Set<Integer>> mPendingExpandPositionMap = new HashMap<>();
+    private Map<ViewGroup, Set<Integer>> mPendingCollapsePositionMap = new HashMap<>();
     /**
      * itemView 或者 itemView 的子 view 交互事件监听器
      */
@@ -343,11 +344,13 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
             PVH pvh = onCreateParentViewHolder(parent, clientViewType);
             //注册 ParentItemView 点击回调监听器
             initViewHolder(pvh);
+            pvh.associateRv = new WeakReference<>((RecyclerView) parent);
             return pvh;
         } else if (localViewType == Packager.ITEM_VIEW_TYPE_CHILD) {
             ////回调并返回子列表项视图 ChildViewHolder
             CVH cvh = onCreateChildViewHolder(parent, clientViewType);
             initViewHolder(cvh);
+            cvh.associateRv = new WeakReference<>((RecyclerView) parent);
             return cvh;
         } else {
             throw new IllegalStateException("Incorrect ViewType found=>" + viewType);
@@ -430,11 +433,14 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
 
             onBindParentViewHolder(pvh, parentPos);
 
-            RecyclerView rv = findParent(pvh, position);
+            RecyclerView rv = findParent(holder);
+
             if (shouldNotifyExpandable(rv, parentPos))
                 notifyParentExpandableStateChanged(pvh, pvh.isExpandable());
-            if (shouldNotifyExpanded(rv, parentPos)) notifyParentExpanded(pvh, true, false);
-            else if (shouldNotifyCollapsed(rv, parentPos)) notifyParentCollapsed(pvh, true, false);
+            if (shouldNotifyExpanded(rv, parentPos))
+                notifyParentExpanded(pvh, true, false);
+            else if (shouldNotifyCollapsed(rv, parentPos))
+                notifyParentCollapsed(pvh, true, false);
 
         } else if (item.isChild()) {
             CVH cvh = (CVH) holder;
@@ -450,26 +456,40 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         }
     }
 
-    private RecyclerView findParent(RecyclerView.ViewHolder holder, int adapterPos) {
-        for (RecyclerView parent : mAttachedRecyclerViews) {
-            RecyclerView.ViewHolder vh = parent.findViewHolderForAdapterPosition(adapterPos);
-            if (holder == vh) {
-                return parent;
+    private RecyclerView findParent(BaseViewHolder holder) {
+        RecyclerView parent = null;
+        if (holder.associateRv != null) {
+            parent = holder.associateRv.get();
+        }
+        if (parent != null) {
+            return parent;
+        } else {
+            for (RecyclerView rv : mAttachedRecyclerViews) {
+                RecyclerView.ViewHolder vh = rv.getChildViewHolder(holder.itemView);
+                if (holder == vh) {
+                    return rv;
+                }
             }
         }
-        return null;
+        throw new RuntimeException("can not find parent for ViewHolder:" + holder);
     }
 
-    private boolean shouldNotifyExpandable(RecyclerView rv, int parentPos) {
-        return pendingExpandableRemove(rv, parentPos);
+    private boolean shouldNotifyExpandable(ViewGroup parent, Integer parentPos) {
+        return pendingExpandableRemove(parent, parentPos);
     }
 
-    private boolean shouldNotifyExpanded(RecyclerView rv, int parentPos) {
-        return pendingExpandRemove(rv, parentPos);
+    private boolean shouldNotifyExpanded(ViewGroup parent, Integer parentPos) {
+        if (pendingExpandContains(parent, parentPos)) {
+            pendingExpandRemove(parent, parentPos);
+            Logger.e(TAG, "should NotifyExpanded==>" + parentPos);
+            return true;
+        }
+        Logger.e(TAG,"should Not NotifyExpanded===>"+ parentPos+",parent="+parent);
+        return false;
     }
 
-    private boolean shouldNotifyCollapsed(RecyclerView rv, int parentPos) {
-        return pendingCollapseRemove(rv, parentPos);
+    private boolean shouldNotifyCollapsed(ViewGroup parent, Integer parentPos) {
+        return pendingCollapseRemove(parent, parentPos);
     }
 
     @Override
@@ -595,56 +615,56 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         mPendingCollapsePositionMap.remove(recyclerView);
     }
 
-    private boolean pendingExpandableContains(RecyclerView rv, Integer pos) {
-        Set<Integer> positions = mPendingExpandablePositionMap.get(rv);
+    private boolean pendingExpandableContains(ViewGroup parent, Integer pos) {
+        Set<Integer> positions = mPendingExpandablePositionMap.get(parent);
         return !Preconditions.isNullOrEmpty(positions) && positions.contains(pos);
     }
 
-    private boolean pendingExpandContains(RecyclerView rv, Integer pos) {
-        Set<Integer> positions = mPendingExpandPositionMap.get(rv);
+    private boolean pendingExpandContains(ViewGroup parent, Integer pos) {
+        Set<Integer> positions = mPendingExpandPositionMap.get(parent);
         return !Preconditions.isNullOrEmpty(positions) && positions.contains(pos);
     }
 
-    private boolean pendingCollapseContains(RecyclerView rv, Integer pos) {
-        Set<Integer> positions = mPendingCollapsePositionMap.get(rv);
+    private boolean pendingCollapseContains(ViewGroup parent, Integer pos) {
+        Set<Integer> positions = mPendingCollapsePositionMap.get(parent);
         return !Preconditions.isNullOrEmpty(positions) && positions.contains(pos);
     }
 
-    private void pendingExpandableAdd(RecyclerView rv, Integer pos) {
-        Set<Integer> positions = mPendingExpandablePositionMap.get(rv);
+    private void pendingExpandableAdd(ViewGroup parent, Integer pos) {
+        Set<Integer> positions = mPendingExpandablePositionMap.get(parent);
         if (positions != null) {
             positions.add(pos);
         }
     }
 
-    private void pendingExpandAdd(RecyclerView rv, Integer pos) {
-        Set<Integer> positions = mPendingExpandPositionMap.get(rv);
+    private void pendingExpandAdd(ViewGroup parent, Integer pos) {
+        Set<Integer> positions = mPendingExpandPositionMap.get(parent);
         if (positions != null) {
             positions.add(pos);
         }
     }
 
-    private void pendingCollapseAdd(RecyclerView rv, Integer pos) {
-        Set<Integer> positions = mPendingCollapsePositionMap.get(rv);
+    private void pendingCollapseAdd(ViewGroup parent, Integer pos) {
+        Set<Integer> positions = mPendingCollapsePositionMap.get(parent);
         if (positions != null) {
             positions.add(pos);
         }
     }
 
-    private boolean pendingExpandableRemove(RecyclerView rv, Integer pos) {
-        Set<Integer> positions = mPendingExpandablePositionMap.get(rv);
+    private boolean pendingExpandableRemove(ViewGroup parent, Integer pos) {
+        Set<Integer> positions = mPendingExpandablePositionMap.get(parent);
         return !Preconditions.isNullOrEmpty(positions) && positions.contains(pos) &&
                positions.remove(pos);
     }
 
-    private boolean pendingExpandRemove(RecyclerView rv, Integer pos) {
-        Set<Integer> positions = mPendingExpandPositionMap.get(rv);
+    private boolean pendingExpandRemove(ViewGroup parent, Integer pos) {
+        Set<Integer> positions = mPendingExpandPositionMap.get(parent);
         return !Preconditions.isNullOrEmpty(positions) && positions.contains(pos) &&
                positions.remove(pos);
     }
 
-    private boolean pendingCollapseRemove(RecyclerView rv, Integer pos) {
-        Set<Integer> positions = mPendingCollapsePositionMap.get(rv);
+    private boolean pendingCollapseRemove(ViewGroup parent, Integer pos) {
+        Set<Integer> positions = mPendingCollapsePositionMap.get(parent);
         return !Preconditions.isNullOrEmpty(positions) && positions.contains(pos) &&
                positions.remove(pos);
     }
@@ -937,8 +957,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         int parentAdapterPos = pvh.getAdapterPosition();
         for (OnParentExpandableStateChangeListener listener : mExpandableStateChangeListeners) {
             int parentPos = parentAdapterPos - getBeforeExpandedChildCount(parentAdapterPos);
-            listener.onParentExpandableStateChanged(findParent(pvh, parentAdapterPos), pvh,
-                    parentPos, expandable);
+            listener.onParentExpandableStateChanged(findParent(pvh), pvh, parentPos, expandable);
         }
     }
 
@@ -1011,8 +1030,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         int parentAdapterPos = pvh.getAdapterPosition();
         for (OnParentExpandCollapseListener listener : mExpandCollapseListeners) {
             int parentPos = parentAdapterPos - getBeforeExpandedChildCount(parentAdapterPos);
-            listener.onParentExpanded(findParent(pvh, parentAdapterPos), pvh, parentPos, pendingCause,
-                    byUser);
+            listener.onParentExpanded(findParent(pvh), pvh, parentPos, pendingCause, byUser);
         }
     }
 
@@ -1083,8 +1101,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         int parentAdapterPos = pvh.getAdapterPosition();
         for (OnParentExpandCollapseListener listener : mExpandCollapseListeners) {
             int parentPos = parentAdapterPos - getBeforeExpandedChildCount(parentAdapterPos);
-            listener.onParentCollapsed(findParent(pvh, parentAdapterPos), pvh, parentPos, pendingCause,
-                    byUser);
+            listener.onParentCollapsed(findParent(pvh), pvh, parentPos, pendingCause, byUser);
         }
     }
 
@@ -1241,9 +1258,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         int adapterPos = pvh.getAdapterPosition();
         Integer pos = getParentPosition(adapterPos);
 
-        RecyclerView rv = findParent(pvh, adapterPos);
+        RecyclerView rv = findParent(pvh);
 
-        if (pendingExpandContains(rv,pos)) {
+        if (pendingExpandContains(rv, pos)) {
             Logger.e(TAG, "onViewAttachedToWindow==PendingExpandPosition=>" + pos + ",tag=" +
                           rv.getTag() + ",," + pvh.isExpanded());
             if (!pvh.isExpanded()) {

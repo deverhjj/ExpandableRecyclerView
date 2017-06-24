@@ -6,12 +6,17 @@ import android.view.View;
 
 import com.github.huajianjiang.expandablerecyclerview.util.Packager;
 
+import java.lang.ref.WeakReference;
+
 /**
  * @author HuaJian Jiang.
  *         Date 2017/1/20.
  */
-public class BaseViewHolder extends RecyclerView.ViewHolder {
+public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = BaseViewHolder.class.getSimpleName();
+
+    WeakReference<RecyclerView> associateRv;
+
     /**
      * ItemView 的 childView 缓存
      * 便于根据 id 查找对应的 View
