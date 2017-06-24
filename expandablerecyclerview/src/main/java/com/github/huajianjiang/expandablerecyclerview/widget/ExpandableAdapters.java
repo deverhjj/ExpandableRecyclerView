@@ -1,5 +1,7 @@
 package com.github.huajianjiang.expandablerecyclerview.widget;
 
+import com.github.huajianjiang.expandablerecyclerview.util.Preconditions;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +23,7 @@ final class ExpandableAdapters {
      */
     static <P extends Parent, C> List<ItemWrapper<P, C>> generateItems(List<P> parents)
     {
-        if (parents == null) return Collections.EMPTY_LIST;
+        if (Preconditions.isNullOrEmpty(parents)) return Collections.emptyList();
         List<ItemWrapper<P, C>> items = new ArrayList<>();
         int parentCount = parents.size();
         for (int i = 0; i < parentCount; i++) {

@@ -1,6 +1,5 @@
 package com.github.huajianjiang.expandablerecyclerview.widget;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 
@@ -10,11 +9,8 @@ import android.view.View;
  * </p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ParentViewHolder<P extends Parent> extends BaseViewHolder
-{
+public class ParentViewHolder<P extends Parent> extends BaseViewHolder {
     private static final String TAG = "ParentViewHolder";
-
-    private InnerOnParentExpandCollapseListener mExpandCollapseListener;
 
     private int parentPosition;
 
@@ -32,9 +28,6 @@ public class ParentViewHolder<P extends Parent> extends BaseViewHolder
 
     public ParentViewHolder(View itemView) {
         super(itemView);
-        // make sure we can receive parent item click callback
-        itemView.setEnabled(true);
-        itemView.setClickable(true);
     }
 
     public boolean isExpandable() {
@@ -49,13 +42,16 @@ public class ParentViewHolder<P extends Parent> extends BaseViewHolder
 
     /**
      * 返回当前父列表项是否已展开
+     *
      * @return 父列表项是否已经展开
      */
     public boolean isExpanded() {
         return mExpanded;
     }
 
-    /**设置父列表项是否已展开
+    /**
+     * 设置父列表项是否已展开
+     *
      * @param expanded 父列表项是否已展开
      */
     boolean setExpanded(boolean expanded) {
@@ -64,6 +60,11 @@ public class ParentViewHolder<P extends Parent> extends BaseViewHolder
         return true;
     }
 
+    /**
+     * 返回该 parent 的位置，不一定是同步过的,例如在 parent move 之后该值并没有同步更新，因此需要重新查询
+     *
+     * @return parent 的折叠位置
+     */
     public int getParentPosition() {
         return parentPosition;
     }
@@ -78,49 +79,5 @@ public class ParentViewHolder<P extends Parent> extends BaseViewHolder
 
     void setParent(P parent) {
         this.parent = parent;
-    }
-
-    /**
-     * 设置 该 ItemView 点击展开折叠状态
-     * @param listener
-     */
-    void setOnParentExpandCollapseListener(InnerOnParentExpandCollapseListener listener) {
-        mExpandCollapseListener = listener;
-    }
-
-    /**
-     * 当父列表项点击时的回调,包括之前注册的在父列表项里的子 view 的点击监听
-     * <p>
-     *     make sure call super {@link #onItemClick(RecyclerView rv, View)} method
-     * </p>
-     * @param v
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    public void onItemClick(RecyclerView rv, View v) {
-        if (v != itemView) return;
-        if (mExpanded) {
-            collapseParent();
-        } else {
-            expandParent();
-        }
-    }
-
-    /**
-     * 展开父列表项
-     */
-    private void expandParent() {
-        if (mExpandCollapseListener != null) {
-            setExpanded(mExpandCollapseListener.onParentExpand(ParentViewHolder.this));
-        }
-    }
-
-    /**
-     * 折叠父列表项
-     */
-    private void collapseParent() {
-        if (mExpandCollapseListener != null) {
-            setExpanded(!mExpandCollapseListener.onParentCollapse(ParentViewHolder.this));
-        }
     }
 }

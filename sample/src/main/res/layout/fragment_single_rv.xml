@@ -10,8 +10,8 @@
         android:id="@+id/rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
         android:tag="rv_single"
+        app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/item_parent"/>
 
 </FrameLayout>

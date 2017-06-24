@@ -1,12 +1,10 @@
 package com.github.huajianjiang.expandablerecyclerview.sample.viewholder;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.github.huajianjiang.expandablerecyclerview.sample.R;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
-import com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil;
 import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 
 
@@ -31,20 +29,4 @@ public class MyParentViewHolder extends ParentViewHolder<MyParent> {
             arrow.setRotation(isExpanded() ? 180 : 0);
         }
     }
-
-    @Override
-    public int[] onRegisterLongClickEvent(RecyclerView rv) {
-        return new int[]{itemView.getId()};
-    }
-
-    @Override
-    public boolean onItemLongClick(RecyclerView rv,View v) {
-        AppUtil.showToast(v.getContext(), "Parent LongClick==>" + getAssociateAdapter()
-                .getParentPosition(getAdapterPosition()));
-//        MyParent myParent = (MyParent) getAssociateAdapter()
-//                .getParentForAdapterPosition(getAdapterPosition());
-        MyParent myParent = getParent();
-        return true;
-    }
-
 }

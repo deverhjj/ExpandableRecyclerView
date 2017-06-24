@@ -76,87 +76,54 @@ public class SingleRvFragment extends Fragment {
         mAdapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT);
         mRv.setAdapter(mAdapter);
         mRv.addItemDecoration(mAdapter.getItemDecoration());
-        mItemAnimator =
-                AppUtil.checkLollipop() ? new CircularRevealItemAnimator() : new DefaultItemAnimator();
+        mItemAnimator = AppUtil.checkLollipop() ? new CircularRevealItemAnimator() :
+                new DefaultItemAnimator();
         mRv.setItemAnimator(mItemAnimator);
         mAdapter.addParentExpandableStateChangeListener(new ParentExpandableStateChangeListener());
         mAdapter.addParentExpandCollapseListener(new ParentExpandCollapseListener());
 
+        mAdapter.parentLongClickTargets(R.id.parent)
+                .listenParentLongClick(new ExpandableAdapter.OnParentLongClickListener() {
+                    @Override
+                    public boolean onParentLongClick(RecyclerView parent, View view) {
+                        final int childAdapterPos = parent
+                                .getChildAdapterPosition(parent.findContainingItemView(view));
+                        AppUtil.showToast(getContext(), "Parent LongClick =>" + "pos=" +
+                                                        mAdapter.getParentPosition(
+                                                                childAdapterPos) + ",adapterPos=" +
+                                                        childAdapterPos);
+                        return true;
+                    }
+                })
+                .parentClickTargets(R.id.android)
+                .listenParentClick(new ExpandableAdapter.OnParentClickListener() {
+                    @Override
+                    public void onParentClick(RecyclerView parent, View view) {
+                        if (view.getId() == R.id.android) {
+                            AppUtil.showToast(getContext(), view.getTag().toString());
+                        }
+                    }
+                });
+
+        mAdapter.childLongClickTargets(R.id.child)
+                .listenChildLongClick(new ExpandableAdapter.OnChildLongClickListener() {
+                    @Override
+                    public boolean onChildLongClick(RecyclerView parent, View view) {
+                        AppUtil.showToast(getContext(), "Child LongClick");
+                        return true;
+                    }
+                })
+                .childClickTargets(R.id.android)
+                .listenChildClick(new ExpandableAdapter.OnChildClickListener() {
+                    @Override
+                    public void onChildClick(RecyclerView parent, View view) {
+                        if (view.getId() == R.id.android) {
+                            AppUtil.showToast(getContext(), view.getTag().toString());
+                        }
+                    }
+                });
+
         mIPresenter = new PresenterImpl(mAdapter, mData);
-    }
-
-    private class ParentExpandableStateChangeListener
-            implements ExpandableAdapter.OnParentExpandableStateChangeListener
-    {
-        @Override
-        public void onParentExpandableStateChanged(RecyclerView rv, ParentViewHolder pvh,
-                int position, boolean expandable)
-        {
-            Logger.e(TAG, "onParentExpandableStateChanged=" + position + "," + rv.getTag());
-            if (pvh == null) return;
-            final ImageView arrow = pvh.getView(R.id.arrow);
-            if (expandable && arrow.getVisibility() != View.VISIBLE) {
-                arrow.setVisibility(View.VISIBLE);
-                arrow.setRotation(pvh.isExpanded() ? 180 : 0);
-            } else if (!expandable && arrow.getVisibility() == View.VISIBLE) {
-                arrow.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    private class ParentExpandCollapseListener
-            implements ExpandableAdapter.OnParentExpandCollapseListener
-    {
-        @Override
-        public void onParentExpanded(RecyclerView rv, ParentViewHolder pvh, int position,
-                boolean pendingCause, boolean byUser)
-        {
-            Logger.e(TAG, "onParentExpanded=" + position + "," + rv.getTag() + ",byUser=" + byUser);
-            if (pvh == null) return;
-            ImageView arrow = pvh.getView(R.id.arrow);
-            if (arrow.getVisibility() != View.VISIBLE) return;
-            float currRotate = arrow.getRotation();
-            //重置为从0开始旋转
-            if (currRotate == 360) {
-                arrow.setRotation(0);
-            }
-            if (pendingCause) {
-                arrow.setRotation(180);
-            } else {
-                arrow.animate().rotation(180).setDuration(mItemAnimator.getAddDuration() + 180)
-                        .start();
-            }
-
-//            if (byUser) {
-//                int scrollToPos =
-//                        pvh.getAdapterPosition() + ((MyParent) pvh.getParent()).getChildCount();
-//                rv.scrollToPosition(scrollToPos);
-//            }
-        }
-
-        @Override
-        public void onParentCollapsed(RecyclerView rv, ParentViewHolder pvh, int position,
-                boolean pendingCause, boolean byUser)
-        {
-            Logger.e(TAG,
-                    "onParentCollapsed=" + position + ",tag=" + rv.getTag() + ",byUser=" + byUser);
-
-            if (pvh == null) return;
-            ImageView arrow = pvh.getView(R.id.arrow);
-            if (arrow.getVisibility() != View.VISIBLE) return;
-            float currRotate = arrow.getRotation();
-            float rotate = 360;
-            //未展开完全并且当前旋转角度小于180，逆转回去
-            if (currRotate < 180) {
-                rotate = 0;
-            }
-            if (pendingCause) {
-                arrow.setRotation(rotate);
-            } else {
-                arrow.animate().rotation(rotate)
-                        .setDuration(mItemAnimator.getRemoveDuration() + 180).start();
-            }
-        }
     }
 
     @Override
@@ -166,12 +133,12 @@ public class SingleRvFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        MyAdapter adapter= (MyAdapter) mRv.getAdapter();
+        MyAdapter adapter = (MyAdapter) mRv.getAdapter();
         int id = item.getItemId();
         switch (id) {
-            case  R.id.action_test:
-                DialogFragment dialog =
-                        (DialogFragment) getChildFragmentManager().findFragmentByTag("dialog");
+            case R.id.action_test:
+                DialogFragment dialog = (DialogFragment) getChildFragmentManager()
+                        .findFragmentByTag("dialog");
                 if (dialog == null) dialog = new MyDialog();
                 dialog.setTargetFragment(this, REQUEST_RESULT);
                 dialog.show(getChildFragmentManager(), "dialog");
@@ -218,7 +185,8 @@ public class SingleRvFragment extends Fragment {
                         try {
                             args[k] = Integer.valueOf(requestSplit[k + 1]);
                         } catch (NumberFormatException e) {
-                            AppUtil.showToast(getContext(), "Test failed,please check input format");
+                            AppUtil.showToast(getContext(),
+                                    "Test failed,please check input format");
                             return;
                         }
                     }
@@ -244,6 +212,80 @@ public class SingleRvFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mAdapter.onSaveInstanceState(outState);
+    }
+
+    private class ParentExpandableStateChangeListener
+            implements ExpandableAdapter.OnParentExpandableStateChangeListener
+    {
+        @Override
+        public void onParentExpandableStateChanged(RecyclerView rv, ParentViewHolder pvh,
+                int position, boolean expandable)
+        {
+            Logger.e(TAG, "onParentExpandableStateChanged=" + position + "," + rv.getTag());
+            if (pvh == null) return;
+            final ImageView arrow = pvh.getView(R.id.arrow);
+            if (expandable && arrow.getVisibility() != View.VISIBLE) {
+                arrow.setVisibility(View.VISIBLE);
+                arrow.setRotation(pvh.isExpanded() ? 180 : 0);
+            } else if (!expandable && arrow.getVisibility() == View.VISIBLE) {
+                arrow.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private class ParentExpandCollapseListener
+            implements ExpandableAdapter.OnParentExpandCollapseListener
+    {
+        @Override
+        public void onParentExpanded(RecyclerView rv, ParentViewHolder pvh, int position,
+                boolean pendingCause, boolean byUser)
+        {
+            Logger.e(TAG, "onParentExpanded=" + position + "," + rv.getTag() + ",byUser=" + byUser);
+            if (pvh == null) return;
+            ImageView arrow = pvh.getView(R.id.arrow);
+            if (arrow.getVisibility() != View.VISIBLE) return;
+            float currRotate = arrow.getRotation();
+            //重置为从0开始旋转
+            if (currRotate == 360) {
+                arrow.setRotation(0);
+            }
+            if (pendingCause) {
+                arrow.setRotation(180);
+            } else {
+                arrow.animate().rotation(180).setDuration(mItemAnimator.getAddDuration() + 180)
+                        .start();
+            }
+
+            //            if (byUser) {
+            //                int scrollToPos =
+            //                        pvh.getAdapterPosition() + ((MyParent) pvh.getParent()).getChildCount();
+            //                rv.scrollToPosition(scrollToPos);
+            //            }
+        }
+
+        @Override
+        public void onParentCollapsed(RecyclerView rv, ParentViewHolder pvh, int position,
+                boolean pendingCause, boolean byUser)
+        {
+            Logger.e(TAG,
+                    "onParentCollapsed=" + position + ",tag=" + rv.getTag() + ",byUser=" + byUser);
+
+            if (pvh == null) return;
+            ImageView arrow = pvh.getView(R.id.arrow);
+            if (arrow.getVisibility() != View.VISIBLE) return;
+            float currRotate = arrow.getRotation();
+            float rotate = 360;
+            //未展开完全并且当前旋转角度小于180，逆转回去
+            if (currRotate < 180) {
+                rotate = 0;
+            }
+            if (pendingCause) {
+                arrow.setRotation(rotate);
+            } else {
+                arrow.animate().rotation(rotate)
+                        .setDuration(mItemAnimator.getRemoveDuration() + 180).start();
+            }
+        }
     }
 
 }

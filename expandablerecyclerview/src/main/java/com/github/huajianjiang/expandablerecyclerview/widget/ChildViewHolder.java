@@ -27,8 +27,7 @@ import android.view.View;
  * <p>
  * Created by jhj_Plus on 2015/12/23.
  */
-public class ChildViewHolder<C> extends BaseViewHolder
-{
+public class ChildViewHolder<C> extends BaseViewHolder {
     private static final String TAG = "ChildViewHolder";
 
     private int parentPosition;
@@ -41,6 +40,11 @@ public class ChildViewHolder<C> extends BaseViewHolder
         super(itemView);
     }
 
+    /**
+     * 返回该 parent 的位置，不一定是同步过的,例如在 parent move 之后该值并没有同步更新，因此需要重新查询
+     *
+     * @return parent 的折叠位置
+     */
     public int getParentPosition() {
         return parentPosition;
     }
@@ -49,6 +53,11 @@ public class ChildViewHolder<C> extends BaseViewHolder
         this.parentPosition = parentPosition;
     }
 
+    /**
+     * 返回该 child 的位置，不一定是同步过的,例如在 child move 之后该值并没有同步更新，因此需要重新查询
+     *
+     * @return child 的折叠位置
+     */
     public int getChildPosition() {
         return childPosition;
     }

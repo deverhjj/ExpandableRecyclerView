@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/parent"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center_horizontal"
-              android:background="@drawable/bg_parent"
-              android:clickable="false"
-              android:orientation="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_parent"
+    android:clickable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/android"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="8dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"
+        android:tag="parent image"/>
 
     <include
         layout="@layout/item_parent"/>

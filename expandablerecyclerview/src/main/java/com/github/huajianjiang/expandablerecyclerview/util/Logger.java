@@ -8,7 +8,7 @@ import android.util.Log;
 public class Logger {
     private static final String TAG = "Logger";
 
-    public static final boolean LOGGABLE = false;
+    public static final boolean LOGGABLE = true;
 
     public static final int VERBOSE= Log.VERBOSE;
     public static final int DEBUG= Log.DEBUG;
