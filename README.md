@@ -25,7 +25,7 @@ You can watch a short [Demo Video](https://youtu.be/KHVdrWEInBc) on YouTube and 
 
 ```grooey
 dependencies {
-    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.8'
+    compile 'com.github.huajianjiang:expandablerecyclerview:1.0.9'
 }
 ```
 
@@ -35,7 +35,7 @@ dependencies {
 <dependency>
   <groupId>com.github.huajianjiang</groupId>
   <artifactId>expandablerecyclerview</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
   <type>pom</type>
 </dependency>
 ```
