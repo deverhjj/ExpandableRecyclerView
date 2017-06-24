@@ -479,13 +479,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     }
 
     private boolean shouldNotifyExpanded(ViewGroup parent, Integer parentPos) {
-        if (pendingExpandContains(parent, parentPos)) {
-            pendingExpandRemove(parent, parentPos);
-            Logger.e(TAG, "should NotifyExpanded==>" + parentPos);
-            return true;
-        }
-        Logger.e(TAG,"should Not NotifyExpanded===>"+ parentPos+",parent="+parent);
-        return false;
+        return pendingExpandRemove(parent, parentPos);
     }
 
     private boolean shouldNotifyCollapsed(ViewGroup parent, Integer parentPos) {
@@ -1138,9 +1132,8 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 //未 laid out 的 Parent ,虽然无法获取并设置展开折叠标识，
                 // 这里添加待处理展开逻辑的所有 parentItem 的 position
                 // 如果先前已经记录待折叠位置记录，移除该记录并以最新的待展开记录为准!
-                if (pendingCollapseContains(rv, parentPosition)) {
-                    pendingCollapseRemove(rv, parentPosition);
-                }
+                pendingCollapseRemove(rv, parentPosition);
+
                 pendingExpandAdd(rv, parentPosition);
             }
         }
@@ -1169,9 +1162,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 // 未 laid out 的 Parent ,虽然无法获取并设置展开折叠标识，
                 // 这里添加待处理折叠逻辑的所有 parentItem 的 position
                 // 如果先前已经记录待折叠位置记录，移除该记录并以最新的待展开记录为准!
-                if (pendingExpandContains(rv, parentPosition)) {
-                    pendingExpandRemove(rv, parentPosition);
-                }
+                pendingExpandRemove(rv, parentPosition);
                 pendingCollapseAdd(rv, parentPosition);
             }
         }
@@ -1260,7 +1251,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
 
         RecyclerView rv = findParent(pvh);
 
-        if (pendingExpandContains(rv, pos)) {
+        if (pendingExpandRemove(rv, pos)) {
             Logger.e(TAG, "onViewAttachedToWindow==PendingExpandPosition=>" + pos + ",tag=" +
                           rv.getTag() + ",," + pvh.isExpanded());
             if (!pvh.isExpanded()) {
@@ -1268,21 +1259,19 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 pvh.setExpanded(true);
                 notifyParentExpanded(pvh, true, false);
             }
-            pendingExpandRemove(rv, pos);
         }
 
-        if (pendingCollapseContains(rv,pos)) {
+        if (pendingCollapseRemove(rv, pos)) {
             Logger.e(TAG, "onViewAttachedToWindow==PendingCollapsePosition=>" + pos);
             if (pvh.isExpanded()) {
                 Logger.e(TAG, "PendingCollapse=notifyParentCollapsed");
                 pvh.setExpanded(false);
                 notifyParentCollapsed(pvh, true, false);
             }
-            pendingCollapseRemove(rv, pos);
         }
 
         //同步之前记录的位置下的 parent 的是否可展开属性
-        if (pendingExpandableContains(rv,pos)) {
+        if (pendingExpandableRemove(rv, pos)) {
             Logger.e(TAG, "onViewAttachedToWindow==PendingExpandablePosition=>" + pos);
             boolean expandable = getItem(adapterPos).isExpandable();
             if (pvh.isExpandable() != expandable) {
@@ -1290,7 +1279,6 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 pvh.setExpandable(expandable);
                 notifyParentExpandableStateChanged(pvh, expandable);
             }
-            pendingExpandableRemove(rv, pos);
         }
     }
 
