@@ -146,9 +146,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * <p>
      * </p>
      */
-    private Map<ViewGroup, Set<Integer>> mPendingExpandablePositionMap = new HashMap<>();
-    private Map<ViewGroup, Set<Integer>> mPendingExpandPositionMap = new HashMap<>();
-    private Map<ViewGroup, Set<Integer>> mPendingCollapsePositionMap = new HashMap<>();
+    private Map<Object, Set<Integer>> mPendingExpandablePositionMap = new HashMap<>();
+    private Map<Object, Set<Integer>> mPendingExpandPositionMap = new HashMap<>();
+    private Map<Object, Set<Integer>> mPendingCollapsePositionMap = new HashMap<>();
     /**
      * itemView 或者 itemView 的子 view 交互事件监听器
      */
@@ -172,7 +172,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      *
      * @param newParents 新数据
      */
-    public void invalidate(@Nullable List<P> newParents) {//是否保存配置?
+    public void invalidate(@Nullable List<P> newParents) {//是否保存状态?
         init(newParents);
         notifyDataSetChanged();
     }
@@ -220,7 +220,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     public void setExpandable(int position, boolean expandable) {
         ItemWrapper itemWrapper = getParentWrapper(getParentAdapterPosition(position));
         if (itemWrapper == null) return;
-        if (itemWrapper.setExpandable(expandable)) {
+        if (itemWrapper.hasChildren() && itemWrapper.setExpandable(expandable)) {
             syncParentExpandableState(position);
         }
     }
@@ -376,6 +376,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                     }
                 }
             }
+
             // make sure parent can receive click callback
             holder.itemView.setOnClickListener(getViewEventWatcher());
 
@@ -398,6 +399,8 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
                 }
             }
         }
+        // make sure {@code itemView} can have chance to handle showContextMenu
+        holder.itemView.setOnLongClickListener(getViewEventWatcher());
     }
 
     /**
@@ -924,9 +927,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     private void syncParentExpandableState(int parentPosition) {
         final int parentAdapterPos = getParentAdapterPosition(parentPosition);
         if (parentAdapterPos == RecyclerView.NO_POSITION) return;
-        Logger.e(TAG, "syncParentExpandableState=>" + parentPosition);
         ItemWrapper itemWrapper = getItem(parentAdapterPos);
         final boolean expandable = itemWrapper.isExpandable();
+        Logger.e(TAG, "syncParentExpandableState=>" + parentPosition + "," + expandable);
         for (RecyclerView rv : mAttachedRecyclerViews) {
             ParentViewHolder pvh = (ParentViewHolder) rv
                     .findViewHolderForAdapterPosition(parentAdapterPos);
@@ -1355,7 +1358,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         int index = 0;
         int[] insertedItemCounts = new int[parentItemCount];
         int totalInsertedItemCount = 0;
-        for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
+        for (int i = parentPositionStart, c = parentPositionStart + parentItemCount; i < c; i++) {
             int insertItemCount = addParentWrapper(parentAdapterPos + totalInsertedItemCount, i);
             totalInsertedItemCount += insertItemCount;
             insertedItemCounts[index++] = insertItemCount;
@@ -1364,7 +1367,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         //这里如果有 parent 初始化是展开的 默认 notifyParentExpanded 通知客户端，以防万一 parent 展开状态没有同步到 view 层
         //注意：通知客户端通知的前提是当前所有的 Parent 已经 notifyItemRangeInserted 通知 recyclerView 了
         index = 0;
-        for (int j = parentPositionStart; j < parentPositionStart + parentItemCount; j++) {
+        for (int j = parentPositionStart, c = parentPositionStart + parentItemCount; j < c; j++) {
             syncParentExpandableState(j);
             if (insertedItemCounts[index++] > 1) syncViewExpansionState(j, false);
         }
@@ -1509,7 +1512,8 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         if (parentAdapterPosStart == RecyclerView.NO_POSITION) return;
         //计算移除的 ItemView 个数
         int removedItemCount = 0;
-        for (int i = parentAdapterPosStart; i < parentAdapterPosStart + parentItemCount; i++) {
+        for (int i = parentAdapterPosStart, c = parentAdapterPosStart + parentItemCount; i < c; i++)
+        {
             ItemWrapper<P, C> itemWrapper = getItem(parentAdapterPosStart);
             mItems.remove(parentAdapterPosStart);
             removedItemCount++;
@@ -1518,8 +1522,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
             List<C> children = itemWrapper.getChildren();
             if (!itemWrapper.hasChildren(children)) continue;
             int removedChildCount = children.size();
-            for (int j = parentAdapterPosStart; j < parentAdapterPosStart + removedChildCount; j++)
-            {
+            for (int j = parentAdapterPosStart, cc = parentAdapterPosStart + removedChildCount; j < cc; j++) {
                 mItems.remove(parentAdapterPosStart);
             }
             removedItemCount += removedChildCount;
@@ -1589,7 +1592,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         int childAdapterPosStart = getChildAdapterPosition(parentPosition, childPositionStart);
         if (childAdapterPosStart == RecyclerView.NO_POSITION) return;
 
-        for (int i = childAdapterPosStart; i < childAdapterPosStart + childItemCount; i++) {
+        for (int i = childAdapterPosStart, c = childAdapterPosStart + childItemCount; i < c; i++) {
             mItems.remove(childAdapterPosStart);
         }
         notifyItemRangeRemoved(childAdapterPosStart, childItemCount);
@@ -1658,7 +1661,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         //1.如果都为折叠状态，直接调用 {@link notifyItemRangeChanged(positionStart,itemCount)}
         //2.只要有一个是打开状态，循环遍历调用 {@link notifyParentItemChanged(parentPosition)}
         boolean allCollapsed = true;
-        for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
+        for (int i = parentPositionStart, c = parentPositionStart + parentItemCount; i < c; i++) {
             int parentAdapterPos = getParentAdapterPosition(i);
             if (parentAdapterPos == RecyclerView.NO_POSITION) {
                 allCollapsed = false;
@@ -1674,7 +1677,8 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
             final int parentAdapterPosStart = getParentAdapterPosition(parentPositionStart);
             notifyItemRangeChanged(parentAdapterPosStart, parentItemCount);
         } else {
-            for (int i = parentPositionStart; i < parentPositionStart + parentItemCount; i++) {
+            for (int i = parentPositionStart, c = parentPositionStart + parentItemCount; i < c; i++)
+            {
                 notifyParentItemChanged(i);
             }
         }
@@ -1713,7 +1717,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         if (!itemWrapper.hasChildren(children)) return;
 
         int changedItemCount = 0;
-        for (int i = childPositionStart; i < childPositionStart + childItemCount; i++) {
+        for (int i = childPositionStart, c = childPositionStart + childItemCount; i < c; i++) {
             C changedChild = children.get(i);
             if (changedChild == null) continue;
             int childAdapterPos = getChildAdapterPosition(parentPosition, i);
@@ -2198,12 +2202,13 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
             for (RecyclerView parent : mAttachedRecyclerViews) {
                 BaseViewHolder vh = (BaseViewHolder) parent.findContainingViewHolder(v);
                 if (vh != null) {
+                    boolean handled = false;
                     if (vh instanceof ParentViewHolder && mParentLongClickListener != null) {
-                        return mParentLongClickListener.onParentLongClick(parent, v);
+                        handled = mParentLongClickListener.onParentLongClick(parent, v);
                     } else if (vh instanceof ChildViewHolder && mChildLongClickListener != null) {
-                        return mChildLongClickListener.onChildLongClick(parent, v);
+                        handled = mChildLongClickListener.onChildLongClick(parent, v);
                     }
-                    break;
+                    return handled;
                 }
             }
             return false;

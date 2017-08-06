@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 import com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil;
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
+import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableRecyclerView;
 import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 
 import java.lang.reflect.InvocationTargetException;
@@ -92,7 +94,7 @@ public class SingleRvFragment extends Fragment {
                                                         mAdapter.getParentPosition(
                                                                 childAdapterPos) + ",adapterPos=" +
                                                         childAdapterPos);
-                        return true;
+                        return false;
                     }
                 })
                 .parentClickTargets(R.id.android)
@@ -110,7 +112,7 @@ public class SingleRvFragment extends Fragment {
                     @Override
                     public boolean onChildLongClick(RecyclerView parent, View view) {
                         AppUtil.showToast(getContext(), "Child LongClick");
-                        return true;
+                        return false;
                     }
                 })
                 .childClickTargets(R.id.android)
@@ -124,6 +126,22 @@ public class SingleRvFragment extends Fragment {
                 });
 
         mIPresenter = new PresenterImpl(mAdapter, mData);
+
+        registerForContextMenu(mRv);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        ExpandableRecyclerView.ExpandableRecyclerViewContextMenuInfo menuInfo = (ExpandableRecyclerView.ExpandableRecyclerViewContextMenuInfo) item
+                .getMenuInfo();
+        Logger.e(TAG, menuInfo.toString());
+        return true;
     }
 
     @Override

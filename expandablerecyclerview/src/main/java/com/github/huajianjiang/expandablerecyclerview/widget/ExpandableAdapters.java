@@ -31,13 +31,9 @@ final class ExpandableAdapters {
             if (parent == null) continue;
             ItemWrapper<P, C> itemWrapper = new ItemWrapper<>(parent);
             items.add(itemWrapper);
-            boolean hasChildren = itemWrapper.hasChildren();
-            itemWrapper.setExpandable(parent.isInitiallyExpandable() && hasChildren);
             if (itemWrapper.isInitiallyExpanded()) {
                 List<C> children = itemWrapper.getChildren();
-                //父列表项返回的 ChildItems 为 null 或者 childCount 为0 设置为折叠状态
-                itemWrapper.setExpanded(hasChildren);
-                if (!hasChildren) continue;
+                if (!itemWrapper.hasChildren()) continue;
                 final int childCount = children.size();
                 for (int j = 0; j < childCount; j++) {
                     C child = children.get(j);
