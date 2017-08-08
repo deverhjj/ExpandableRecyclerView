@@ -48,6 +48,7 @@ public class ExpandableRecyclerView extends PatchedRecyclerView {
         /**
          *
          */
+        //TODO performance
         public long packedPosition;
 
         /**

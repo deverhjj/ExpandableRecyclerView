@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--<style name="AppTheme" parent="AppBaseTheme">-->
+        <!--<item name="android:contextPopupMenuStyle">@style/AppContextPopupMenu</item>-->
+    <!--</style>-->
+
+    <!--<style name="AppContextPopupMenu" parent="@style/Widget.AppCompat.ListPopupWindow">-->
+        <!--<item name="android:dropDownWidth">wrap_content</item>-->
+        <!--<item name="android:overlapAnchor">true</item>-->
+        <!--<item name="android:dropDownHorizontalOffset">0dp</item>-->
+    <!--</style>-->
+
+</resources>

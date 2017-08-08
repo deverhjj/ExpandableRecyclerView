@@ -18,6 +18,8 @@ package com.github.huajianjiang.expandablerecyclerview.widget;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewGroupCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -400,7 +402,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
             }
         }
         // make sure {@code itemView} can have chance to handle showContextMenu
-        holder.itemView.setOnLongClickListener(getViewEventWatcher());
+        holder.itemView.setLongClickable(true);
     }
 
     /**
