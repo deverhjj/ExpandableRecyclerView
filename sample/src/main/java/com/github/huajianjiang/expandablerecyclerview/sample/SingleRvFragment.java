@@ -38,11 +38,12 @@ import java.util.List;
 public class SingleRvFragment extends Fragment {
     public static final int REQUEST_RESULT = 1;
     private static final String TAG = "SingleRvFragment";
+    public static final String KEY_DATA = "data";
     private RecyclerView mRv;
     private MyAdapter mAdapter;
     private RecyclerView.ItemAnimator mItemAnimator;
     private PresenterImpl mIPresenter;
-    private List<MyParent> mData = AppUtil.getListData();
+    private ArrayList<MyParent> mData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,15 +61,16 @@ public class SingleRvFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        init(view);
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // 保存 ExpandableRecyclerView 状态
+        if (savedInstanceState != null) {
+            Logger.e(TAG, "<<<<<<<<<<<<<<<<<< Restore Data >>>>>>>>>>>>>>>>>");
+            mData = savedInstanceState.getParcelableArrayList(KEY_DATA);
+        } else {
+            mData = AppUtil.getListData();
+        }
+        init(getView());
         mAdapter.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -88,8 +90,8 @@ public class SingleRvFragment extends Fragment {
                 .listenParentLongClick(new ExpandableAdapter.OnParentLongClickListener() {
                     @Override
                     public boolean onParentLongClick(RecyclerView parent, View view) {
-                        final int childAdapterPos = parent
-                                .getChildAdapterPosition(parent.findContainingItemView(view));
+                        final int childAdapterPos =
+                                parent.getChildAdapterPosition(parent.findContainingItemView(view));
                         AppUtil.showToast(getContext(), "Parent LongClick =>" + "pos=" +
                                                         mAdapter.getParentPosition(
                                                                 childAdapterPos) + ",adapterPos=" +
@@ -138,8 +140,8 @@ public class SingleRvFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        ExpandableRecyclerView.ExpandableRecyclerViewContextMenuInfo menuInfo = (ExpandableRecyclerView.ExpandableRecyclerViewContextMenuInfo) item
-                .getMenuInfo();
+        ExpandableRecyclerView.ExpandableRecyclerViewContextMenuInfo menuInfo =
+                (ExpandableRecyclerView.ExpandableRecyclerViewContextMenuInfo) item.getMenuInfo();
         Logger.e(TAG, menuInfo.toString());
         return true;
     }
@@ -229,6 +231,8 @@ public class SingleRvFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Logger.e(TAG, "<<<<<<<<<<<<<<<<<< Save Data >>>>>>>>>>>>>>>>>");
+        outState.putParcelableArrayList(KEY_DATA, mData);
         mAdapter.onSaveInstanceState(outState);
     }
 
@@ -270,8 +274,10 @@ public class SingleRvFragment extends Fragment {
             if (pendingCause) {
                 arrow.setRotation(180);
             } else {
-                arrow.animate().rotation(180).setDuration(mItemAnimator.getAddDuration() + 180)
-                        .start();
+                arrow.animate()
+                     .rotation(180)
+                     .setDuration(mItemAnimator.getAddDuration() + 180)
+                     .start();
             }
 
             //            if (byUser) {

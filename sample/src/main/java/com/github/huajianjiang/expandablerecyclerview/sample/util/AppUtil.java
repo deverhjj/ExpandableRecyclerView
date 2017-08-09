@@ -33,8 +33,8 @@ public class AppUtil {
     }
 
     // sRandom.nextInt(16) + 5
-    public static List<MyParent> getListData() {
-        List<MyParent> myParents = new ArrayList<>();
+    public static ArrayList<MyParent> getListData() {
+        ArrayList<MyParent> myParents = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
             MyParent myParent = getParent();
             myParents.add(myParent);
@@ -47,7 +47,7 @@ public class AppUtil {
         MyParent myParent = new MyParent();
         myParent.setType(TYPE_PARENT[sRandom.nextInt(2)]);
         if (sRandom.nextBoolean()) {
-            List<MyChild> myChildren =new ArrayList<>();
+            ArrayList<MyChild> myChildren = new ArrayList<>();
             for (int j = 0; j < sRandom.nextInt(6); j++) {
                 MyChild myChild = new MyChild();
                 myChild.setType(TYPE_CHILD[sRandom.nextInt(2)]);
