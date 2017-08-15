@@ -33,14 +33,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         Logger.e(TAG,"Res.getStatusBarHeight(this)>>>"+Res.getStatusBarHeight(this));
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.appbar), new OnApplyWindowInsetsListener() {
+        ViewCompat.setOnApplyWindowInsetsListener(mToolbar, new OnApplyWindowInsetsListener() {
             @Override
             public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
                 Logger.e(TAG, "onApplyWindowInsets = " + insets.getSystemWindowInsetTop() + ",," +
                               "consumed = " + insets.isConsumed());
-//                ((ViewGroup.MarginLayoutParams) v.getLayoutParams()).topMargin =
-//                        insets.getSystemWindowInsetTop();
-                v.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
+                ((ViewGroup.MarginLayoutParams) v.getLayoutParams()).topMargin =
+                        insets.getSystemWindowInsetTop();
+                //                v.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
                 return insets;
             }
         });

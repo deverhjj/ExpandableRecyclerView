@@ -2,6 +2,7 @@ package com.github.huajianjiang.expandablerecyclerview.sample;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -140,15 +141,22 @@ public class SingleRvFragment extends Fragment {
 
         registerForContextMenu(mRv);
 
-        ViewCompat.setOnApplyWindowInsetsListener(mRv, new OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                Logger.e(TAG, "onApplyWindowInsets" + insets.getSystemWindowInsetBottom() + ",," +
-                              "consumed = " + insets.isConsumed());
-                v.setPadding(0, 0, 0, insets.getSystemWindowInsetBottom());
-                return insets.consumeSystemWindowInsets();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                ViewCompat.setOnApplyWindowInsetsListener(mRv, new OnApplyWindowInsetsListener() {
+                    @Override
+                    public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets)
+                    {
+                        Logger.e(TAG, "onApplyWindowInsets" + insets.getSystemWindowInsetBottom() +
+                                      ",," + "consumed = " + insets.isConsumed());
+                        v.setPadding(0, 0, 0, insets.getSystemWindowInsetBottom());
+                        return insets.consumeSystemWindowInsets();
+                    }
+                });
+            } else {
+                mRv.setPadding(0, 0, 0, Res.getNavigationBarHeight(getContext()));
             }
-        });
+        }
     }
 
     @Override
