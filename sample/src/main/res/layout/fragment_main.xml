@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/jump_single_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginTop="64dp"
         android:padding="@dimen/fab_margin"
-        android:textSize="18sp"
-        android:text="@string/jump_single_rv"/>
+        android:text="@string/jump_single_rv"
+        android:textSize="18sp"/>
 
     <Button
         android:id="@+id/jump_multiple_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginTop="8dp"
         android:padding="@dimen/fab_margin"
-        android:textSize="18sp"
-        android:text="@string/jump_multiple_rv"/>
+        android:text="@string/jump_multiple_rv"
+        android:textSize="18sp"/>
 
 </LinearLayout>

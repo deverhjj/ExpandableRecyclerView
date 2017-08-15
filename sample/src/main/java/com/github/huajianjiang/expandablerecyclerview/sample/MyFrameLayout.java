@@ -49,10 +49,11 @@ public class MyFrameLayout extends FrameLayout {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        for (int i = 0, c = getChildCount(); i < c; i++) {
-            Logger.e(TAG, "onApplyWindowInsets>>" + getChildAt(i));
-            getChildAt(i).dispatchApplyWindowInsets(insets);
-        }
+        Logger.e(TAG, "onApplyWindowInsets>>");
+//        for (int i = 0, c = getChildCount(); i < c; i++) {
+//            Logger.e(TAG, "onApplyWindowInsets>>" + getChildAt(i));
+//            getChildAt(i).dispatchApplyWindowInsets(insets);
+//        }
         return insets;
     }
 }

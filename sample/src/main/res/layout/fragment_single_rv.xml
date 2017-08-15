@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false">
+    android:fitsSystemWindows="true">
 
     <com.github.huajianjiang.expandablerecyclerview.widget.ExpandableRecyclerView
         android:id="@+id/rv"
