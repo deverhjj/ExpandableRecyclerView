@@ -2,15 +2,19 @@ package com.github.huajianjiang.expandablerecyclerview.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.View;
 import android.view.ViewParent;
 
+import com.github.huajianjiang.expandablerecyclerview.R;
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 
 import java.util.ArrayList;
@@ -23,7 +27,6 @@ import java.util.List;
  */
 public class PatchedRecyclerView extends RecyclerView {
     private static final String TAG = PatchedRecyclerView.class.getSimpleName();
-
     protected ContextMenu.ContextMenuInfo mContextMenuInfo;
 
     private Adapter mAdapter;
@@ -41,6 +44,27 @@ public class PatchedRecyclerView extends RecyclerView {
 
     public PatchedRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.PatchedRecyclerView);
+        boolean nestedScrollingEnabled = ta
+                .getBoolean(R.styleable.PatchedRecyclerView_nestedScrollingEnabled, true);
+        boolean hasFixedSize = ta.getBoolean(R.styleable.PatchedRecyclerView_hasFixedSize, false);
+        int orientation =
+                ta.getInt(R.styleable.PatchedRecyclerView_orientation, OrientationHelper.VERTICAL);
+        ta.recycle();
+
+        LayoutManager layoutManager = getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            int currOrientation = linearLayoutManager.getOrientation();
+            if (currOrientation != orientation) {
+                linearLayoutManager.setOrientation(orientation);
+            }
+        }
+
+        setHasFixedSize(hasFixedSize);
+        setNestedScrollingEnabled(nestedScrollingEnabled);
+        setFocusable(nestedScrollingEnabled);
     }
 
     @Override

@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.OnApplyWindowInsetsListener;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +25,7 @@ import com.github.huajianjiang.expandablerecyclerview.sample.adapter.MyAdapter;
 import com.github.huajianjiang.expandablerecyclerview.sample.anim.CircularRevealItemAnimator;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 import com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil;
+import com.github.huajianjiang.expandablerecyclerview.sample.util.Res;
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableRecyclerView;
@@ -39,7 +43,7 @@ public class SingleRvFragment extends Fragment {
     public static final int REQUEST_RESULT = 1;
     private static final String TAG = "SingleRvFragment";
     public static final String KEY_DATA = "data";
-    private RecyclerView mRv;
+    private ExpandableRecyclerView mRv;
     private MyAdapter mAdapter;
     private RecyclerView.ItemAnimator mItemAnimator;
     private PresenterImpl mIPresenter;
@@ -75,16 +79,21 @@ public class SingleRvFragment extends Fragment {
     }
 
     private void init(View rootView) {
-        mRv = (RecyclerView) rootView.findViewById(R.id.rv);
+        mRv = (ExpandableRecyclerView) rootView.findViewById(R.id.rv);
         mAdapter = new MyAdapter(getActivity(), mData);
         mAdapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT);
-        mRv.setAdapter(mAdapter);
-        mRv.addItemDecoration(mAdapter.getItemDecoration());
+
         mItemAnimator = AppUtil.checkLollipop() ? new CircularRevealItemAnimator() :
                 new DefaultItemAnimator();
-        mRv.setItemAnimator(mItemAnimator);
+
         mAdapter.addParentExpandableStateChangeListener(new ParentExpandableStateChangeListener());
         mAdapter.addParentExpandCollapseListener(new ParentExpandCollapseListener());
+//        mAdapter.setHasStableIds(true);
+        mRv.setAdapter(mAdapter);
+        mRv.addItemDecoration(mAdapter.getItemDecoration());
+        mRv.setItemAnimator(mItemAnimator);
+
+//        mRv.setPadding(0, 0, 0, Res.getNavigationBarHeight(getContext()));
 
         mAdapter.parentLongClickTargets(R.id.parent)
                 .listenParentLongClick(new ExpandableAdapter.OnParentLongClickListener() {
@@ -130,6 +139,16 @@ public class SingleRvFragment extends Fragment {
         mIPresenter = new PresenterImpl(mAdapter, mData);
 
         registerForContextMenu(mRv);
+
+        ViewCompat.setOnApplyWindowInsetsListener(mRv, new OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+                Logger.e(TAG, "onApplyWindowInsets" + insets.getSystemWindowInsetBottom() + ",," +
+                              "consumed = " + insets.isConsumed());
+                v.setPadding(0, 0, 0, insets.getSystemWindowInsetBottom());
+                return insets.consumeSystemWindowInsets();
+            }
+        });
     }
 
     @Override

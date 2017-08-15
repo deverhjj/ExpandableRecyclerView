@@ -61,6 +61,12 @@ import java.util.Set;
  * </ul>
  * </p>
  */
+//TODO Performance require,important
+//=============================================================
+//   # using bit operation to encode/decode type,parentPosition,childPosition info
+//   # using object pool to store/recycle item metadata info
+//   # using binary search algorithm to search info
+//=============================================================
 public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extends ChildViewHolder, P extends Parent, C>
         extends RecyclerView.Adapter<BaseViewHolder>
 {
@@ -359,6 +365,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         }
     }
 
+    // is this graceful?
     private void initViewHolder(BaseViewHolder holder) {
         if (holder instanceof ParentViewHolder) {
             if (!Preconditions.isNullOrEmpty(mParentClickTargets)) {

@@ -39,6 +39,10 @@ public class ExpandableRecyclerView extends PatchedRecyclerView {
      */
     @Override
     public void setAdapter(Adapter adapter) {
+        if (isInEditMode()) {
+            super.setAdapter(adapter);
+            return;
+        }
         throw new RuntimeException(
                 "Do not use setAdapter(Adapter),instead using setAdapter(ExpandableAdapter)");
     }

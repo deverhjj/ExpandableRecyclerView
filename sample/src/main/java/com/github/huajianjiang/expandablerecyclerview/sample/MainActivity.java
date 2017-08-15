@@ -6,6 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.github.huajianjiang.expandablerecyclerview.sample.util.Res;
+import com.github.huajianjiang.expandablerecyclerview.util.Logger;
+
 /**
  * @author HuaJian Jiang.
  *         Date 2017/1/23.
@@ -16,6 +19,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         View mainView = LayoutInflater.from(getApplicationContext())
                 .inflate(R.layout.fragment_main, null);
         getFragmentContainer().addView(mainView);
