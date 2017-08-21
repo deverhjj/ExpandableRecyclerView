@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-
-import com.github.huajianjiang.expandablerecyclerview.sample.util.Res;
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 
 /**
@@ -20,8 +18,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View mainView = LayoutInflater.from(getApplicationContext())
-                .inflate(R.layout.fragment_main, null);
+        View mainView =
+                LayoutInflater.from(getApplicationContext()).inflate(R.layout.fragment_main, null);
         getFragmentContainer().addView(mainView);
         findViewById(R.id.jump_single_rv).setOnClickListener(this);
         findViewById(R.id.jump_multiple_rv).setOnClickListener(this);

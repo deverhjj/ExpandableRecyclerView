@@ -58,29 +58,6 @@ public class AppUtil {
         return myParent;
     }
 
-
-    public static void showSnackbar(View view, String text) {
-        final Snackbar snackbar = Snackbar.make(view, text, Snackbar.LENGTH_SHORT);
-        snackbar.setAction("取消", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        }).show();
-    }
-
-
-    public static void showSnackbar(Activity activity, String text) {
-        final Snackbar snackbar = Snackbar.make(((ViewGroup) activity.getWindow().getDecorView().getRootView().findViewById(
-                android.R.id.content)).getChildAt(0), text, Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction("取消", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        }).show();
-    }
-
     public static void showToast(Context context,String text) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
     }

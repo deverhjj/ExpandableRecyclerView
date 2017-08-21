@@ -11,9 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.huajianjiang.expandablerecyclerview.sample.util.Res;
-import com.github.huajianjiang.expandablerecyclerview.util.Logger;
-
 public abstract class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     private Toolbar mToolbar;
@@ -31,33 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        Logger.e(TAG,"Res.getStatusBarHeight(this)>>>"+Res.getStatusBarHeight(this));
-
-        ViewCompat.setOnApplyWindowInsetsListener(mToolbar, new OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                Logger.e(TAG, "onApplyWindowInsets = " + insets.getSystemWindowInsetTop() + ",," +
-                              "consumed = " + insets.isConsumed());
-                ((ViewGroup.MarginLayoutParams) v.getLayoutParams()).topMargin =
-                        insets.getSystemWindowInsetTop();
-                //                v.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
-                return insets;
-            }
-        });
-
-
-//        ViewCompat.setOnApplyWindowInsetsListener(getFragmentContainer(), new OnApplyWindowInsetsListener() {
-//            @Override
-//            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-//                Logger.e(TAG, "onApplyWindowInsets 2 = " + insets.getSystemWindowInsetTop() + ",," +
-//                              "consumed = " + insets.isConsumed());
-//                //                ((ViewGroup.MarginLayoutParams) v.getLayoutParams()).topMargin =
-//                //                        insets.getSystemWindowInsetTop();
-////                v.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
-//                return insets;
-//            }
-//        });
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
@@ -65,8 +35,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (fragment == null) return;
             fragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
         }
-
-
     }
 
     public void setBackNaviAction() {

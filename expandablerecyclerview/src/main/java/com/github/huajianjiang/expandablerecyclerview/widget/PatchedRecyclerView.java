@@ -150,7 +150,6 @@ public class PatchedRecyclerView extends RecyclerView {
     protected ContextMenu.ContextMenuInfo createContextMenuInfo(View targetView, int position,
             long id)
     {
-        Logger.e(TAG, "createContextMenuInfo");
         return new RecyclerViewContextMenuInfo(targetView, position, id);
     }
 

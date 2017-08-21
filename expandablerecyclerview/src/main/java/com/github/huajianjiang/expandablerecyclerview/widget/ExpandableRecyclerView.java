@@ -68,7 +68,6 @@ public class ExpandableRecyclerView extends PatchedRecyclerView {
     protected ContextMenu.ContextMenuInfo createContextMenuInfo(View targetView, int position,
             long id)
     {
-        Logger.e(TAG, "createExpandableContextMenuInfo");
         return new ExpandableRecyclerViewContextMenuInfo(targetView, position, id);
     }
 

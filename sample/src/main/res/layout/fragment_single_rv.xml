@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.github.huajianjiang.expandablerecyclerview.sample.MyFrameLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <com.github.huajianjiang.expandablerecyclerview.widget.ExpandableRecyclerView
         android:id="@+id/rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:fitsSystemWindows="true"
         android:tag="rv_single"
         app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/item_parent"/>
 
-</com.github.huajianjiang.expandablerecyclerview.sample.MyFrameLayout>
+</FrameLayout>

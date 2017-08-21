@@ -26,7 +26,7 @@ import com.github.huajianjiang.expandablerecyclerview.sample.adapter.MyAdapter;
 import com.github.huajianjiang.expandablerecyclerview.sample.anim.CircularRevealItemAnimator;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 import com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil;
-import com.github.huajianjiang.expandablerecyclerview.sample.util.Res;
+
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableRecyclerView;
@@ -84,17 +84,16 @@ public class SingleRvFragment extends Fragment {
         mAdapter = new MyAdapter(getActivity(), mData);
         mAdapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT);
 
-        mItemAnimator = AppUtil.checkLollipop() ? new CircularRevealItemAnimator() :
-                new DefaultItemAnimator();
+        mItemAnimator = AppUtil.checkLollipop() ? new CircularRevealItemAnimator()
+                                                : new DefaultItemAnimator();
 
         mAdapter.addParentExpandableStateChangeListener(new ParentExpandableStateChangeListener());
         mAdapter.addParentExpandCollapseListener(new ParentExpandCollapseListener());
-//        mAdapter.setHasStableIds(true);
         mRv.setAdapter(mAdapter);
         mRv.addItemDecoration(mAdapter.getItemDecoration());
         mRv.setItemAnimator(mItemAnimator);
 
-//        mRv.setPadding(0, 0, 0, Res.getNavigationBarHeight(getContext()));
+        //        mRv.setPadding(0, 0, 0, Res.getNavigationBarHeight(getContext()));
 
         mAdapter.parentLongClickTargets(R.id.parent)
                 .listenParentLongClick(new ExpandableAdapter.OnParentLongClickListener() {
@@ -141,22 +140,6 @@ public class SingleRvFragment extends Fragment {
 
         registerForContextMenu(mRv);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-                ViewCompat.setOnApplyWindowInsetsListener(mRv, new OnApplyWindowInsetsListener() {
-                    @Override
-                    public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets)
-                    {
-                        Logger.e(TAG, "onApplyWindowInsets" + insets.getSystemWindowInsetBottom() +
-                                      ",," + "consumed = " + insets.isConsumed());
-                        v.setPadding(0, 0, 0, insets.getSystemWindowInsetBottom());
-                        return insets.consumeSystemWindowInsets();
-                    }
-                });
-            } else {
-                mRv.setPadding(0, 0, 0, Res.getNavigationBarHeight(getContext()));
-            }
-        }
     }
 
     @Override
@@ -184,8 +167,8 @@ public class SingleRvFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_test:
-                DialogFragment dialog = (DialogFragment) getChildFragmentManager()
-                        .findFragmentByTag("dialog");
+                DialogFragment dialog =
+                        (DialogFragment) getChildFragmentManager().findFragmentByTag("dialog");
                 if (dialog == null) dialog = new MyDialog();
                 dialog.setTargetFragment(this, REQUEST_RESULT);
                 dialog.show(getChildFragmentManager(), "dialog");
@@ -233,7 +216,7 @@ public class SingleRvFragment extends Fragment {
                             args[k] = Integer.valueOf(requestSplit[k + 1]);
                         } catch (NumberFormatException e) {
                             AppUtil.showToast(getContext(),
-                                    "Test failed,please check input format");
+                                              "Test failed,please check input format");
                             return;
                         }
                     }
@@ -319,7 +302,7 @@ public class SingleRvFragment extends Fragment {
                 boolean pendingCause, boolean byUser)
         {
             Logger.e(TAG,
-                    "onParentCollapsed=" + position + ",tag=" + rv.getTag() + ",byUser=" + byUser);
+                     "onParentCollapsed=" + position + ",tag=" + rv.getTag() + ",byUser=" + byUser);
 
             if (pvh == null) return;
             ImageView arrow = pvh.getView(R.id.arrow);
@@ -333,8 +316,10 @@ public class SingleRvFragment extends Fragment {
             if (pendingCause) {
                 arrow.setRotation(rotate);
             } else {
-                arrow.animate().rotation(rotate)
-                        .setDuration(mItemAnimator.getRemoveDuration() + 180).start();
+                arrow.animate()
+                     .rotation(rotate)
+                     .setDuration(mItemAnimator.getRemoveDuration() + 180)
+                     .start();
             }
         }
     }
