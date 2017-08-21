@@ -17,6 +17,8 @@
 package com.github.huajianjiang.expandablerecyclerview.widget;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewGroupCompat;
@@ -36,6 +38,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT;
+import static com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter.ExpandCollapseMode.MODE_SINGLE_COLLAPSE;
+import static com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter.ExpandCollapseMode.MODE_SINGLE_EXPAND;
 
 /**
  * 扩展 {@link RecyclerView.Adapter} 实现可展开折叠的 {@link RecyclerView}
@@ -73,6 +79,10 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     private static final String TAG = ExpandableAdapter.class.getSimpleName();
 
     private static final String SAVED_EXPANSION_STATE = "savedExpansionState";
+
+    @IntDef({MODE_DEFAULT, MODE_SINGLE_EXPAND, MODE_SINGLE_COLLAPSE})
+    @interface Mode {
+    }
 
     /**
      * ExpandableRecyclerView 展开折叠模式处理类
@@ -171,7 +181,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     }
 
     private void init(List<P> parents) {
-        mParents = parents == null ? Collections.<P>emptyList() : parents;
+        mParents = parents == null ? new ArrayList<P>() : parents;
         mItems = ExpandableAdapters.generateItems(parents);
     }
 
@@ -198,9 +208,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @return 当前设置的展开折叠模式
      * @see ExpandCollapseMode
      */
+    @Mode
     public int getExpandCollapseMode() {
-        return mExpandCollapseMode == null ? ExpandCollapseMode.MODE_DEFAULT :
-                mExpandCollapseMode.mode;
+        return mExpandCollapseMode == null ? MODE_DEFAULT : mExpandCollapseMode.mode;
     }
 
     /**
@@ -209,7 +219,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param mode 指定的模式
      * @see ExpandCollapseMode
      */
-    public void setExpandCollapseMode(int mode) {
+    public void setExpandCollapseMode(@Mode int mode) {
         getMode();
         if (mode == mExpandCollapseMode.mode) return;
         mExpandCollapseMode.mode = mode;
@@ -683,6 +693,14 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      */
     private ItemWrapper<P, C> getItem(int position) {
         return mItems.get(position);
+    }
+
+    public List<P> getParents() {
+        return mParents;
+    }
+
+    public boolean isEmpty() {
+        return Preconditions.isNullOrEmpty(mItems);
     }
 
     /**
@@ -1944,7 +1962,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param ids 所有需要监听点击事件的 View 的 id
      * @return 链式对象，配置其他设置
      */
-    public ExpandableAdapter parentClickTargets(Integer... ids) {
+    public ExpandableAdapter parentClickTargets(@IdRes Integer... ids) {
         mParentClickTargets = ids;
         return this;
     }
@@ -1955,7 +1973,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param ids 所有需要监听长按事件的 View 的 id
      * @return 链式对象，配置其他设置
      */
-    public ExpandableAdapter parentLongClickTargets(Integer... ids) {
+    public ExpandableAdapter parentLongClickTargets(@IdRes Integer... ids) {
         mParentLongClickTargets = ids;
         return this;
     }
@@ -1966,7 +1984,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param ids 所有需要监听点击事件的 View 的 id
      * @return 链式对象，配置其他设置
      */
-    public ExpandableAdapter childClickTargets(Integer... ids) {
+    public ExpandableAdapter childClickTargets(@IdRes Integer... ids) {
         mChildClickTargets = ids;
         return this;
     }
@@ -1977,7 +1995,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param ids 所有需要监听长按事件的 View 的 id
      * @return 链式对象，配置其他设置
      */
-    public ExpandableAdapter childLongClickTargets(Integer... ids) {
+    public ExpandableAdapter childLongClickTargets(@IdRes Integer... ids) {
         mChildLongClickTargets = ids;
         return this;
     }
