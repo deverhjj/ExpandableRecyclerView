@@ -18,19 +18,25 @@ class ItemWrapper<P extends Parent, C> {
      */
     private C mChild;
 
-    private boolean mExpandable = true;
+    private boolean mExpandable;
 
     /**
      * 当前父列表项是否已展开
      */
-    private boolean mExpanded = false;
+    private boolean mExpanded;
 
     ItemWrapper(P parent) {
         mParent = parent;
+        init();
     }
 
     ItemWrapper(C child) {
         mChild = child;
+    }
+
+    private void init() {
+        mExpandable = mParent.isInitiallyExpandable() && hasChildren();
+        mExpanded = mParent.isInitiallyExpanded() && hasChildren();
     }
 
     public boolean isParent() {
@@ -56,9 +62,8 @@ class ItemWrapper<P extends Parent, C> {
      */
     public void setParent(P parent)
     {
-        mExpandable = true;
-        mExpanded = false;
         mParent = parent;
+        init();
     }
 
     public C getChild() {
@@ -91,7 +96,7 @@ class ItemWrapper<P extends Parent, C> {
 
     boolean isExpandable() {
         checkParentType();
-        return mExpandable && hasChildren();
+        return mExpandable;
     }
 
     boolean setExpandable(boolean expandable) {

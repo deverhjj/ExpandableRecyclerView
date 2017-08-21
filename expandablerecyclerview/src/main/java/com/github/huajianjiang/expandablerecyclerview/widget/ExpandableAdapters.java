@@ -1,5 +1,7 @@
 package com.github.huajianjiang.expandablerecyclerview.widget;
 
+import android.support.annotation.NonNull;
+
 import com.github.huajianjiang.expandablerecyclerview.util.Preconditions;
 
 import java.util.ArrayList;
@@ -21,28 +23,26 @@ final class ExpandableAdapters {
      * @param parents 客户端所有的父列表项数据集合
      * @return 本地数据模型集合
      */
+    @NonNull
     static <P extends Parent, C> List<ItemWrapper<P, C>> generateItems(List<P> parents)
     {
-        if (Preconditions.isNullOrEmpty(parents)) return Collections.emptyList();
         List<ItemWrapper<P, C>> items = new ArrayList<>();
-        int parentCount = parents.size();
-        for (int i = 0; i < parentCount; i++) {
-            P parent = parents.get(i);
-            if (parent == null) continue;
-            ItemWrapper<P, C> itemWrapper = new ItemWrapper<>(parent);
-            items.add(itemWrapper);
-            boolean hasChildren = itemWrapper.hasChildren();
-            itemWrapper.setExpandable(parent.isInitiallyExpandable() && hasChildren);
-            if (itemWrapper.isInitiallyExpanded()) {
-                List<C> children = itemWrapper.getChildren();
-                //父列表项返回的 ChildItems 为 null 或者 childCount 为0 设置为折叠状态
-                itemWrapper.setExpanded(hasChildren);
-                if (!hasChildren) continue;
-                final int childCount = children.size();
-                for (int j = 0; j < childCount; j++) {
-                    C child = children.get(j);
-                    if (child == null) continue;
-                    items.add(new ItemWrapper<P, C>(child));
+        if (!Preconditions.isNullOrEmpty(parents)) {
+            int parentCount = parents.size();
+            for (int i = 0; i < parentCount; i++) {
+                P parent = parents.get(i);
+                if (parent == null) continue;
+                ItemWrapper<P, C> itemWrapper = new ItemWrapper<>(parent);
+                items.add(itemWrapper);
+                if (itemWrapper.isInitiallyExpanded()) {
+                    List<C> children = itemWrapper.getChildren();
+                    if (!itemWrapper.hasChildren()) continue;
+                    final int childCount = children.size();
+                    for (int j = 0; j < childCount; j++) {
+                        C child = children.get(j);
+                        if (child == null) continue;
+                        items.add(new ItemWrapper<P, C>(child));
+                    }
                 }
             }
         }

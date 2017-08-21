@@ -2,13 +2,18 @@ package com.github.huajianjiang.expandablerecyclerview.sample;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.OnApplyWindowInsetsListener;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,8 +26,10 @@ import com.github.huajianjiang.expandablerecyclerview.sample.adapter.MyAdapter;
 import com.github.huajianjiang.expandablerecyclerview.sample.anim.CircularRevealItemAnimator;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 import com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil;
+
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
+import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableRecyclerView;
 import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 
 import java.lang.reflect.InvocationTargetException;
@@ -36,11 +43,12 @@ import java.util.List;
 public class SingleRvFragment extends Fragment {
     public static final int REQUEST_RESULT = 1;
     private static final String TAG = "SingleRvFragment";
-    private RecyclerView mRv;
+    public static final String KEY_DATA = "data";
+    private ExpandableRecyclerView mRv;
     private MyAdapter mAdapter;
     private RecyclerView.ItemAnimator mItemAnimator;
     private PresenterImpl mIPresenter;
-    private List<MyParent> mData = AppUtil.getListData();
+    private ArrayList<MyParent> mData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,41 +66,46 @@ public class SingleRvFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        init(view);
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // 保存 ExpandableRecyclerView 状态
+        if (savedInstanceState != null) {
+            Logger.e(TAG, "<<<<<<<<<<<<<<<<<< Restore Data >>>>>>>>>>>>>>>>>");
+            mData = savedInstanceState.getParcelableArrayList(KEY_DATA);
+        } else {
+            mData = AppUtil.getListData();
+        }
+        init(getView());
         mAdapter.onRestoreInstanceState(savedInstanceState);
     }
 
     private void init(View rootView) {
-        mRv = (RecyclerView) rootView.findViewById(R.id.rv);
+        mRv = (ExpandableRecyclerView) rootView.findViewById(R.id.rv);
         mAdapter = new MyAdapter(getActivity(), mData);
         mAdapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT);
-        mRv.setAdapter(mAdapter);
-        mRv.addItemDecoration(mAdapter.getItemDecoration());
-        mItemAnimator = AppUtil.checkLollipop() ? new CircularRevealItemAnimator() :
-                new DefaultItemAnimator();
-        mRv.setItemAnimator(mItemAnimator);
+
+        mItemAnimator = AppUtil.checkLollipop() ? new CircularRevealItemAnimator()
+                                                : new DefaultItemAnimator();
+
         mAdapter.addParentExpandableStateChangeListener(new ParentExpandableStateChangeListener());
         mAdapter.addParentExpandCollapseListener(new ParentExpandCollapseListener());
+        mRv.setAdapter(mAdapter);
+        mRv.addItemDecoration(mAdapter.getItemDecoration());
+        mRv.setItemAnimator(mItemAnimator);
+
+        //        mRv.setPadding(0, 0, 0, Res.getNavigationBarHeight(getContext()));
 
         mAdapter.parentLongClickTargets(R.id.parent)
                 .listenParentLongClick(new ExpandableAdapter.OnParentLongClickListener() {
                     @Override
                     public boolean onParentLongClick(RecyclerView parent, View view) {
-                        final int childAdapterPos = parent
-                                .getChildAdapterPosition(parent.findContainingItemView(view));
+                        final int childAdapterPos =
+                                parent.getChildAdapterPosition(parent.findContainingItemView(view));
                         AppUtil.showToast(getContext(), "Parent LongClick =>" + "pos=" +
                                                         mAdapter.getParentPosition(
                                                                 childAdapterPos) + ",adapterPos=" +
                                                         childAdapterPos);
-                        return true;
+                        return false;
                     }
                 })
                 .parentClickTargets(R.id.android)
@@ -110,7 +123,7 @@ public class SingleRvFragment extends Fragment {
                     @Override
                     public boolean onChildLongClick(RecyclerView parent, View view) {
                         AppUtil.showToast(getContext(), "Child LongClick");
-                        return true;
+                        return false;
                     }
                 })
                 .childClickTargets(R.id.android)
@@ -124,6 +137,23 @@ public class SingleRvFragment extends Fragment {
                 });
 
         mIPresenter = new PresenterImpl(mAdapter, mData);
+
+        registerForContextMenu(mRv);
+
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        getActivity().getMenuInflater().inflate(R.menu.context, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        ExpandableRecyclerView.ExpandableRecyclerViewContextMenuInfo menuInfo =
+                (ExpandableRecyclerView.ExpandableRecyclerViewContextMenuInfo) item.getMenuInfo();
+        Logger.e(TAG, menuInfo.toString());
+        return true;
     }
 
     @Override
@@ -137,8 +167,8 @@ public class SingleRvFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_test:
-                DialogFragment dialog = (DialogFragment) getChildFragmentManager()
-                        .findFragmentByTag("dialog");
+                DialogFragment dialog =
+                        (DialogFragment) getChildFragmentManager().findFragmentByTag("dialog");
                 if (dialog == null) dialog = new MyDialog();
                 dialog.setTargetFragment(this, REQUEST_RESULT);
                 dialog.show(getChildFragmentManager(), "dialog");
@@ -186,7 +216,7 @@ public class SingleRvFragment extends Fragment {
                             args[k] = Integer.valueOf(requestSplit[k + 1]);
                         } catch (NumberFormatException e) {
                             AppUtil.showToast(getContext(),
-                                    "Test failed,please check input format");
+                                              "Test failed,please check input format");
                             return;
                         }
                     }
@@ -211,6 +241,8 @@ public class SingleRvFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        Logger.e(TAG, "<<<<<<<<<<<<<<<<<< Save Data >>>>>>>>>>>>>>>>>");
+        outState.putParcelableArrayList(KEY_DATA, mData);
         mAdapter.onSaveInstanceState(outState);
     }
 
@@ -252,8 +284,10 @@ public class SingleRvFragment extends Fragment {
             if (pendingCause) {
                 arrow.setRotation(180);
             } else {
-                arrow.animate().rotation(180).setDuration(mItemAnimator.getAddDuration() + 180)
-                        .start();
+                arrow.animate()
+                     .rotation(180)
+                     .setDuration(mItemAnimator.getAddDuration() + 180)
+                     .start();
             }
 
             //            if (byUser) {
@@ -268,7 +302,7 @@ public class SingleRvFragment extends Fragment {
                 boolean pendingCause, boolean byUser)
         {
             Logger.e(TAG,
-                    "onParentCollapsed=" + position + ",tag=" + rv.getTag() + ",byUser=" + byUser);
+                     "onParentCollapsed=" + position + ",tag=" + rv.getTag() + ",byUser=" + byUser);
 
             if (pvh == null) return;
             ImageView arrow = pvh.getView(R.id.arrow);
@@ -282,8 +316,10 @@ public class SingleRvFragment extends Fragment {
             if (pendingCause) {
                 arrow.setRotation(rotate);
             } else {
-                arrow.animate().rotation(rotate)
-                        .setDuration(mItemAnimator.getRemoveDuration() + 180).start();
+                arrow.animate()
+                     .rotation(rotate)
+                     .setDuration(mItemAnimator.getRemoveDuration() + 180)
+                     .start();
             }
         }
     }

@@ -15,11 +15,14 @@ import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
 public class Packager {
     private static final String TAG = "Packager";
     private static final int TYPE_SHIFT = 31;
+    @SuppressWarnings("NumericOverflow")
     private static final int TYPE_MASK = 0x1 << TYPE_SHIFT;
 
     public static final int ITEM_VIEW_TYPE_ILLEGAL = -1;
     public static final int ITEM_VIEW_TYPE_DEFAULT = 2;
+    @SuppressWarnings("PointlessBitwiseExpression")
     public static final int ITEM_VIEW_TYPE_PARENT = 0 << TYPE_SHIFT;
+    @SuppressWarnings("NumericOverflow")
     public static final int ITEM_VIEW_TYPE_CHILD = 1 << TYPE_SHIFT;
 
     //------------打包(客户端的 ItemView 类型和本地类型)----------------

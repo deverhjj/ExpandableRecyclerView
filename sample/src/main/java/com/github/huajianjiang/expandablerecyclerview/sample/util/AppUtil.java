@@ -33,8 +33,8 @@ public class AppUtil {
     }
 
     // sRandom.nextInt(16) + 5
-    public static List<MyParent> getListData() {
-        List<MyParent> myParents = new ArrayList<>();
+    public static ArrayList<MyParent> getListData() {
+        ArrayList<MyParent> myParents = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
             MyParent myParent = getParent();
             myParents.add(myParent);
@@ -47,7 +47,7 @@ public class AppUtil {
         MyParent myParent = new MyParent();
         myParent.setType(TYPE_PARENT[sRandom.nextInt(2)]);
         if (sRandom.nextBoolean()) {
-            List<MyChild> myChildren =new ArrayList<>();
+            ArrayList<MyChild> myChildren = new ArrayList<>();
             for (int j = 0; j < sRandom.nextInt(6); j++) {
                 MyChild myChild = new MyChild();
                 myChild.setType(TYPE_CHILD[sRandom.nextInt(2)]);
@@ -56,29 +56,6 @@ public class AppUtil {
             myParent.setMyChildren(myChildren);
         }
         return myParent;
-    }
-
-
-    public static void showSnackbar(View view, String text) {
-        final Snackbar snackbar = Snackbar.make(view, text, Snackbar.LENGTH_SHORT);
-        snackbar.setAction("取消", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        }).show();
-    }
-
-
-    public static void showSnackbar(Activity activity, String text) {
-        final Snackbar snackbar = Snackbar.make(((ViewGroup) activity.getWindow().getDecorView().getRootView().findViewById(
-                android.R.id.content)).getChildAt(0), text, Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction("取消", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        }).show();
     }
 
     public static void showToast(Context context,String text) {

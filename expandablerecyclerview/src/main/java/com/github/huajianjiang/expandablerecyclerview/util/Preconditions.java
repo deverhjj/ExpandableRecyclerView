@@ -19,4 +19,10 @@ public class Preconditions {
     public static boolean isNullOrEmpty(Collection c) {
         return c == null || c.isEmpty();
     }
+
+    public static <T> T checkNoNull(T obj, String msg) {
+        if (obj == null) throw new IllegalArgumentException(msg);
+        return obj;
+    }
+
 }

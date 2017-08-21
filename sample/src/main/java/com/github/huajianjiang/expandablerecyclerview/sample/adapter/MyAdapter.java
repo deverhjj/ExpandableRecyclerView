@@ -84,6 +84,11 @@ public class MyAdapter
         return myChild.getType();
     }
 
+//    @Override
+//    public long getItemId(int position) {
+//        return position;
+//    }
+
     public ItemDecoration getItemDecoration() {
         return new ItemDecoration();
     }

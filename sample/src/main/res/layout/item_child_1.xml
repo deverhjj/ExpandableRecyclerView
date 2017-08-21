@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_child"
     android:clickable="true"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:tag="child_1">
 
     <ImageView
         android:id="@+id/android"
