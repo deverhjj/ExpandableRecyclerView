@@ -887,7 +887,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param parentPosition 指定的父列表项在父列表里的位置
      * @return 指定的父列表项位置在适配器里对应的位置
      */
-    private int getParentAdapterPosition(int parentPosition) {
+    public int getParentAdapterPosition(int parentPosition) {
         if (parentPosition < 0) return RecyclerView.NO_POSITION;
         int parentIndex = -1;
         int itemCount = mItems.size();
@@ -909,7 +909,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * @param childPosition  子列表项的位置
      * @return 子列表项位置在适配器里对应的位置
      */
-    private int getChildAdapterPosition(int parentPosition, int childPosition) {
+    public int getChildAdapterPosition(int parentPosition, int childPosition) {
         if (parentPosition < 0 || childPosition < 0) return RecyclerView.NO_POSITION;
         int parentAdapterPosition = getParentAdapterPosition(parentPosition);
         return parentAdapterPosition + childPosition + 1;
