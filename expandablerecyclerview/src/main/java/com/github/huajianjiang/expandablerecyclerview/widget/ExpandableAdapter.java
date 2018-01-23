@@ -20,8 +20,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewGroupCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,18 +28,15 @@ import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.util.Packager;
 import com.github.huajianjiang.expandablerecyclerview.util.Preconditions;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT;
-import static com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter.ExpandCollapseMode.MODE_SINGLE_COLLAPSE;
-import static com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter.ExpandCollapseMode.MODE_SINGLE_EXPAND;
 
 /**
  * 扩展 {@link RecyclerView.Adapter} 实现可展开折叠的 {@link RecyclerView}
@@ -80,8 +75,12 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
 
     private static final String SAVED_EXPANSION_STATE = "savedExpansionState";
 
-    @IntDef({MODE_DEFAULT, MODE_SINGLE_EXPAND, MODE_SINGLE_COLLAPSE})
-    @interface Mode {
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({Mode.DEFAULT, Mode.SINGLE_EXPAND, Mode.SINGLE_COLLAPSE})
+    public @interface Mode {
+        int DEFAULT = 0;
+        int SINGLE_EXPAND = 1;
+        int SINGLE_COLLAPSE = 2;
     }
 
     /**
@@ -210,7 +209,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      */
     @Mode
     public int getExpandCollapseMode() {
-        return mExpandCollapseMode == null ? MODE_DEFAULT : mExpandCollapseMode.mode;
+        return mExpandCollapseMode == null ? Mode.DEFAULT : mExpandCollapseMode.mode;
     }
 
     /**
@@ -826,8 +825,8 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
         //parent 初始化展开但是当前展开折叠模式是单项展开模式时强制不展开该 parent
         //parent 当前展开折叠模式是单项折叠模式时不管初始化是否展开强制进行对有 child 的 parent 展开
         if ((newItemWrapper.isInitiallyExpanded() &&
-             getExpandCollapseMode() != ExpandCollapseMode.MODE_SINGLE_EXPAND) ||
-            getExpandCollapseMode() == ExpandCollapseMode.MODE_SINGLE_COLLAPSE)
+             getExpandCollapseMode() != Mode.SINGLE_EXPAND) ||
+            getExpandCollapseMode() == Mode.SINGLE_COLLAPSE)
         {
             newItemWrapper.setExpanded(hasChildren);
             if (hasChildren) {
@@ -1030,7 +1029,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      */
     private void checkSingleExpandMode(int currExpandedParentPosition) {
         if (mExpandCollapseMode == null ||
-            mExpandCollapseMode.mode != ExpandCollapseMode.MODE_SINGLE_EXPAND) return;
+            mExpandCollapseMode.mode != Mode.SINGLE_EXPAND) return;
         final int lastExpandedPosition = mExpandCollapseMode.lastExpandedPosition;
         if (lastExpandedPosition == currExpandedParentPosition) return;
         Logger.e(TAG,
@@ -1102,7 +1101,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      */
     private void checkSingleCollapseMode(int currCollapsedParentPosition) {
         if (mExpandCollapseMode == null ||
-            mExpandCollapseMode.mode != ExpandCollapseMode.MODE_SINGLE_COLLAPSE) return;
+            mExpandCollapseMode.mode != Mode.SINGLE_COLLAPSE) return;
         final int lastCollapsedPosition = mExpandCollapseMode.lastCollapsedPosition;
         if (currCollapsedParentPosition == lastCollapsedPosition) return;
         Logger.e(TAG, "checkSingleCollapseMode " + "---->lastCollapsedPosition=*" +
@@ -1241,7 +1240,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * 展开所有的父列表项
      * <p>
      * <b>注意:如果当前设置的展开折叠 {@link #setExpandCollapseMode(int)} 为
-     * {@link ExpandCollapseMode MODE_SINGLE_EXPAND} ,调用该方法不会展开所有的 parentItem，只会展开最后一个
+     * {@link Mode#SINGLE_EXPAND} ,调用该方法不会展开所有的 parentItem，只会展开最后一个
      * parentItem，如果可以展开的话</b>
      * </p>
      */
@@ -1336,7 +1335,7 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * 折叠所有的父列表项
      * <p>
      * <b>注意:如果当前设置的展开折叠 {@link #setExpandCollapseMode(int)} 为
-     * {@link ExpandCollapseMode MODE_SINGLE_COLLAPSE} ,调用该方法不会折叠所有的 parentItem，只会折叠最后一个
+     * {@link Mode#SINGLE_COLLAPSE} ,调用该方法不会折叠所有的 parentItem，只会折叠最后一个
      * parentItem，如果可以折叠的话</b>
      * </p>
      */
@@ -2165,23 +2164,30 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
      * </ul>
      * </p>
      */
-    public class ExpandCollapseMode {
+    public static class ExpandCollapseMode {
         /**
          * 默认模式，可以展开折叠任意数量 parent,不受约束
+         * @deprecated Use {@link Mode#DEFAULT}
          */
-        public static final int MODE_DEFAULT = 0;
+        @Deprecated
+        public static final int MODE_DEFAULT = Mode.DEFAULT;
         /**
          * 该模式下只能有一个 parent 处于展开状态，展开最新的 parent 会自动折叠先前展开的 parent
+         * @deprecated Use {@link Mode#SINGLE_EXPAND}
          */
-        public static final int MODE_SINGLE_EXPAND = 1;
+        @Deprecated
+        public static final int MODE_SINGLE_EXPAND = Mode.SINGLE_EXPAND;
         /**
          * 该模式下只能有一个 parent 处于折叠状态，折叠最新的 parent 会自动展开先前折叠的 parent
+         * @deprecated Use {@link Mode#SINGLE_COLLAPSE}
          */
-        public static final int MODE_SINGLE_COLLAPSE = 2;
+        @Deprecated
+        public static final int MODE_SINGLE_COLLAPSE = Mode.SINGLE_COLLAPSE;
         /**
          * 当前设置的模式
          */
-        private int mode = MODE_DEFAULT;
+        @Mode
+        private int mode = Mode.DEFAULT;
 
         /**
          * 先前展开的 parent 在模型数据集里对应的位置
