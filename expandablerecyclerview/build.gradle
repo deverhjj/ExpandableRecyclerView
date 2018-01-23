@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'digital.wup.android-maven-publish'
 
 ext {
     bintrayRepo = 'maven'
@@ -13,7 +14,7 @@ ext {
     siteUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView'
     gitUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView.git'
 
-    libraryVersion = '1.0.9'
+    libraryVersion = '1.1.0'
 
     developerId = 'huajianjiang'
     developerName = 'Huajian Jiang'
@@ -35,6 +36,25 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            credentials {
+                username System.getenv("NEXUS_USERNAME")
+                password System.getenv("NEXUS_PASSWORD")
+            }
+            url System.getenv("NEXUS_REPO_RELEASE")
+        }
+    }
+    publications {
+        mavenAar(MavenPublication) {
+            groupId 'com.danskebank.mobilelife'
+
+            from components.android
+        }
     }
 }
 
