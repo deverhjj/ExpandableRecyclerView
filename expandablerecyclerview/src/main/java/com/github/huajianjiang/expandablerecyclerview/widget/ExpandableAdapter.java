@@ -1030,7 +1030,9 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     private void checkSingleExpandMode(int currExpandedParentPosition) {
         if (mExpandCollapseMode == null ||
             mExpandCollapseMode.mode != Mode.SINGLE_EXPAND) return;
-        final int lastExpandedPosition = mExpandCollapseMode.lastExpandedPosition;
+        final int lastExpandedPosition =
+                mExpandCollapseMode.lastExpandedPosition < mParents.size() ?
+                        mExpandCollapseMode.lastExpandedPosition : RecyclerView.NO_POSITION;
         if (lastExpandedPosition == currExpandedParentPosition) return;
         Logger.e(TAG,
                 "checkSingleExpandMode " + "---->lastExpandedPosition=*" + lastExpandedPosition);
@@ -1102,7 +1104,10 @@ public abstract class ExpandableAdapter<PVH extends ParentViewHolder, CVH extend
     private void checkSingleCollapseMode(int currCollapsedParentPosition) {
         if (mExpandCollapseMode == null ||
             mExpandCollapseMode.mode != Mode.SINGLE_COLLAPSE) return;
-        final int lastCollapsedPosition = mExpandCollapseMode.lastCollapsedPosition;
+
+        final int lastCollapsedPosition =
+                mExpandCollapseMode.lastCollapsedPosition < mParents.size() ?
+                        mExpandCollapseMode.lastCollapsedPosition : RecyclerView.NO_POSITION;
         if (currCollapsedParentPosition == lastCollapsedPosition) return;
         Logger.e(TAG, "checkSingleCollapseMode " + "---->lastCollapsedPosition=*" +
                       lastCollapsedPosition);
