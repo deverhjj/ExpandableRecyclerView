@@ -22,7 +22,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.v4.animation.AnimatorCompatHelper;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
@@ -599,7 +598,7 @@ public class CircularRevealItemAnimator extends SimpleItemAnimator {
     }
 
     private void resetAnimation(RecyclerView.ViewHolder holder) {
-        AnimatorCompatHelper.clearInterpolator(holder.itemView);
+//        AnimatorCompatHelper.clearInterpolator(holder.itemView);
         endAnimation(holder);
     }
 
