@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView'
     gitUrl = 'https://github.com/huajianjiang/ExpandableRecyclerView.git'
 
-    libraryVersion = '1.0.9'
+    libraryVersion = '1.1.1'
 
     developerId = 'huajianjiang'
     developerName = 'Huajian Jiang'
@@ -25,12 +25,11 @@ ext {
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 27
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 25
+        targetSdkVersion 27
     }
 
     lintOptions {
@@ -39,9 +38,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
 }
 
 apply from: 'https://raw.githubusercontent.com/huajianjiang/JCenter/master/installv1.gradle'

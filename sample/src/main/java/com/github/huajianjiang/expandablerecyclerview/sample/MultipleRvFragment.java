@@ -30,7 +30,6 @@ import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.github.huajianjiang.expandablerecyclerview.sample.SingleRvFragment.KEY_DATA;
 import static com.github.huajianjiang.expandablerecyclerview.sample.SingleRvFragment.REQUEST_RESULT;
@@ -78,7 +77,7 @@ public class MultipleRvFragment extends Fragment {
 
     private void init(View rootView) {
         mAdapter = new MyAdapter(getActivity(), mData);
-        mAdapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT);
+        mAdapter.setExpandCollapseMode(ExpandableAdapter.Mode.DEFAULT);
         mAdapter.addParentExpandableStateChangeListener(new ParentExpandableStateChangeListener());
         mAdapter.addParentExpandCollapseListener(new ParentExpandCollapseListener());
 

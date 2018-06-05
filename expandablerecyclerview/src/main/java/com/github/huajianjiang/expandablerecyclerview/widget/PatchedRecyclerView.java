@@ -15,10 +15,6 @@ import android.view.View;
 import android.view.ViewParent;
 
 import com.github.huajianjiang.expandablerecyclerview.R;
-import com.github.huajianjiang.expandablerecyclerview.util.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>Author: Huajian Jiang

@@ -70,7 +70,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:tag="@string/notifyParent¥Inserted"
+            android:tag="@string/notifyParentInserted"
             android:hint="@string/parent_hint"
             android:textColorHint="@android:color/transparent"
             android:textColor="@color/white_full"/>
@@ -80,7 +80,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:tag="@string/notifyChild¥Inserted"
+            android:tag="@string/notifyChildInserted"
             android:hint="@string/child_hint"
             android:textColorHint="@android:color/transparent"
             android:textColor="@color/white_full"/>
@@ -110,7 +110,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:tag="@string/notifyParent¥Removed"
+            android:tag="@string/notifyParentRemoved"
             android:hint="@string/parent_hint"
             android:textColorHint="@android:color/transparent"
             android:textColor="@color/white_full"/>
@@ -120,7 +120,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:tag="@string/notifyChild¥Removed"
+            android:tag="@string/notifyChildRemoved"
             android:hint="@string/child_hint"
             android:textColorHint="@android:color/transparent"
             android:textColor="@color/white_full"/>
@@ -151,7 +151,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:tag="@string/notifyParent¥Changed"
+            android:tag="@string/notifyParentChanged"
             android:hint="@string/parent_hint"
             android:textColorHint="@android:color/transparent"
             android:textColor="@color/white_full"/>
@@ -161,7 +161,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:tag="@string/notifyChild¥Changed"
+            android:tag="@string/notifyChildChanged"
             android:hint="@string/child_hint"
             android:textColorHint="@android:color/transparent"
             android:textColor="@color/white_full"/>
@@ -191,7 +191,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:tag="@string/notifyParent¥Moved"
+            android:tag="@string/notifyParentMoved"
             android:hint="@string/move_parent_hint"
             android:textColorHint="@android:color/transparent"
             android:textColor="@color/white_full"/>
@@ -201,7 +201,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:tag="@string/notifyChild¥Moved"
+            android:tag="@string/notifyChildMoved"
             android:hint="@string/move_child_hint"
             android:textColorHint="@android:color/transparent"
             android:textColor="@color/white_full"/>

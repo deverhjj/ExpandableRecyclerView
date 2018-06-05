@@ -52,17 +52,17 @@
     <string name="Item" translatable="false">Item</string>
     <string name="ItemRange" translatable="false">ItemRange</string>
 
-    <string name="notifyParent¥Inserted" translatable="false">notifyParent%1$sInserted</string>
-    <string name="notifyChild¥Inserted" translatable="false">notifyChild%1$sInserted</string>
+    <string name="notifyParentInserted" translatable="false">notifyParent%1$sInserted</string>
+    <string name="notifyChildInserted" translatable="false">notifyChild%1$sInserted</string>
 
-    <string name="notifyParent¥Removed" translatable="false">notifyParent%1$sRemoved</string>
-    <string name="notifyChild¥Removed" translatable="false">notifyChild%1$sRemoved</string>
+    <string name="notifyParentRemoved" translatable="false">notifyParent%1$sRemoved</string>
+    <string name="notifyChildRemoved" translatable="false">notifyChild%1$sRemoved</string>
 
-    <string name="notifyParent¥Changed" translatable="false">notifyParent%1$sChanged</string>
-    <string name="notifyChild¥Changed" translatable="false">notifyChild%1$sChanged</string>
+    <string name="notifyParentChanged" translatable="false">notifyParent%1$sChanged</string>
+    <string name="notifyChildChanged" translatable="false">notifyChild%1$sChanged</string>
 
-    <string name="notifyParent¥Moved" translatable="false">notifyParent%1$sMoved</string>
-    <string name="notifyChild¥Moved" translatable="false">notifyChild%1$sMoved</string>
+    <string name="notifyParentMoved" translatable="false">notifyParent%1$sMoved</string>
+    <string name="notifyChildMoved" translatable="false">notifyChild%1$sMoved</string>
 
     <string name="methodAndArgs" translatable="false">%1$s,%2$s</string>
 

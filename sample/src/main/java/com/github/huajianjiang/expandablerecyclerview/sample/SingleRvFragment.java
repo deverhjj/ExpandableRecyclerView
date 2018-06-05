@@ -2,14 +2,10 @@ package com.github.huajianjiang.expandablerecyclerview.sample;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.OnApplyWindowInsetsListener;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,7 +22,6 @@ import com.github.huajianjiang.expandablerecyclerview.sample.adapter.MyAdapter;
 import com.github.huajianjiang.expandablerecyclerview.sample.anim.CircularRevealItemAnimator;
 import com.github.huajianjiang.expandablerecyclerview.sample.model.MyParent;
 import com.github.huajianjiang.expandablerecyclerview.sample.util.AppUtil;
-
 import com.github.huajianjiang.expandablerecyclerview.util.Logger;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableAdapter;
 import com.github.huajianjiang.expandablerecyclerview.widget.ExpandableRecyclerView;
@@ -35,7 +30,6 @@ import com.github.huajianjiang.expandablerecyclerview.widget.ParentViewHolder;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jhj_Plus on 2016/9/2.
@@ -82,7 +76,7 @@ public class SingleRvFragment extends Fragment {
     private void init(View rootView) {
         mRv = (ExpandableRecyclerView) rootView.findViewById(R.id.rv);
         mAdapter = new MyAdapter(getActivity(), mData);
-        mAdapter.setExpandCollapseMode(ExpandableAdapter.ExpandCollapseMode.MODE_DEFAULT);
+        mAdapter.setExpandCollapseMode(ExpandableAdapter.Mode.DEFAULT);
 
         mItemAnimator = AppUtil.checkLollipop() ? new CircularRevealItemAnimator()
                                                 : new DefaultItemAnimator();
