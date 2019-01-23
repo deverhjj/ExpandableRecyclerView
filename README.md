@@ -40,9 +40,9 @@ dependencies {
 </dependency>
 ```
 
-## Thanks
-
-* [bignerdranch/expandable-recycler-view](https://github.com/bignerdranch/expandable-recycler-view)
+## Who use this lib?
+I don't known,but at least I have used it in my apps, for example:
+* 👉[WiFi Service](https://play.google.com/store/apps/details?id=com.jhj.dev.wifi)
 
 License
 =======
